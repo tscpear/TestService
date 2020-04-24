@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.apiTest.dom.mapper.ApiMapper">
+    <resultMap id="apiResultMap" type="com.service.apiTest.dom.entity.Api">
+        <result property="id" column="id"/>
+        <result property="apiPath" column="api_path"/>
+        <result property="apiMark" column="api_mark"/>
+        <result property="apiMethod" column="api_method"/>
+        <result property="device" column="device"/>
+        <result property="apiParamType" column="api_param_type"/>
+        <result property="apiFiexdParam" column="api_fiexd_param"/>
+        <result property="apiRelyParam" column="api_rely_param"/>
+        <result property="headerParamType" column="header_param_type"/>
+        <result property="headerRelyParam" column="header_rely_param"/>
+        <result property="headerFiexdParam" column="header_fiexd_param"/>
+        <result property="headerHandleParam" column="header_handle_param"/>
+        <result property="webformParamType" column="webform_param_type"/>
+        <result property="webformFiexdParam" column="webform_fiexd_param"/>
+        <result property="webformRelyParam" column="webform_rely_param"/>
+        <result property="webformHandleParam" column="webform_handle_param"/>
+        <result property="bodyParamType" column="body_param_type"/>
+        <result property="bodyFiexdParam" column="body_fiexd_param"/>
+        <result property="bodyRelyParam" column="body_rely_param"/>
+        <result property="bodyHandleParam" column="body_handle_param"/>
+        <result property="isRely" column="is_rely"/>
+        <result property="relyValue" column="rely_value"/>
+        <result property="isDel" column="is_del"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="delUserId" column="del_user_id"/>
+        <result property="responseBase" column="response_base"/>
+    </resultMap>
+
+    <sql id="apilist">
+        id
+        ,
+        api_path,
+        device,
+        api_method,
+        api_mark
+    </sql>
+    <sql id="apidata">
+        id
+        ,
+        api_path,
+        device,
+        api_method,
+        api_mark,
+        api_param_type,
+        api_fiexd_param,
+        api_rely_param,
+        header_param_type,
+        header_fiexd_param,
+        header_rely_param,
+        header_handle_param,
+        webform_param_type,
+        webform_fiexd_param,
+        webform_rely_param,
+        webform_handle_param,
+        body_param_type,
+        body_fiexd_param,
+        body_rely_param,
+        body_handle_param,
+        is_rely,
+        rely_value,
+        response_base
+
+    </sql>
+    <sql id="apidataS">
+        #{id}
+        ,
+        #{apiPath},
+        #{device},
+        #{apiMethod},
+        #{apiMark},
+        #{apiParamType},
+        #{apiFiexdParam},
+        #{apiRelyParam},
+        #{headerParamType},
+        #{headerFiexdParam},
+        #{headerRelyParam},
+        #{headerHandleParam},
+        #{webformParamType},
+        #{webformFiexdParam},
+        #{webformRelyParam},
+        #{webformHandleParam},
+        #{bodyParamType},
+        #{bodyFiexdParam},
+        #{bodyRelyParam},
+        #{bodyHandleParam},
+        #{isRely},
+        #{relyValue},
+        #{responseBase}
+    </sql>
+
+
+    <sql id="list_count">
+        <if test="apiPath != null">
+            and uri like CONCAT('%',#{apiPath},'%')
+        </if>
+        <if test="apiMark != null">
+            and mark like CONCAT('%',#{apiMark},'%')
+        </if>
+        <if test="device != null">
+            and device = #{device}
+        </if>
+    </sql>
+
+
+    <select id="getApiList" resultMap="apiResultMap">
+        select
+        <include refid="apilist"/>
+        from uri
+        where is_del = 0
+        <include refid="list_count"/>
+        limit #{pageBegin},#{pageEnd};
+    </select>
+
+
+    <select id="getApiCount" resultType="java.lang.Integer">
+        select count(*) from uri where 1=1
+        <include refid="list_count"/>;
+    </select>
+
+
+    <select id="getApiData" resultMap="apiResultMap">
+        select
+        <include refid="apidata"/>
+        from uri
+        where id = #{id}
+    </select>
+
+    <update id="updateApi">
+        update uri
+        set api_path             = #{apiPath},
+            api_mark             = #{apiMark},
+            api_method           = #{apiMethod},
+            device               = #{device},
+            api_param_type       = #{apiParamType},
+            api_fiexd_param      = #{apiFiexdParam},
+            api_rely_param       = #{apiRelyParam},
+            header_param_type    = #{headerParamType},
+            header_fiexd_param   = #{headerFiexdParam},
+            header_rely_param    = #{headerRelyParam},
+            header_handle_param  = #{headerHandleParam},
+            webform_param_type   = #{webformParamType},
+            webform_fiexd_param  = #{webformFiexdParam},
+            webform_rely_param   = #{webformRelyParam},
+            webform_handle_param = #{webformHandleParam},
+            body_param_type      = #{bodyParamType},
+            body_fiexd_param     = #{bodyFiexdParam},
+            body_rely_param      = #{bodyRelyParam},
+            body_handle_param    = #{bodyHandleParam},
+            is_rely              = #{isRely},
+            rely_value           = #{relyValue},
+            response_base        = #{responseBase},
+            update_user_id       = #{updateUserId}
+        where id = #{id};
+    </update>
+    <insert id="addApi">
+        insert into uri (
+        <include refid="apidata"/>
+        ,create_user_id) value (
+        <include refid="apidataS"/>
+        ,#{createUserId})
+    </insert>
+    <select id="countApi" resultType="Integer">
+        select count(*)
+        from uri
+        where api_path = #{apiPath} and device = #{device};
+    </select>
+
+</mapper>

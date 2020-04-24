@@ -1,0 +1,33 @@
+server:
+  port: 8080
+spring:
+  thymeleaf:
+    cache: false
+
+  #\u914D\u7F6E\u6570\u636E\u5E93
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: db_user
+    password: kybb123456
+    url: jdbc:mysql://dev-mysql.zhilun-base.com:3306/test_tsc_c?useUnicode=true&characterEncoding=UTF8&useSSL=false
+    #\u90AE\u7BB1\u914D\u7F6E
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 2465668576@qq.com
+    password: mgjlurmdqgfieaig
+    from: 2465668576@qq.com
+    properties:
+      mail:
+        debug: true
+      stmp:
+        auth: true
+        ssl:
+          enable: true
+
+#\u914D\u7F6Esql\u6620\u5C04
+mybatis:
+  type-aliases-package: com.service
+  mapper-locations:
+  - mapper/*
+

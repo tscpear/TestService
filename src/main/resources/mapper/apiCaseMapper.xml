@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.apiTest.dom.mapper.ApiCaseMapper">
+
+    <resultMap id="apiCaseResultMap" type="com.service.apiTest.dom.entity.ApiCase">
+        <result property="id" column="id"/>
+        <result property="apiId" column="api_id"/>
+        <result property="apiCaseMark" column="api_case_mark"/>
+        <result property="apiCaseLv" column="api_case_lv"/>
+        <result property="apiCaseType" column="api_case_type"/>
+        <result property="headerHandleParam" column="header_handle_param"/>
+        <result property="webformHandleParam" column="webform_handle_param"/>
+        <result property="bodyHandleParam" column="body_handle_param"/>
+        <result property="relyCaseId" column="rely_case_id"/>
+        <result property="isDepend" column="is_depend"/>
+        <result property="statusAssertion" column="status_assertion"/>
+        <result property="otherAssertionType" column="other_assertion_type"/>
+        <result property="delUserId" column="del_user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+    </resultMap>
+    <sql id="apiCaseData">
+        id
+        ,
+        api_id,
+        api_case_mark,
+        api_case_lv,
+        api_case_type,
+        api_handle_param,
+        header_handle_param,
+        webform_handle_param,
+        body_handle_param,
+        rely_case_id,
+        is_depend,
+        status_assertion,
+        other_assertion_type
+
+    </sql>
+    <sql id="apiCaseDatas">
+        #{id}
+        ,
+        #{apiId},
+        #{apiCaseMark},
+        #{apiCaseLv},
+        #{apiCaseType},
+        #{apiHandleParam},
+        #{headerHandleParam},
+        #{webformHandleParam},
+        #{bodyHandleParam},
+        #{relyCaseId},
+        #{isDepend},
+        #{statusAssertion},
+        #{otherAssertionType}
+
+    </sql>
+
+    <sql id="list_count">
+        <if test="apiId != null">
+            and api_id = #(apiId)
+        </if>
+        <if test="apiCaseMark != null">
+            and mark like CONCAT('%',#{apiCaseMark},'%')
+        </if>
+        <if test="device != null">
+            and device = #{device}
+        </if>
+    </sql>
+
+
+    <insert id="addApiCaseData">
+        insert into apicase
+        (<include refid="apiCaseData"/>,create_user_id)
+        value
+        (<include refid="apiCaseDatas"/>,#{createUserId})
+    </insert>
+
+
+    <select id="getCountApiCase" resultType="Integer">
+        select count(*)
+        from apicase;
+    </select>
+
+
+    <select id="getCountApiCaseByApiId" resultType="Integer">
+        select count(*)
+        from apicase
+        where api_id = #{apiId}
+    </select>
+
+
+    <select id="getApiCaseList" resultMap="apiCaseResultMap">
+        select id,api_id,api_case_mark,api_case_lv,api_case_type
+        from apicase
+        where is_del = 0
+        <include refid="list_count"/>
+        limit #{pageBegin},#{pageEnd};
+    </select>
+    <select id="getApiCaseData" resultMap="apiCaseResultMap">
+        select <include refid="apiCaseData"/> from apicase where id=#{id}
+    </select>
+</mapper>
