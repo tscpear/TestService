@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class ApiCaseUpdateData extends ApiCaseData {
+    private Integer id;
     private String apiPath;
     private String apiMark;
     private String apiParamType= "0";
