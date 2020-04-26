@@ -59,14 +59,19 @@
     </sql>
 
     <sql id="list_count">
-        <if test="apiId != null">
-            and api_id = #(apiId)
-        </if>
         <if test="apiCaseMark != null">
-            and mark like CONCAT('%',#{apiCaseMark},'%')
+            and api_case_mark like CONCAT('%',#{apiCaseMark},'%')
         </if>
-        <if test="device != null">
-            and device = #{device}
+        <if test="caseIdList!=null">
+            <if test="caseIdList.size > 0">
+                and api_id in
+                <foreach collection="caseIdList" item="apiId" index="index" open="(" close=")" separator=",">
+                    #{apiId}
+                </foreach>
+            </if>
+            <if test="caseIdList.size == 0">
+                and id = -1
+            </if>
         </if>
     </sql>
 
@@ -81,7 +86,8 @@
 
     <select id="getCountApiCase" resultType="Integer">
         select count(*)
-        from apicase;
+        from apicase
+        where is_del = 0;
     </select>
 
 
@@ -89,6 +95,7 @@
         select count(*)
         from apicase
         where api_id = #{apiId}
+          and is_del = 0;
     </select>
 
 
@@ -100,6 +107,23 @@
         limit #{pageBegin},#{pageEnd};
     </select>
     <select id="getApiCaseData" resultMap="apiCaseResultMap">
-        select <include refid="apiCaseData"/> from apicase where id=#{id}
+        select
+        <include refid="apiCaseData"/>
+        from apicase where id=#{id}
     </select>
+    <update id="updateApiCaseData">
+        update apicase
+        set api_case_mark        = #{apiCaseMark},
+            api_case_lv          = #{apiCaseLv},
+            api_case_type        = #{apiCaseType},
+            api_handle_param     = #{apiHandleParam},
+            header_handle_param  = #{headerHandleParam},
+            webform_handle_param = #{webformHandleParam},
+            body_handle_param    = #{bodyHandleParam},
+            rely_case_id         = #{relyCaseId},
+            is_depend            = #{isDepend},
+            status_assertion     = #{statusAssertion},
+            other_assertion_type = #{otherAssertionType}
+        where id = #{id};
+    </update>
 </mapper>

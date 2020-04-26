@@ -100,10 +100,10 @@
 
     <sql id="list_count">
         <if test="apiPath != null">
-            and uri like CONCAT('%',#{apiPath},'%')
+            and api_path like CONCAT('%',#{apiPath},'%')
         </if>
         <if test="apiMark != null">
-            and mark like CONCAT('%',#{apiMark},'%')
+            and api_mark like CONCAT('%',#{apiMark},'%')
         </if>
         <if test="device != null">
             and device = #{device}
@@ -171,7 +171,16 @@
     <select id="countApi" resultType="Integer">
         select count(*)
         from uri
-        where api_path = #{apiPath} and device = #{device};
+        where api_path = #{apiPath}
+          and device = #{device};
     </select>
-
+    <select id="getApiIdForCaseList" resultType="Integer">
+        select id from uri where 1 = 1
+        <if test="device != '0'">
+            and device = #{device}
+        </if>
+        <if test="apiPath != null">
+            and api_path like CONCAT('%',#{apiPath},'%')
+        </if>
+    </select>
 </mapper>

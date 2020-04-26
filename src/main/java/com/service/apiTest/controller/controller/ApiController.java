@@ -23,7 +23,7 @@ public class ApiController {
                              @RequestParam int limit,
                              @RequestParam(required = false) String apiPath,
                              @RequestParam(required = false) String apiMark,
-                             @RequestParam(required = false) Integer device) {
+                             @RequestParam(required = false) String device) {
         ApiBaseRe baseRe = new ApiBaseRe();
         try {
             ApiListParam param = new ApiListParam();

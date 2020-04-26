@@ -55,5 +55,10 @@ public interface ApiMapper {
      * 删除api
      */
 
+    /**
+     * 查询device 与 接口id
+     */
+    List<Integer> getApiIdForCaseList(String device,String apiPath);
+
 
 }

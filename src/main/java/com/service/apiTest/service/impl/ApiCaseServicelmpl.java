@@ -2,6 +2,7 @@ package com.service.apiTest.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.service.apiTest.dom.domin.ApiCaseListParam;
+import com.service.apiTest.dom.domin.NewApiListCaseParam;
 import com.service.apiTest.dom.entity.ApiCase;
 import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.dom.mapper.ApiMapper;
@@ -16,7 +17,10 @@ import com.service.utils.MyBaseChange;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -74,13 +78,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
 
     @Override
     public void addApiCaseData(ApiCaseData apiCaseData) {
-        ApiCase apiCase = new ApiCase();
-        BeanUtils.copyProperties(apiCaseData, apiCase);
-        apiCase.setApiHandleParam(apiCaseData.getApiHandleParam());
-        apiCase.setHeaderHandleParam(apiCaseData.getHeaderHandleParam().toString());
-        apiCase.setWebformHandleParam(apiCaseData.getWebformHandleParam().toString());
-        apiCase.setBodyHandleParam(apiCaseData.getBodyHandleParam().toString());
-        apiCaseMapper.addApiCaseData(apiCase);
+        apiCaseMapper.addApiCaseData(this.updateAndAdd(apiCaseData));
     }
 
     @Override
@@ -95,15 +93,31 @@ public class ApiCaseServicelmpl implements ApiCaseService {
 
     @Override
     public JSONArray getApiCaseList(ApiCaseListParam apiCaseListParam) {
-        List<ApiCase> apiCaseLists = apiCaseMapper.getApiCaseList(apiCaseListParam);
+        NewApiListCaseParam param = new NewApiListCaseParam();
+        BeanUtils.copyProperties(apiCaseListParam, param);
+        List<Integer> caseIdList = new ArrayList<>();
+        String device = apiCaseListParam.getDevice();
+        String apiPath  =  apiCaseListParam.getApiPath();
+        if(StringUtils.isEmpty(apiPath) && StringUtils.isEmpty(device)){
+
+            caseIdList = null;
+        }else {
+
+            caseIdList = apiMapper.getApiIdForCaseList(device,apiPath);
+            System.out.println(caseIdList);
+        }
+        param.setCaseIdList(caseIdList);
+        List<ApiCase> apiCaseLists = apiCaseMapper.getApiCaseList(param);
         JSONArray caseList = new JSONArray();
         for (ApiCase apiCase : apiCaseLists) {
             ApiCaseList apiCaseList = new ApiCaseList();
-            BeanUtils.copyProperties(apiCase,apiCaseList);
+            BeanUtils.copyProperties(apiCase, apiCaseList);
+            Integer apiId = apiCase.getApiId();
 
 
-
-
+            ApiData apiData = apiService.getApi(apiId);
+            apiCaseList.setApiPath(apiData.getApiPath());
+            apiCaseList.setDevice(apiData.getDevice());
 
             caseList.add(apiCaseList);
         }
@@ -115,9 +129,25 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         ApiCaseUpdateData apiCaseUpdateData = new ApiCaseUpdateData();
         ApiCase apiCase = apiCaseMapper.getApiCaseData(id);
         ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId());
-        BeanUtils.copyProperties(apiForCase,apiCaseUpdateData);
-        BeanUtils.copyProperties(apiCase,apiCaseUpdateData);
-        return  apiCaseUpdateData;
+        BeanUtils.copyProperties(apiForCase, apiCaseUpdateData);
+        BeanUtils.copyProperties(apiCase, apiCaseUpdateData);
+        return apiCaseUpdateData;
+    }
+
+    @Override
+    public void updateApiCaseData(ApiCaseData apiCaseData) {
+        apiCaseMapper.updateApiCaseData(this.updateAndAdd(apiCaseData));
+    }
+
+
+    public ApiCase updateAndAdd(ApiCaseData apiCaseData) {
+        ApiCase apiCase = new ApiCase();
+        BeanUtils.copyProperties(apiCaseData, apiCase);
+        apiCase.setApiHandleParam(apiCaseData.getApiHandleParam());
+        apiCase.setHeaderHandleParam(apiCaseData.getHeaderHandleParam().toString());
+        apiCase.setWebformHandleParam(apiCaseData.getWebformHandleParam().toString());
+        apiCase.setBodyHandleParam(apiCaseData.getBodyHandleParam().toString());
+        return apiCase;
     }
 
 

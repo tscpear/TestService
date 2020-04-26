@@ -1,6 +1,7 @@
 package com.service.apiTest.dom.mapper;
 
 import com.service.apiTest.dom.domin.ApiCaseListParam;
+import com.service.apiTest.dom.domin.NewApiListCaseParam;
 import com.service.apiTest.dom.entity.ApiCase;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,7 @@ public interface ApiCaseMapper {
      * 获取测试用例列表
      * @return
      */
-    List<ApiCase> getApiCaseList(ApiCaseListParam apiCaseListParam);
+    List<ApiCase> getApiCaseList(NewApiListCaseParam param);
 
     /**
      * 通过id获取商品信息
@@ -36,4 +37,10 @@ public interface ApiCaseMapper {
      * @return
      */
     ApiCase getApiCaseData(int id);
+
+    /**
+     * 更新用例数据
+     * @param apiCase
+     */
+    void updateApiCaseData(ApiCase apiCase);
 }

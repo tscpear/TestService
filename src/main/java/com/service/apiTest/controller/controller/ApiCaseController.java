@@ -59,7 +59,7 @@ public class ApiCaseController {
     @ResponseBody
     public ApiBaseRe getApiCaseList(@RequestParam Integer page,
                                     @RequestParam Integer limit,
-                                    @RequestParam(required = false) Integer apiId,
+                                    @RequestParam(required = false) String apiPath,
                                     @RequestParam(required = false) String apiCaseMark,
                                     @RequestParam(required = false) String device) {
         ApiBaseRe baseRe = new ApiBaseRe();
@@ -68,7 +68,7 @@ public class ApiCaseController {
             ApiCaseListParam param = new ApiCaseListParam();
             param.setPageBegin(page * limit - limit);
             param.setPageEnd(page * limit);
-            param.setApiId(apiId);
+            param.setApiPath(apiPath);
             param.setDevice(device);
             param.setApiCaseMark(apiCaseMark);
 
@@ -96,5 +96,20 @@ public class ApiCaseController {
             baseRe.setMsg(e.toString());
         }
         return baseRe;
+    }
+
+    @PostMapping("/update")
+    @ResponseBody
+    public ApiBaseRe updateApiCase(@RequestBody ApiCaseData apiCaseData ){
+       ApiBaseRe baseRe = new ApiBaseRe();
+       try{
+           apiCaseService.updateApiCaseData(apiCaseData);
+           baseRe.setCode(1);
+           baseRe.setMsg("新增成功");
+       }catch (Exception e){
+           baseRe.setCode(0);
+           baseRe.setMsg(e.toString());
+       }
+       return baseRe;
     }
 }

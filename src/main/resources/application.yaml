@@ -30,4 +30,6 @@ mybatis:
   type-aliases-package: com.service
   mapper-locations:
   - mapper/*
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 

@@ -8,5 +8,5 @@ public class ApiListParam {
     private int PageEnd;
     private String apiPath;
     private String apiMark;
-    private Integer device;
+    private String device;
 }

@@ -3,6 +3,8 @@ package com.service.apiTest.service.service;
 import com.alibaba.fastjson.JSONArray;
 import com.service.apiTest.dom.domin.ApiCaseListParam;
 import com.service.apiTest.controller.domin.ApiCaseData;
+import com.service.apiTest.dom.entity.Api;
+import com.service.apiTest.dom.entity.ApiCase;
 import com.service.apiTest.service.domian.ApiCaseUpdateData;
 import com.service.apiTest.service.domian.ApiForCase;
 import org.springframework.stereotype.Service;
@@ -42,5 +44,17 @@ public interface ApiCaseService {
      */
     JSONArray getApiCaseList(ApiCaseListParam apiCaseListParam);
 
+    /**
+     * 获取更新数据
+     * @param id
+     * @return
+     */
     ApiCaseUpdateData getApiCaseData(int id);
+
+    /**
+     * 更新用例数据
+     * @param apiCaseData
+     */
+
+    void updateApiCaseData(ApiCaseData apiCaseData);
 }

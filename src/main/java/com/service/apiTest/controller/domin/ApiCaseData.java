@@ -6,17 +6,18 @@ import lombok.Data;
 
 @Data
 public class ApiCaseData {
+    private Integer id;
     private Integer apiId;
     private String apiCaseMark;
-    private String apiCaseLV;
+    private String apiCaseLv;
     private String apiCaseType;
     private String apiHandleParam;
     private Boolean isDepend;
     private JSONArray headerHandleParam = JSONArray.parseArray("[]");
     private JSONArray webformHandleParam = JSONArray.parseArray("[]");
     private JSONArray bodyHandleParam = JSONArray.parseArray("[]");
-    private String status;
+    private String statusAssertion;
     private JSONArray otherAssertionType = JSONArray.parseArray("[]");
-    private Integer UserId;
+    private Integer userId;
 
 }

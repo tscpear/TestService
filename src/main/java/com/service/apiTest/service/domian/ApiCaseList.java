@@ -10,7 +10,7 @@ public class ApiCaseList {
     private  String apiPath;
     private String apiId;
     private String apiCaseMark;
-    private Integer apiCaseLv;
-    private Integer apiCaseType;
+    private String apiCaseLv;
+    private String apiCaseType;
 
 }
