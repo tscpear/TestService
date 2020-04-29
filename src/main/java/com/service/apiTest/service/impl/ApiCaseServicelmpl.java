@@ -7,12 +7,14 @@ import com.service.apiTest.dom.entity.ApiCase;
 import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.apiTest.controller.domin.ApiCaseData;
+import com.service.apiTest.dom.mapper.DeviceTypeMapper;
 import com.service.apiTest.service.domian.ApiCaseList;
 import com.service.apiTest.service.domian.ApiCaseUpdateData;
 import com.service.apiTest.service.domian.ApiData;
 import com.service.apiTest.service.domian.ApiForCase;
 import com.service.apiTest.service.service.ApiCaseService;
 import com.service.apiTest.service.service.ApiService;
+import com.service.config.testBase.DeviceType;
 import com.service.utils.MyBaseChange;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +41,15 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     @Autowired
     private ApiCaseMapper apiCaseMapper;
 
+    @Autowired
+    private DeviceTypeMapper deviceTypeMapper;
+
 
     @Override
-    public ApiForCase getApiDataForAddCase(Integer apiId) {
+    public ApiForCase getApiDataForAddCase(Integer apiId, Integer userId) {
         ApiData apiData = apiService.getApi(apiId);
         ApiForCase apiForCase = new ApiForCase();
+        apiForCase.setDeviceTypeList(b.StringToArray(deviceTypeMapper.getDeviceTypeList(apiData.getDevice(), userId).toString()));
         BeanUtils.copyProperties(apiData, apiForCase);
         apiForCase.setApiId(apiData.getId());
 
@@ -97,13 +103,13 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         BeanUtils.copyProperties(apiCaseListParam, param);
         List<Integer> caseIdList = new ArrayList<>();
         String device = apiCaseListParam.getDevice();
-        String apiPath  =  apiCaseListParam.getApiPath();
-        if(StringUtils.isEmpty(apiPath) && StringUtils.isEmpty(device)){
+        String apiPath = apiCaseListParam.getApiPath();
+        if (StringUtils.isEmpty(apiPath) && StringUtils.isEmpty(device)) {
 
             caseIdList = null;
-        }else {
+        } else {
 
-            caseIdList = apiMapper.getApiIdForCaseList(device,apiPath);
+            caseIdList = apiMapper.getApiIdForCaseList(device, apiPath);
             System.out.println(caseIdList);
         }
         param.setCaseIdList(caseIdList);
@@ -125,18 +131,32 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
     @Override
-    public ApiCaseUpdateData getApiCaseData(int id) {
+    public ApiCaseUpdateData getApiCaseData(int id,Integer userId) {
         ApiCaseUpdateData apiCaseUpdateData = new ApiCaseUpdateData();
         ApiCase apiCase = apiCaseMapper.getApiCaseData(id);
-        ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId());
+        ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId(),userId);
         BeanUtils.copyProperties(apiForCase, apiCaseUpdateData);
         BeanUtils.copyProperties(apiCase, apiCaseUpdateData);
+
         return apiCaseUpdateData;
     }
 
     @Override
     public void updateApiCaseData(ApiCaseData apiCaseData) {
         apiCaseMapper.updateApiCaseData(this.updateAndAdd(apiCaseData));
+    }
+
+    @Override
+    public void delApiCase(Integer id,Integer userId) throws Throwable {
+        String apiCaseLv = apiCaseMapper.findApiCaseOfLv(id);
+        String apiCaseType = apiCaseMapper.findApiCaseOfType(id);
+        if (apiCaseLv.equals("3")) {
+            throw new Throwable("该等级的用例不可删除");
+        }
+        if (apiCaseType.equals("3")) {
+            throw new Throwable("该类型的用例不可删除");
+        }
+        apiCaseMapper.delApiCase(id,userId);
     }
 
 

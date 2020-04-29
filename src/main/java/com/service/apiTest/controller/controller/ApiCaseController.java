@@ -2,6 +2,7 @@ package com.service.apiTest.controller.controller;
 
 import com.service.apiTest.controller.domin.ApiBaseRe;
 import com.service.apiTest.dom.domin.ApiCaseListParam;
+import com.service.apiTest.dom.entity.Api;
 import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.apiTest.controller.domin.ApiCaseData;
 import com.service.apiTest.service.domian.ApiForCase;
@@ -24,10 +25,10 @@ public class ApiCaseController {
 
     @GetMapping("/caseAdd")
     @ResponseBody
-    public ApiBaseRe getApiForCaseData(@RequestParam int apiId) {
+    public ApiBaseRe getApiForCaseData(@RequestParam int apiId,@RequestParam Integer userId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         try {
-            ApiForCase apiForCase = apiCaseService.getApiDataForAddCase(apiId);
+            ApiForCase apiForCase = apiCaseService.getApiDataForAddCase(apiId,userId);
             baseRe.setCode(1);
             baseRe.setData(apiForCase);
 
@@ -86,10 +87,10 @@ public class ApiCaseController {
 
     @GetMapping("/caseUpdate")
     @ResponseBody
-    public ApiBaseRe getCaseAdd(@RequestParam Integer id){
+    public ApiBaseRe getCaseAdd(@RequestParam Integer id,@RequestParam Integer userId){
         ApiBaseRe baseRe = new ApiBaseRe();
         try{
-            baseRe.setData(apiCaseService.getApiCaseData(id));
+            baseRe.setData(apiCaseService.getApiCaseData(id,userId));
             baseRe.setCode(1);
         }catch (Exception e){
             baseRe.setCode(0);
@@ -111,5 +112,24 @@ public class ApiCaseController {
            baseRe.setMsg(e.toString());
        }
        return baseRe;
+    }
+
+
+    @PostMapping("/del")
+    @ResponseBody
+    public ApiBaseRe delApiCase(@RequestParam Integer id,@RequestParam Integer userId){
+        ApiBaseRe baseRe =new ApiBaseRe();
+        try {
+            apiCaseService.delApiCase(id,userId);
+            baseRe.setCode(1);
+            baseRe.setMsg("删除成功");
+        } catch (Throwable throwable) {
+            baseRe.setCode(0);
+            String msg = throwable.toString();
+            msg = msg.split(":")[1];
+            baseRe.setMsg(msg);
+        }
+        return baseRe;
+
     }
 }

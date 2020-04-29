@@ -22,6 +22,7 @@
         <result property="createUserId" column="create_user_id"/>
         <result property="updateTime" column="update_time"/>
         <result property="updateUserId" column="update_user_id"/>
+        <result property="deviceType" column="device_type"/>
     </resultMap>
     <sql id="apiCaseData">
         id
@@ -37,7 +38,8 @@
         rely_case_id,
         is_depend,
         status_assertion,
-        other_assertion_type
+        other_assertion_type,
+        device_type
 
     </sql>
     <sql id="apiCaseDatas">
@@ -54,7 +56,8 @@
         #{relyCaseId},
         #{isDepend},
         #{statusAssertion},
-        #{otherAssertionType}
+        #{otherAssertionType},
+        #{deviceType}
 
     </sql>
 
@@ -84,14 +87,14 @@
     </insert>
 
 
-    <select id="getCountApiCase" resultType="Integer">
+    <select id="getCountApiCase" resultType="java.lang.Integer">
         select count(*)
         from apicase
         where is_del = 0;
     </select>
 
 
-    <select id="getCountApiCaseByApiId" resultType="Integer">
+    <select id="getCountApiCaseByApiId" resultType="java.lang.Integer">
         select count(*)
         from apicase
         where api_id = #{apiId}
@@ -123,7 +126,22 @@
             rely_case_id         = #{relyCaseId},
             is_depend            = #{isDepend},
             status_assertion     = #{statusAssertion},
-            other_assertion_type = #{otherAssertionType}
+            other_assertion_type = #{otherAssertionType},
+            device_type          = #{deviceType}
         where id = #{id};
     </update>
+    <update id="delApiCase">
+        update apicase
+        set is_del = 1 and del_user_id = #{userId}
+    </update>
+    <select id="findApiCaseOfLv" resultType="java.lang.String">
+        select api_case_lv
+        from apicase
+        where id = #{id}
+    </select>
+    <select id="findApiCaseOfType" resultType="java.lang.String">
+        select api_case_type
+        from apicase
+        where id = #{id}
+    </select>
 </mapper>

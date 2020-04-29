@@ -25,4 +25,6 @@ public class ApiCaseUpdateData extends ApiCaseData {
     private JSONArray bodyParamType= JSONArray.parseArray("['0']");
     private String bodyFiexdParam;
 
+    private String deviceType;
+
 }

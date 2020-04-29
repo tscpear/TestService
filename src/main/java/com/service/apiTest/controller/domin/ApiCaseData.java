@@ -19,5 +19,7 @@ public class ApiCaseData {
     private String statusAssertion;
     private JSONArray otherAssertionType = JSONArray.parseArray("[]");
     private Integer userId;
-
+    private String deviceType;
+    private String device;
+    private JSONArray deviceTypeList = JSONArray.parseArray("[]");
 }

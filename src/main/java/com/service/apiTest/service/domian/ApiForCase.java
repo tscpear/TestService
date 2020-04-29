@@ -30,6 +30,7 @@ public class ApiForCase {
     private String bodyFiexdParam;
     private JSONArray bodyHandleParam= JSONArray.parseArray("[]");
 
-
+    private JSONArray deviceTypeList= JSONArray.parseArray("[]");
+    private String device ;
 
 }

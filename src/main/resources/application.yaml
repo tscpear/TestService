@@ -30,6 +30,24 @@ mybatis:
   type-aliases-package: com.service
   mapper-locations:
   - mapper/*
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+myhost:
+  store:
+    uat: https://api.t.zhilunkeji.com
+    test: http://api.zhilun-qa-major.com
+    tests: http://api.zhilun-qa-minor.com
+    prod: https://api.zhilunkeji.com
+    basic: TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy
+    basics: TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4
+    account: [1,2,3,4,5,6]
+    accounts: [1,2,3,4,5,6]
+
+
+
+
+
+
 

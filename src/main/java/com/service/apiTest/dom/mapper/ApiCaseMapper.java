@@ -43,4 +43,24 @@ public interface ApiCaseMapper {
      * @param apiCase
      */
     void updateApiCaseData(ApiCase apiCase);
+
+    /**
+     * 删除用例数据
+     * @param id
+     */
+    void delApiCase(Integer id,Integer userId);
+
+    /**
+     * 获取等级
+     * @param id
+     * @return
+     */
+    String findApiCaseOfLv(Integer id);
+
+    /**
+     * 获取类型
+     * @param id
+     * @return
+     */
+    String findApiCaseOfType(Integer id);
 }

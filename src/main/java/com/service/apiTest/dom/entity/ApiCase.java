@@ -16,7 +16,7 @@ public class ApiCase {
     private String bodyHandleParam;
     private String relyCaseId;
     private Integer isDepend;
-
+    private String deviceType;
     private String statusAssertion;
     private String otherAssertionType;
 //    private String responseAssertion;

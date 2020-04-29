@@ -176,7 +176,7 @@
     </select>
     <select id="getApiIdForCaseList" resultType="Integer">
         select id from uri where 1 = 1
-        <if test="device != '0'">
+        <if test="device != '0' and device !=null">
             and device = #{device}
         </if>
         <if test="apiPath != null">

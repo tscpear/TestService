@@ -16,7 +16,7 @@ public interface ApiCaseService {
      * @param apiId
      * @return
      */
-    ApiForCase getApiDataForAddCase(Integer apiId);
+    ApiForCase getApiDataForAddCase(Integer apiId,Integer userId);
 
     /**
      * 新增测试用例
@@ -49,7 +49,7 @@ public interface ApiCaseService {
      * @param id
      * @return
      */
-    ApiCaseUpdateData getApiCaseData(int id);
+    ApiCaseUpdateData getApiCaseData(int id,Integer userId);
 
     /**
      * 更新用例数据
@@ -57,4 +57,10 @@ public interface ApiCaseService {
      */
 
     void updateApiCaseData(ApiCaseData apiCaseData);
+
+    /**
+     * 删除接口用例；的淑君
+     * @param id
+     */
+    void delApiCase(Integer id,Integer userId) throws Throwable;
 }
