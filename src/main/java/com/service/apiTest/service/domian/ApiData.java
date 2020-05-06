@@ -1,6 +1,7 @@
 package com.service.apiTest.service.domian;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 @Data

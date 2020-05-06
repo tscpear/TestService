@@ -1,9 +1,12 @@
 package com.service.apiTest.dom.mapper;
 
+import com.alibaba.fastjson.JSONArray;
+import com.service.apiTest.dom.domin.ApiCaseForReport;
 import com.service.apiTest.dom.domin.ApiCaseListParam;
 import com.service.apiTest.dom.domin.NewApiListCaseParam;
 import com.service.apiTest.dom.entity.ApiCase;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -63,4 +66,11 @@ public interface ApiCaseMapper {
      * @return
      */
     String findApiCaseOfType(Integer id);
+
+    /**
+     * 商务
+     * @param testIdList
+     * @return
+     */
+    List<ApiCaseForReport> getApiCaseListForReport(@Param("testIdList") JSONArray testIdList);
 }

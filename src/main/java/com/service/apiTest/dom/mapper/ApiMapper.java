@@ -1,5 +1,6 @@
 package com.service.apiTest.dom.mapper;
 
+import com.alibaba.fastjson.JSONArray;
 import com.service.apiTest.dom.domin.ApiListParam;
 import com.service.apiTest.dom.entity.Api;
 import com.service.apiTest.service.domian.ApiData;
@@ -60,5 +61,27 @@ public interface ApiMapper {
      */
     List<Integer> getApiIdForCaseList(String device,String apiPath);
 
+    /**
+     * 获取查找的id path
+     * @param path
+     * @return
+     */
+    List<Api> getApiForPath(String path);
 
+    /**
+     * 获取接口路径byid
+     * @param id
+     * @return
+     */
+    String getPathById(Integer id);
+
+    /**
+     * 查询依赖数据的name
+     * @param id
+     * @return
+     */
+    String searchRelyName(Integer id);
+
+
+    Integer getApiIdByPath(String path);
 }

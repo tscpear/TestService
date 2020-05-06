@@ -63,4 +63,7 @@ public interface ApiCaseService {
      * @param id
      */
     void delApiCase(Integer id,Integer userId) throws Throwable;
+
+
+
 }

@@ -24,7 +24,6 @@ public class MyVerification {
      * 验证是否为 JsonArray
      */
 
-
     public boolean isJSONArray(String s){
         try{
             JSONArray array = JSONArray.parseArray(s);

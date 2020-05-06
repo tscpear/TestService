@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Service
@@ -65,7 +66,9 @@ public class ApiServicelmpl implements ApiService {
             case "2":
                 JSONObject apiRelyParam = b.StringToJson(api.getApiRelyParam());
                 if (apiRelyParam.size() > 1) {
-                    apiData.setApiRelyParamName(apiRelyParam.get("name").toString());
+                    Integer apiId = Integer.parseInt(apiRelyParam.get("name").toString());
+                    String apiPath = apiMapper.getPathById(apiId);
+                    apiData.setApiRelyParamName(apiPath);
                     apiData.setApiRelyParamValue(apiRelyParam.get("value").toString());
                 }
 
@@ -84,7 +87,7 @@ public class ApiServicelmpl implements ApiService {
                     apiData.setHeaderFiexdParam(b.StringToAO(api.getHeaderFiexdParam()));
                     break;
                 case "2":
-                    apiData.setHeaderRelyParam(b.StringToAO(api.getHeaderRelyParam()));
+                    apiData.setHeaderRelyParam(this.idToPath(api.getHeaderRelyParam()));
                     break;
                 case "3":
                     apiData.setHeaderHandleParam(b.StringToAO(api.getHeaderHandleParam()));
@@ -103,7 +106,7 @@ public class ApiServicelmpl implements ApiService {
                     apiData.setWebformFiexdParam(b.StringToAO(api.getWebformFiexdParam()));
                     break;
                 case "2":
-                    apiData.setWebformRelyParam(b.StringToAO(api.getWebformRelyParam()));
+                    apiData.setWebformRelyParam(this.idToPath(api.getWebformRelyParam()));
                     break;
                 case "3":
                     apiData.setWebformHandleParam(b.StringToAO(api.getWebformHandleParam()));
@@ -123,7 +126,7 @@ public class ApiServicelmpl implements ApiService {
                     apiData.setBodyFiexdParam(api.getBodyFiexdParam());
                     break;
                 case "2":
-                    apiData.setBodyRelyParam(b.StringToAO(api.getBodyRelyParam()));
+                    apiData.setBodyRelyParam(this.idToPath(api.getBodyRelyParam()));
                     break;
                 case "3":
                     apiData.setBodyHandleParam(b.StringToAO(api.getBodyHandleParam()));
@@ -176,6 +179,38 @@ public class ApiServicelmpl implements ApiService {
         return null;
     }
 
+    /**
+     * 获取依赖选择项
+     *
+     * @param path
+     * @return
+     */
+    @Override
+    public JSONArray searchTest(String path) {
+        List<Api> apiList = apiMapper.getApiForPath(path);
+        JSONArray apiArray = new JSONArray();
+        for (Api api : apiList) {
+            JSONObject object = new JSONObject();
+            object.put("value", api.getId());
+            object.put("text", api.getApiPath());
+            apiArray.add(object);
+        }
+        return apiArray;
+    }
+
+    @Override
+    public JSONArray searchRelyName(String path) {
+        String relyName = apiMapper.searchRelyName(Integer.parseInt(path));
+        JSONArray namePath = b.StringToArray(relyName);
+        JSONArray array = new JSONArray();
+        for (Object object : namePath) {
+            JSONObject names = b.StringToJson(object.toString());
+            array.add(names.get("name").toString());
+        }
+
+        return array;
+    }
+
 
     /**
      * 存入APIDATA 的数据
@@ -199,7 +234,11 @@ public class ApiServicelmpl implements ApiService {
                 break;
             case "2":
                 JSONObject apiRelyParam = new JSONObject();
-                apiRelyParam.put("name", apiData.getApiRelyParamName());
+                String name = apiData.getApiRelyParamName();
+                if (name.startsWith("/")) {
+                    name = apiMapper.getApiIdByPath(name).toString();
+                }
+                apiRelyParam.put("name", name);
                 apiRelyParam.put("value", apiData.getApiRelyParamValue());
                 api.setApiRelyParam(apiRelyParam.toString());
                 break;
@@ -216,7 +255,7 @@ public class ApiServicelmpl implements ApiService {
                     api.setHeaderFiexdParam(apiData.getHeaderFiexdParam().toString());
                     break;
                 case "2":
-                    api.setHeaderRelyParam(apiData.getHeaderRelyParam().toString());
+                    api.setHeaderRelyParam(this.pathToId(apiData.getHeaderRelyParam().toString()));
                     break;
                 case "3":
                     api.setHeaderHandleParam(apiData.getHeaderHandleParam().toString());
@@ -235,7 +274,7 @@ public class ApiServicelmpl implements ApiService {
                     api.setWebformFiexdParam(apiData.getWebformFiexdParam().toString());
                     break;
                 case "2":
-                    api.setWebformRelyParam(apiData.getWebformRelyParam().toString());
+                    api.setWebformRelyParam(this.pathToId(apiData.getWebformRelyParam().toString()));
                     break;
                 case "3":
                     api.setWebformHandleParam(apiData.getWebformHandleParam().toString());
@@ -254,7 +293,7 @@ public class ApiServicelmpl implements ApiService {
                     api.setBodyFiexdParam(apiData.getBodyFiexdParam());
                     break;
                 case "2":
-                    api.setBodyRelyParam(apiData.getBodyRelyParam().toString());
+                    api.setBodyRelyParam(this.pathToId(apiData.getBodyRelyParam().toString()));
                     break;
                 case "3":
                     api.setBodyHandleParam(apiData.getBodyHandleParam().toString());
@@ -272,5 +311,40 @@ public class ApiServicelmpl implements ApiService {
             api.setRelyValue(apiData.getRelyValue().toString());
         }
 
+    }
+
+    /**
+     * apiId 转 apiPath
+     */
+    public JSONArray idToPath(String s) {
+        JSONArray result = new JSONArray();
+        JSONArray params = b.StringToAO(s);
+        for (Object param : params) {
+            JSONObject object = b.StringToJson(
+                    param.toString());
+            JSONObject a = object;
+            Integer apiId = Integer.parseInt(object.get("apiPath").toString());
+            String path = apiMapper.getPathById(apiId);
+            a.put("apiPath", path);
+            result.add(a);
+
+        }
+        return result;
+    }
+    /**
+     * apiPath 转 apiId
+     */
+    public String pathToId(String s){
+        JSONArray result = new JSONArray();
+        JSONArray params = b.StringToAO(s);
+        for (Object p : params) {
+            JSONObject object = b.StringToJson(p.toString());
+            String name = object.get("apiPath").toString();
+            if (name.startsWith("/")) {
+                object.put("apiPath", apiMapper.getApiIdByPath(name));
+            }
+            result.add(object);
+        }
+        return result.toString();
     }
 }

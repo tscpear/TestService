@@ -45,6 +45,18 @@ public interface ApiService{
      */
     ApiBaseRe delApi(ApiDataDel apiDataDel);
 
+    /**
+     * 查询接口
+     * @param path
+     * @return
+     */
+    JSONArray searchTest(String path);
 
+    /**
+     * 查询依赖数据的name
+     * @param path
+     * @return
+     */
+    JSONArray searchRelyName(String path);
 
 }

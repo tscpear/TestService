@@ -2,7 +2,9 @@ package com.service.utils.test.method;
 
 import com.service.apiTest.dom.entity.ApiCase;
 import com.service.utils.test.dom.GetToken;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface DoApiService {
 
     /**
@@ -30,5 +32,5 @@ public interface DoApiService {
 
 
 
-    String getToken(String account,String host,String basic);
+    String getToken(String account,String environment,String basic);
 }

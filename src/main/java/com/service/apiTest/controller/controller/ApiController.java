@@ -95,4 +95,24 @@ public class ApiController {
 
         return null;
     }
+
+
+    @GetMapping("/searchRely")
+    @ResponseBody
+    public ApiBaseRe searchRely(@RequestParam String path){
+        ApiBaseRe baseRe = new ApiBaseRe();
+        baseRe.setCode(1);
+        baseRe.setData(apiService.searchTest(path));
+        return baseRe;
+    }
+
+
+    @GetMapping("/searchRelyName")
+    @ResponseBody
+    public ApiBaseRe searchRelyName(@RequestParam String path){
+        ApiBaseRe baseRe = new ApiBaseRe();
+        baseRe.setCode(1);
+        baseRe.setData(apiService.searchRelyName(path));
+        return baseRe;
+    }
 }

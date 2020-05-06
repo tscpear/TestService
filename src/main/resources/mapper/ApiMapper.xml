@@ -168,13 +168,13 @@
         <include refid="apidataS"/>
         ,#{createUserId})
     </insert>
-    <select id="countApi" resultType="Integer">
+    <select id="countApi" resultType="java.lang.Integer">
         select count(*)
         from uri
         where api_path = #{apiPath}
           and device = #{device};
     </select>
-    <select id="getApiIdForCaseList" resultType="Integer">
+    <select id="getApiIdForCaseList" resultType="java.lang.Integer">
         select id from uri where 1 = 1
         <if test="device != '0' and device !=null">
             and device = #{device}
@@ -183,4 +183,24 @@
             and api_path like CONCAT('%',#{apiPath},'%')
         </if>
     </select>
+    <select id="getApiForPath" resultMap="apiResultMap">
+        select id,api_path
+        from uri
+        where api_path like CONCAT(#{path}, '%')
+    </select>
+    <select id="getPathById" resultType="java.lang.String">
+        select api_path
+        from uri
+        where id = #{id}
+    </select>
+    <select id="searchRelyName" resultType="java.lang.String">
+        select rely_value
+        from uri
+        where id = #{id}
+    </select>
+    <select id="getApiIdByPath" resultType="java.lang.Integer">
+        select id from uri where api_path = #{path}
+    </select>
+
+
 </mapper>

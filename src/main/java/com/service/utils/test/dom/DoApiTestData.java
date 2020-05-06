@@ -13,4 +13,5 @@ public class DoApiTestData {
     private Integer deviceTypeId;
     //记录表
     private Integer reportId;
+
 }

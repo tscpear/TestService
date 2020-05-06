@@ -144,4 +144,12 @@
         from apicase
         where id = #{id}
     </select>
+    <select id="getApiCaseListForReport" resultType="com.service.apiTest.dom.domin.ApiCaseForReport">
+        select a.id as testId,b.api_path as path,a.api_case_mark as mark ,b.device as device ,a.device_type as deviceType
+        from apicase a,uri b
+        where a.api_id=b.id and a.id in
+        <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 </mapper>
