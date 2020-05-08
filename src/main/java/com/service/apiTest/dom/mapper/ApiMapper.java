@@ -1,9 +1,7 @@
 package com.service.apiTest.dom.mapper;
 
-import com.alibaba.fastjson.JSONArray;
 import com.service.apiTest.dom.domin.ApiListParam;
 import com.service.apiTest.dom.entity.Api;
-import com.service.apiTest.service.domian.ApiData;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -82,6 +80,13 @@ public interface ApiMapper {
      */
     String searchRelyName(Integer id);
 
-
+    /**
+     * 查询id
+     * @param path
+     * @return
+     */
     Integer getApiIdByPath(String path);
+
+
+
 }

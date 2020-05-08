@@ -1,6 +1,7 @@
 package com.service.utils.test.dom;
 
 import lombok.Data;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public class MyHost {
     private String basics;
     private List<String> account;
     private List<String> accounts;
+    private String name;
+    private String password;
 }

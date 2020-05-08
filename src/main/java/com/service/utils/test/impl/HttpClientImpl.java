@@ -134,7 +134,7 @@ public class HttpClientImpl implements HttpClientService {
         if (!StringUtils.isEmpty(authorization)) {
             get.setHeader("Authorization", authorization);
         }
-        if (!StringUtils.isEmpty(headerParam)) {
+        if (!StringUtils.isEmpty(headerParam) && headerParam.length()>0) {
             for (Object param : headerParam) {
                 JSONObject o = new JSONObject(param);
                 get.setHeader(o.get("name").toString(), o.get("value").toString());
@@ -182,7 +182,6 @@ public class HttpClientImpl implements HttpClientService {
                 put.setHeader(o.get("name").toString(), o.get("value").toString());
             }
         }
-
         if (!StringUtils.isEmpty(bodyParam)) {
             StringEntity entity = new StringEntity(bodyParam, "utf-8");
             put.setEntity(entity);

@@ -22,4 +22,9 @@ public class ApiCaseData {
     private String deviceType;
     private String device;
     private JSONArray deviceTypeList = JSONArray.parseArray("[]");
+    private JSONArray selectRelyCase = JSONArray.parseArray("[]");
+    private JSONArray apiRelyToHandle = JSONArray.parseArray("[]");
+    private JSONArray headerRelyToHandle = JSONArray.parseArray("[]");
+    private JSONArray webformRelyToHandle = JSONArray.parseArray("[]");
+    private JSONArray bodyRelyToHandle = JSONArray.parseArray("[]");
 }

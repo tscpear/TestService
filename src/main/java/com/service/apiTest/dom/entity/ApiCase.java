@@ -1,5 +1,6 @@
 package com.service.apiTest.dom.entity;
 
+import com.alibaba.fastjson.JSONArray;
 import lombok.Data;
 import java.util.Date;
 
@@ -29,5 +30,9 @@ public class ApiCase {
     private Integer createUserId;
     private Date updateTime;
     private Integer updateUserId;
+
+    private String headerRelyToHandle ;
+    private String webformRelyToHandle ;
+    private String bodyRelyToHandle ;
 
 }

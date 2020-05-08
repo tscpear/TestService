@@ -11,6 +11,7 @@ public class ApiCaseUpdateData extends ApiCaseData {
     private String apiMark;
     private String apiParamType= "0";
     private Boolean isDepend = false;
+    private Boolean hasRely = false;
 
 
     private JSONArray headerParamType= JSONArray.parseArray("['0']");
@@ -26,5 +27,8 @@ public class ApiCaseUpdateData extends ApiCaseData {
     private String bodyFiexdParam;
 
     private String deviceType;
+
+    private JSONArray selectRelyCase = JSONArray.parseArray("[]");
+    private JSONArray relyCaseId = JSONArray.parseArray("[]");
 
 }

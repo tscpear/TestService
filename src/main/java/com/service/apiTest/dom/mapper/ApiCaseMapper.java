@@ -73,4 +73,11 @@ public interface ApiCaseMapper {
      * @return
      */
     List<ApiCaseForReport> getApiCaseListForReport(@Param("testIdList") JSONArray testIdList);
+
+    /**
+     * 获取依赖的用例
+     * @param id
+     * @return
+     */
+    List<ApiCase> getTestForRely(Integer id);
 }

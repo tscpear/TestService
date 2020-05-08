@@ -1,6 +1,7 @@
 package com.service.apiTest.controller.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.service.apiTest.controller.domin.ApiBaseRe;
 import com.service.apiTest.service.service.ApiReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class ApiReportController {
     @ResponseBody
     public ApiBaseRe doReport(){
         ApiBaseRe baseRe = new ApiBaseRe();
+
+
         return baseRe;
     }
 
@@ -49,5 +52,17 @@ public class ApiReportController {
         }
         return baseRe;
     }
+
+    @PostMapping("/token")
+    @ResponseBody
+    public ApiBaseRe putToken(@RequestBody Integer groupId){
+        return null;
+    }
+
+//    @PostMapping("/token")
+//    @ResponseBody
+//    public ApiBaseRe putToken(@RequestBody JSONArray testIdList){
+//        return null;
+//    }
 
 }

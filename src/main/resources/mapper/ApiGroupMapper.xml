@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.apiTest.dom.mapper.ApiGroupMapper">
+    <resultMap id="apiGroupMap" type="com.service.apiTest.dom.entity.ApiGroup">
+        <result property="id" column="id"/>
+        <result property="testList" column="test_list"/>
+        <result property="userType" column="user_type"/>
+        <result property="groupMark" column="group_mark"/>
+        <result property="groupType" column="group_type"/>
+    </resultMap>
+    <insert id="insert">
+        insert into api_group (test_list,user_type) value (#{list},#{type});
+    </insert>
+    <select id="getUserType" resultType="java.lang.String">
+        select user_type from api_group where id = #{id};
+    </select>
+    <select id="getList" resultMap="apiGroupMap">
+        select * from api_group where is_del = 1;
+    </select>
+</mapper>

@@ -1,12 +1,13 @@
 package com.service.apiTest.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.service.apiTest.controller.domin.ApiCaseData;
 import com.service.apiTest.dom.domin.ApiCaseListParam;
 import com.service.apiTest.dom.domin.NewApiListCaseParam;
 import com.service.apiTest.dom.entity.ApiCase;
 import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.dom.mapper.ApiMapper;
-import com.service.apiTest.controller.domin.ApiCaseData;
 import com.service.apiTest.dom.mapper.DeviceTypeMapper;
 import com.service.apiTest.service.domian.ApiCaseList;
 import com.service.apiTest.service.domian.ApiCaseUpdateData;
@@ -14,13 +15,11 @@ import com.service.apiTest.service.domian.ApiData;
 import com.service.apiTest.service.domian.ApiForCase;
 import com.service.apiTest.service.service.ApiCaseService;
 import com.service.apiTest.service.service.ApiService;
-import com.service.config.testBase.DeviceType;
 import com.service.utils.MyBaseChange;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,30 +54,50 @@ public class ApiCaseServicelmpl implements ApiCaseService {
 
 
         /**
+         * 获取依赖属性
+         */
+        String headerRelyParam = apiData.getHeaderRelyParam().toString();
+        String webformRelyParam = apiData.getWebformRelyParam().toString();
+        String bodyRelyParam = apiData.getBodyRelyParam().toString();
+
+        /**
          * 判断是否存在依赖
          */
-        if (apiData.getApiParamType() == "2") {
+
+        JSONArray relyTestIdList = new JSONArray();
+        if (apiData.getApiParamType().equals("2")) {
             apiForCase.setIsDepend(true);
-            return apiForCase;
+            relyTestIdList.add(this.getSelectRelyValue(apiData.getApiRelyParamName()));
+        }
+
+        for (Object type : apiData.getHeaderParamType()) {
+            if (type.toString().equals("2")) {
+                apiForCase.setHasRely(true);
+                this.addrely(headerRelyParam, relyTestIdList);
+                apiForCase.setHeaderRelyToHandle(this.relyTHandle(headerRelyParam));
+                break;
+            }
         }
         for (Object type : apiData.getHeaderParamType()) {
             if (type.toString().equals("2")) {
-                apiForCase.setIsDepend(true);
-                return apiForCase;
+                apiForCase.setHasRely(true);
+                this.addrely(webformRelyParam, relyTestIdList);
+                apiForCase.setWebformRelyToHandle(this.relyTHandle(webformRelyParam));
+                break;
             }
         }
-        for (Object type : apiData.getWebformParamType()) {
+        for (Object type : apiData.getHeaderParamType()) {
             if (type.toString().equals("2")) {
-                apiForCase.setIsDepend(true);
-                return apiForCase;
+                apiForCase.setHasRely(true);
+                this.addrely(bodyRelyParam, relyTestIdList);
+                apiForCase.setBodyRelyToHandle(this.relyTHandle(bodyRelyParam));
+                break;
             }
         }
-        for (Object type : apiData.getBodyParamType()) {
-            if (type.toString().equals("2")) {
-                apiForCase.setIsDepend(true);
-                return apiForCase;
-            }
-        }
+
+        apiForCase.setSelectRelyCase(b.removeSame(relyTestIdList));
+
+
         return apiForCase;
     }
 
@@ -119,8 +138,6 @@ public class ApiCaseServicelmpl implements ApiCaseService {
             ApiCaseList apiCaseList = new ApiCaseList();
             BeanUtils.copyProperties(apiCase, apiCaseList);
             Integer apiId = apiCase.getApiId();
-
-
             ApiData apiData = apiService.getApi(apiId);
             apiCaseList.setApiPath(apiData.getApiPath());
             apiCaseList.setDevice(apiData.getDevice());
@@ -130,13 +147,71 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         return caseList;
     }
 
+    /**
+     * 编辑页面
+     *
+     * @param id
+     * @param userId
+     * @return
+     */
     @Override
-    public ApiCaseUpdateData getApiCaseData(int id,Integer userId) {
+    public ApiCaseUpdateData getApiCaseData(int id, Integer userId) {
         ApiCaseUpdateData apiCaseUpdateData = new ApiCaseUpdateData();
         ApiCase apiCase = apiCaseMapper.getApiCaseData(id);
-        ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId(),userId);
+        ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId(), userId);
         BeanUtils.copyProperties(apiForCase, apiCaseUpdateData);
         BeanUtils.copyProperties(apiCase, apiCaseUpdateData);
+
+
+
+        /**
+         * 依赖转换
+         */
+        if(apiCaseUpdateData.getHasRely()){
+
+            if (apiCase.getIsDepend() == 0) {
+                apiCaseUpdateData.setIsDepend(false);
+                apiCaseUpdateData.setHeaderRelyToHandle(b.StringToAO(apiCase.getHeaderRelyToHandle()));
+                apiCaseUpdateData.setWebformRelyToHandle(b.StringToAO(apiCase.getWebformRelyToHandle()));
+                apiCaseUpdateData.setBodyRelyToHandle(b.StringToAO(apiCase.getBodyRelyToHandle()));
+
+
+
+            } else {
+                apiCaseUpdateData.setIsDepend(true);
+                /**
+                 * 来自接口
+                 */
+                JSONArray selectRelyCase = b.StringToAO(apiForCase.getSelectRelyCase().toString());
+                /**
+                 * 来自用例
+                 */
+
+                JSONArray relyCaseId = b.StringToAO(apiCase.getRelyCaseId());
+
+                JSONArray result = new JSONArray();
+                for (Object relys : selectRelyCase) {
+
+                    JSONObject rely = b.StringToJson(relys.toString());
+                    for (Object relyIds : relyCaseId) {
+                        JSONObject relyId = b.StringToJson(relyIds.toString());
+                        String path = relyId.get("apiPath").toString();
+                        if (!path.startsWith("/")) {
+                            path = apiMapper.getPathById(Integer.parseInt(path));
+                        }
+                        if (rely.get("apiPath").toString().equals(path)) {
+                            rely.put("apiCaseMark", relyId.get("apiCaseId").toString());
+                            result.add(rely);
+                            break;
+                        }
+                    }
+                }
+                apiCaseUpdateData.setSelectRelyCase(result);
+
+            }
+        }
+
+
 
         return apiCaseUpdateData;
     }
@@ -147,7 +222,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
     @Override
-    public void delApiCase(Integer id,Integer userId) throws Throwable {
+    public void delApiCase(Integer id, Integer userId) throws Throwable {
         String apiCaseLv = apiCaseMapper.findApiCaseOfLv(id);
         String apiCaseType = apiCaseMapper.findApiCaseOfType(id);
         if (apiCaseLv.equals("3")) {
@@ -156,19 +231,92 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         if (apiCaseType.equals("3")) {
             throw new Throwable("该类型的用例不可删除");
         }
-        apiCaseMapper.delApiCase(id,userId);
+        apiCaseMapper.delApiCase(id, userId);
     }
 
 
     public ApiCase updateAndAdd(ApiCaseData apiCaseData) {
         ApiCase apiCase = new ApiCase();
         BeanUtils.copyProperties(apiCaseData, apiCase);
+
         apiCase.setApiHandleParam(apiCaseData.getApiHandleParam());
         apiCase.setHeaderHandleParam(apiCaseData.getHeaderHandleParam().toString());
         apiCase.setWebformHandleParam(apiCaseData.getWebformHandleParam().toString());
         apiCase.setBodyHandleParam(apiCaseData.getBodyHandleParam().toString());
+        apiCase.setHeaderRelyToHandle(apiCaseData.getHeaderRelyToHandle().toString());
+        apiCase.setWebformRelyToHandle(apiCaseData.getWebformRelyToHandle().toString());
+        apiCase.setBodyRelyToHandle(apiCaseData.getBodyRelyToHandle().toString());
+
+        JSONArray relySelect = b.StringToAO(apiCaseData.getSelectRelyCase().toString());
+        JSONArray array = new JSONArray();
+        if (apiCaseData.getIsDepend()) {
+            apiCase.setIsDepend(1);
+            for (Object select : relySelect) {
+                JSONObject object = b.StringToJson(select.toString());
+                JSONObject o = new JSONObject();
+                String path = object.get("apiPath").toString();
+                if (path.startsWith("/")) {
+                    path = apiMapper.getApiIdByPath(path).toString();
+                }
+                o.put("apiPath", path);
+                o.put("apiCaseId", object.get("apiCaseMark").toString());
+                array.add(o);
+            }
+            apiCase.setRelyCaseId(array.toString());
+        } else {
+            apiCase.setIsDepend(0);
+        }
+
         return apiCase;
+
+    }
+
+    /**
+     * 依赖依赖接口对应的用例id
+     *
+     * @param s
+     * @return
+     */
+    public JSONObject getSelectRelyValue(String s) {
+        String name = s;
+        String ids = apiMapper.getApiIdByPath(name).toString();
+        JSONObject object = new JSONObject();
+        Integer id = Integer.parseInt(ids);
+        String apiPath = apiMapper.getPathById(id);
+        object.put("apiPath", apiPath);
+        List<ApiCase> relyTest = apiCaseMapper.getTestForRely(id);
+        JSONArray array = new JSONArray();
+        for (ApiCase relys : relyTest) {
+            JSONObject a = new JSONObject();
+            a.put("apiCaseId", relys.getId().toString());
+            a.put("apiCaseMark", relys.getApiCaseMark());
+            array.add(a);
+        }
+        object.put("relyCase", array);
+        return object;
     }
 
 
+    public void addrely(String s, JSONArray relyTestIdList) {
+        JSONArray relyValue = b.StringToAO(s);
+        for (Object rely : relyValue) {
+            JSONObject value = b.StringToJson(rely.toString());
+            relyTestIdList.add(this.getSelectRelyValue(value.get("apiPath").toString()));
+
+        }
+    }
+
+    public JSONArray relyTHandle(String s) {
+        JSONArray array = new JSONArray();
+        JSONArray relys = b.StringToAO(s);
+        for (Object rely : relys) {
+            JSONObject relyO = b.StringToJson(rely.toString());
+            JSONObject o = new JSONObject();
+            o.put("name", relyO.get("name").toString());
+            o.put("value", "");
+            array.add(o);
+        }
+
+        return array;
+    }
 }

@@ -19,4 +19,12 @@ public interface ApiReportService {
 
 
     void doTest(JSONArray testId);
+
+
+    String putToken(Integer groupId) throws Throwable;
+
+    /**
+     * 创建报告
+     */
+    void addReportMain(Integer groupId,Integer id);
 }
