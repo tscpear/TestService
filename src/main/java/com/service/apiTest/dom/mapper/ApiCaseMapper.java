@@ -5,6 +5,7 @@ import com.service.apiTest.dom.domin.ApiCaseForReport;
 import com.service.apiTest.dom.domin.ApiCaseListParam;
 import com.service.apiTest.dom.domin.NewApiListCaseParam;
 import com.service.apiTest.dom.entity.ApiCase;
+import com.service.apiTest.service.domian.ApiReportList;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -33,6 +34,7 @@ public interface ApiCaseMapper {
      * @return
      */
     List<ApiCase> getApiCaseList(NewApiListCaseParam param);
+    List<ApiCase> getApiCaseListByApiId(NewApiListCaseParam param);
 
     /**
      * 通过id获取商品信息
@@ -72,7 +74,7 @@ public interface ApiCaseMapper {
      * @param testIdList
      * @return
      */
-    List<ApiCaseForReport> getApiCaseListForReport(@Param("testIdList") JSONArray testIdList);
+    List<ApiReportList> getApiCaseListForReport(@Param("testIdList") JSONArray testIdList);
 
     /**
      * 获取依赖的用例
@@ -80,4 +82,11 @@ public interface ApiCaseMapper {
      * @return
      */
     List<ApiCase> getTestForRely(Integer id);
+
+    /**
+     * 获取对应用例列表的接口id列表
+     * @param testIdList
+     * @return
+     */
+    List<Integer> getApiIdFromApiCase(@Param("testIdList") JSONArray testIdList);
 }

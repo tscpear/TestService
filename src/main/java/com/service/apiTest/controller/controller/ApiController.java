@@ -3,6 +3,7 @@ package com.service.apiTest.controller.controller;
 
 import com.service.apiTest.controller.domin.ApiBaseRe;
 import com.service.apiTest.dom.domin.ApiListParam;
+import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.apiTest.service.domian.ApiDataAU;
 import com.service.apiTest.service.service.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class ApiController {
 
     @Autowired
     private ApiService apiService;
+    @Autowired
+    private ApiMapper apiMapper;
 
     @GetMapping("/list")
     @ResponseBody
@@ -28,7 +31,7 @@ public class ApiController {
         try {
             ApiListParam param = new ApiListParam();
             param.setPageBegin(page * limit - limit);
-            param.setPageEnd(page * limit);
+            param.setPageEnd(limit);
             param.setApiMark(apiMark);
             param.setApiPath(apiPath);
             param.setDevice(device);
@@ -62,28 +65,42 @@ public class ApiController {
     @ResponseBody
     public ApiBaseRe updateApiData(@RequestBody ApiDataAU apiData) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
-            apiService.updateApi(apiData);
-            baseRe.setCode(1);
-            baseRe.setMsg("编辑成功");
-        } catch (Throwable throwable) {
+        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath());
+        if (count > 1) {
             baseRe.setCode(0);
-            baseRe.setMsg(throwable.toString());
+            baseRe.setMsg("存在接口路径与设备相同的接口");
+        } else {
+
+            try {
+                apiService.updateApi(apiData);
+                baseRe.setCode(1);
+                baseRe.setMsg("编辑成功");
+            } catch (Throwable throwable) {
+                baseRe.setCode(0);
+                baseRe.setMsg(throwable.toString());
+            }
         }
+
         return baseRe;
     }
 
     @PostMapping("/add")
     @ResponseBody
     public ApiBaseRe addApiData(@RequestBody ApiDataAU apiData) {
-        ApiBaseRe baseRe =  new ApiBaseRe();
-        try {
-            apiService.addApi(apiData);
-            baseRe.setCode(1);
-            baseRe.setMsg("新增成功");
-        } catch (Throwable throwable) {
+        ApiBaseRe baseRe = new ApiBaseRe();
+        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath());
+        if (count > 0) {
             baseRe.setCode(0);
-            baseRe.setMsg(throwable.toString());
+            baseRe.setMsg("存在接口路径与设备相同的接口");
+        } else {
+            try {
+                apiService.addApi(apiData);
+                baseRe.setCode(1);
+                baseRe.setMsg("新增成功");
+            } catch (Throwable throwable) {
+                baseRe.setCode(0);
+                baseRe.setMsg(throwable.toString());
+            }
         }
         return baseRe;
     }
@@ -99,7 +116,7 @@ public class ApiController {
 
     @GetMapping("/searchRely")
     @ResponseBody
-    public ApiBaseRe searchRely(@RequestParam String path){
+    public ApiBaseRe searchRely(@RequestParam String path) {
         ApiBaseRe baseRe = new ApiBaseRe();
         baseRe.setCode(1);
         baseRe.setData(apiService.searchTest(path));
@@ -109,7 +126,7 @@ public class ApiController {
 
     @GetMapping("/searchRelyName")
     @ResponseBody
-    public ApiBaseRe searchRelyName(@RequestParam String path){
+    public ApiBaseRe searchRelyName(@RequestParam String path) {
         ApiBaseRe baseRe = new ApiBaseRe();
         baseRe.setCode(1);
         baseRe.setData(apiService.searchRelyName(path));

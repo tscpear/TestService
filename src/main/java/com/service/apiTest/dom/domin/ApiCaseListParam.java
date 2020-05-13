@@ -9,4 +9,5 @@ public class ApiCaseListParam {
     private String apiPath;
     private String apiCaseMark;
     private String device;
+    private Integer apiId;
 }

@@ -10,6 +10,7 @@
         <result property="apiCaseMark" column="api_case_mark"/>
         <result property="apiCaseLv" column="api_case_lv"/>
         <result property="apiCaseType" column="api_case_type"/>
+        <result property="apiHandleParam" column="api_handle_param"/>
         <result property="headerHandleParam" column="header_handle_param"/>
         <result property="webformHandleParam" column="webform_handle_param"/>
         <result property="bodyHandleParam" column="body_handle_param"/>
@@ -74,6 +75,9 @@
         <if test="apiCaseMark != null">
             and api_case_mark like CONCAT('%',#{apiCaseMark},'%')
         </if>
+        <if test="apiId != null">
+            and api_id = #{apiId}
+        </if>
         <if test="caseIdList!=null">
             <if test="caseIdList.size > 0">
                 and api_id in
@@ -116,6 +120,7 @@
         from apicase
         where is_del = 0
         <include refid="list_count"/>
+              order by id desc
         limit #{pageBegin},#{pageEnd};
     </select>
     <select id="getApiCaseData" resultMap="apiCaseResultMap">
@@ -125,21 +130,21 @@
     </select>
     <update id="updateApiCaseData">
         update apicase
-        set api_case_mark        = #{apiCaseMark},
-            api_case_lv          = #{apiCaseLv},
-            api_case_type        = #{apiCaseType},
-            api_handle_param     = #{apiHandleParam},
-            header_handle_param  = #{headerHandleParam},
-            webform_handle_param = #{webformHandleParam},
-            body_handle_param    = #{bodyHandleParam},
-            rely_case_id         = #{relyCaseId},
-            is_depend            = #{isDepend},
-            status_assertion     = #{statusAssertion},
-            other_assertion_type = #{otherAssertionType},
-            device_type          = #{deviceType},
-            headerRelyToHandle   = #{headerRelyToHandle},
-            webformRelyToHandle  = #{webformRelyToHandle},
-            bodyRelyToHandle     = #{bodyRelyToHandle}
+        set api_case_mark          = #{apiCaseMark},
+            api_case_lv            = #{apiCaseLv},
+            api_case_type          = #{apiCaseType},
+            api_handle_param       = #{apiHandleParam},
+            header_handle_param    = #{headerHandleParam},
+            webform_handle_param   = #{webformHandleParam},
+            body_handle_param      = #{bodyHandleParam},
+            rely_case_id           = #{relyCaseId},
+            is_depend              = #{isDepend},
+            status_assertion       = #{statusAssertion},
+            other_assertion_type   = #{otherAssertionType},
+            device_type            = #{deviceType},
+            header_rely_to_handle  = #{headerRelyToHandle},
+            webform_rely_to_handle = #{webformRelyToHandle},
+            body_rely_to_handle    = #{bodyRelyToHandle}
         where id = #{id};
     </update>
     <update id="delApiCase">
@@ -156,8 +161,8 @@
         from apicase
         where id = #{id}
     </select>
-    <select id="getApiCaseListForReport" resultType="com.service.apiTest.dom.domin.ApiCaseForReport">
-        select a.id as testId,b.api_path as path,a.api_case_mark as mark ,b.device as device ,a.device_type as
+    <select id="getApiCaseListForReport" resultType="com.service.apiTest.service.domian.ApiReportList">
+        select a.id as testId,b.api_path as apiPath,a.api_case_mark as apiCaseMark ,b.device as device ,a.device_type as
         deviceType
         from apicase a,uri b
         where a.api_id=b.id and a.id in
@@ -169,5 +174,20 @@
         select id,api_case_mark
         from apicase
         where api_id = #{id}
+    </select>
+    <select id="getApiIdFromApiCase" resultType="java.lang.Integer">
+        select b.id
+        from apicase a,uri b
+        where a.api_id=b.id and a.id in
+        <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getApiCaseListByApiId" resultMap="apiCaseResultMap">
+        select id,api_id,api_case_mark,api_case_lv,api_case_type
+        from apicase
+        where is_del = 0 and api_id = #{apiId}
+        order by id desc
+        limit #{pageBegin},#{pageEnd};
     </select>
 </mapper>

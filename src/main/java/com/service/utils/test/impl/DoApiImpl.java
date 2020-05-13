@@ -3,6 +3,7 @@ package com.service.utils.test.impl;
 import com.mysql.cj.xdevapi.JsonArray;
 import com.service.apiTest.dom.entity.Api;
 import com.service.apiTest.dom.entity.ApiCase;
+import com.service.apiTest.dom.entity.Token;
 import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.utils.MyBaseChange;
@@ -17,8 +18,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import javax.validation.groups.Default;
 import java.lang.invoke.SwitchPoint;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -50,20 +54,37 @@ public class DoApiImpl implements DoApiService {
     }
 
 
-    public String getHost(MyHost myHost, String environment) {
+    public String getHost(MyHost myHost, String environment,boolean isLogin,String device) {
         String host = null;
         switch (environment) {
             case "uat":
-                host = myHost.getUat();
+                if(isLogin && device.equals("2")){
+                    host = myHost.getUatl();
+                }else {
+                    host = myHost.getUat();
+                }
                 break;
             case "prod":
-                host = myHost.getProd();
+                if(isLogin && device.equals("2")){
+
+                }else{
+                    host = myHost.getProd();
+                }
                 break;
             case "test":
-                host = myHost.getTest();
+                if(isLogin && device.equals("2")){
+                    host = myHost.getTestl();
+                }else {
+                    host = myHost.getTest();
+                }
                 break;
             case "tests":
-                host = myHost.getTests();
+                if(isLogin && device.equals("2")){
+                    host= myHost.getTestsl();
+                }else{
+                    host = myHost.getTests();
+                }
+
                 break;
         }
         return host;
@@ -108,6 +129,8 @@ public class DoApiImpl implements DoApiService {
                 return tWebHost;
             case "2":
                 return storeHost;
+            case "5":
+                return pdaHost;
             default:
                 return null;
 
@@ -128,10 +151,10 @@ public class DoApiImpl implements DoApiService {
     public DoTestData getLoginData(String environment, String device, String userType) {
         DoTestData data = new DoTestData();
         MyHost myHostData = selectHost(device);
-        data.setHost(getHost(myHostData, environment));
+        data.setHost(getHost(myHostData, environment,true,device));
         data.setApiMethod("2");
         JSONArray webform = new JSONArray();
-        if (device.equals("7")) {
+        if (device.equals("5")) {
             data.setApiPath("/scan/login.do");
             JSONObject username = new JSONObject();
             JSONObject password = new JSONObject();
@@ -139,12 +162,54 @@ public class DoApiImpl implements DoApiService {
             JSONObject y = new JSONObject();
             JSONObject x = new JSONObject();
             JSONObject deviceNum = new JSONObject();
-            username.put("username", myHostData.getName());
-            password.put("password", myHostData.getPassword());
-            scanVersion.put("scanVersion", "20200303");
-            x.put("x", "113.236565");
-            y.put("y", "35.250118");
-            deviceNum.put("deviceNum", "ZX1G42CPJD");
+            username.put("name", "username");
+            username.put("value", myHostData.getName());
+            password.put("name","password");
+            password.put("value", myHostData.getPassword());
+            scanVersion.put("name", "scanVersion");
+            scanVersion.put("value", "20200303");
+            x.put("name", "x");
+            x.put("value", "113.236565");
+            y.put("name", "y");
+            y.put("value", "35.250118");
+            deviceNum.put("name", "deviceNum");
+            deviceNum.put("value", "ZX1G42CPJD");
+            webform.put(username);
+            webform.put(password);
+            webform.put(scanVersion);
+            webform.put(x);
+            webform.put(y);
+            webform.put(deviceNum);
+        } else if (device.equals("2")) {
+           ResponseData data1 =  httpClientService.getResponse(this.getSmCodeData(environment, device, userType));
+            data.setApiPath("/oauth/token");
+            JSONObject mobile = new JSONObject();
+            JSONObject deviceId = new JSONObject();
+            JSONObject smsCode = new JSONObject();
+            JSONObject version = new JSONObject();
+            JSONObject grant = new JSONObject();
+            List<String> mobileList = new ArrayList<>();
+            if (environment.equals("uat")) {
+                mobileList = myHostData.getAccount();
+            } else {
+                mobileList = myHostData.getAccounts();
+            }
+            mobile.put("name", "mobile");
+            mobile.put("value", mobileList.get(0));
+            deviceId.put("name", "deviceId");
+            deviceId.put("value", "719910247738029");
+            smsCode.put("name", "smsCode");
+            smsCode.put("value", "cf79ae6addba60ad018347359bd144d2");
+            version.put("name", "version");
+            version.put("value", "2.7.7");
+            grant.put("name", "grant_type");
+            grant.put("value", "sms_code");
+            webform.put(mobile);
+            webform.put(deviceId);
+            webform.put(smsCode);
+            webform.put(version);
+            webform.put(grant);
+
         } else {
             data.setApiPath("/oauth/token");
             JSONObject username = new JSONObject();
@@ -167,20 +232,34 @@ public class DoApiImpl implements DoApiService {
 
 
     public DoTestData getSmCodeData(String environment, String device, String userType) {
+
         DoTestData data = new DoTestData();
+        data.setApiMethod("2");
         MyHost myHostData = selectHost(device);
-        data.setHost(getHost(myHostData, environment));
+        data.setHost(getHost(myHostData, environment,true,device));
         data.setApiPath("/sms/code");
-        JSONArray array = new JSONArray();
-        JSONObject smsCode = new JSONObject();
-        JSONObject deviceId = new JSONObject();
-        JSONObject mobile = new JSONObject();
-        JSONObject grant = new JSONObject();
-        return null;
+        data.setAuthorization("Basic " + getBasic(device, environment));
+        List<String> mobileList = new ArrayList<>();
+        if (environment.equals("uat")) {
+            mobileList = myHostData.getAccount();
+        } else {
+            mobileList = myHostData.getAccounts();
+        }
+        JSONObject json = new JSONObject();
+        json.put("deviceId", "719910247738029");
+        json.put("mobile", mobileList.get(0));
+        JSONArray header = new JSONArray();
+        JSONObject o = new JSONObject();
+        o.put("name", "Content-Type");
+        o.put("value", "application/json");
+        header.put(o);
+        data.setHeaderParam(header);
+        data.setBodyParam(json.toString());
+        return data;
     }
 
     @Override
-    public DoTestData getTestData(String environment, Integer testId) {
+    public DoTestData getTestData(String environment, Integer testId, Token token) {
         DoTestData data = new DoTestData();
         ApiCase apiCase = apiCaseMapper.getApiCaseData(testId);
         Integer apiId = apiCase.getApiId();
@@ -192,7 +271,7 @@ public class DoApiImpl implements DoApiService {
         //获取host基础数据
         MyHost myHostData = selectHost(api.getDevice());
         //host
-        data.setHost(getHost(myHostData, environment));
+        data.setHost(getHost(myHostData, environment,false, api.getDevice()));
         //apiParam
         String apiParamType = api.getApiParamType();
         switch (apiParamType) {
@@ -208,19 +287,43 @@ public class DoApiImpl implements DoApiService {
         //header
         data.setHeaderParam(this.OAddOs(api.getHeaderParamType(), api.getHeaderFiexdParam(), apiCase.getHeaderHandleParam()));
         //webform
-        data.setWebformParam(this.OAddOs(api.getWebformParamType(),api.getWebformFiexdParam(),apiCase.getWebformHandleParam()));
+        data.setWebformParam(this.OAddOs(api.getWebformParamType(), api.getWebformFiexdParam(), apiCase.getWebformHandleParam()));
         //token
-        data.setAuthorization("bearer acfae59f-333f-4f1c-a024-075ff02c5ae9");
+        String authorization ="";
+        JSONObject tokenData;
+        switch (api.getDevice()){
+            case "1":
+                tokenData = new JSONObject(token.getTireWebToken());
+                authorization = tokenData.get("token_type").toString()+" " + tokenData.get("access_token").toString();
+                break;
+            case "2":
+                tokenData = new JSONObject(token.getStore1());
+                authorization = tokenData.get("token_type").toString()+" " + tokenData.get("access_token").toString();
+                break;
+            case "5":
+                tokenData = new JSONObject(token.getPdaCookie());
+                authorization = tokenData.get("cookie").toString();
+                break;
+
+        }
+        data.setAuthorization(authorization);
+
+        /**
+         * 登入接口的数据依赖
+         */
+
+
         return data;
     }
 
     @Override
     public String getToken(ResponseData data) throws Throwable {
-        if(data.getStatus().equals("200")){
+        if (data.getStatus().equals("200")) {
             JSONObject response = new JSONObject(data.getResponse());
-            String token  = "bearer "+ response.get("access_token").toString();
-            return token;
-        }else {
+            String cookie = data.getCookie();
+            response.put("cookie",cookie);
+            return response.toString();
+        } else {
             throw new Throwable(data.getResponse());
         }
 
@@ -234,12 +337,17 @@ public class DoApiImpl implements DoApiService {
         for (Object handleParams : a2) {
             JSONObject handleParam = new JSONObject(handleParams.toString());
             String name = handleParam.get("name").toString();
+            Integer a1Size = a1.length();
+            int i =0;
             for (Object fiexdParams : a1) {
+                i++;
                 JSONObject fiexdParam = new JSONObject(fiexdParams.toString());
                 if (name.equals(fiexdParam.get("name").toString())) {
-                    headerParam.put(fiexdParam);
-                } else {
                     headerParam.put(handleParam);
+                    break;
+                }
+                if(i==a1Size){
+                    headerParam.put(fiexdParam);
                 }
             }
         }
@@ -269,6 +377,4 @@ public class DoApiImpl implements DoApiService {
         }
         return param;
     }
-
-
 }

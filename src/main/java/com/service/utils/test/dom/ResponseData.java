@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResponseData {
     private String apiMethod;
-    private String path;
+    private String apiPath;
     private String bodyParam;
     private String headerParam;
+    private String webformParam;
     private String status;
     private String response;
     private String cookie;

@@ -11,12 +11,28 @@
         <result property="groupType" column="group_type"/>
     </resultMap>
     <insert id="insert">
-        insert into api_group (test_list,user_type) value (#{list},#{type});
+        insert into api_group (test_list, user_type
+        )
+        value
+        (
+        #{list}
+        ,
+        #{type}
+        );
     </insert>
     <select id="getUserType" resultType="java.lang.String">
-        select user_type from api_group where id = #{id};
+        select user_type
+        from api_group
+        where id = #{id};
     </select>
     <select id="getList" resultMap="apiGroupMap">
-        select * from api_group where is_del = 1;
+        select *
+        from api_group
+        where is_del = 1;
+    </select>
+    <select id="getTestList" resultType="java.lang.String">
+        select test_list
+        from api_group
+        where id = #{id}
     </select>
 </mapper>

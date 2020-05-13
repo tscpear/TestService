@@ -8,7 +8,7 @@ import java.util.List;
 public class NewApiListCaseParam {
     private int pageBegin;
     private int PageEnd;
-
+    private Integer apiId;
     private String apiCaseMark;
     private List<Integer> caseIdList;
 }

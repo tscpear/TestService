@@ -19,4 +19,7 @@ public class MyHost {
     private List<String> accounts;
     private String name;
     private String password;
+    private String uatl;
+    private String testl;
+    private String testsl;
 }

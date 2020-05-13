@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.apiTest.dom.mapper.ApiReportMapper">
+    <resultMap id="apiReportMap" type="com.service.apiTest.dom.entity.ApiReport">
+        <result property="id" column="id"/>
+        <result property="reportId" column="report_id"/>
+        <result property="apiPath" column="api_path"/>
+        <result property="apiMethod" column="api_method"/>
+        <result property="response" column="response"/>
+        <result property="relyValue" column="api_param_type"/>
+        <result property="headerParam" column="header_param"/>
+        <result property="webformParam" column="webform_param"/>
+        <result property="bodyParam" column="body_Param"/>
+        <result property="expectStatus" column="expect_status"/>
+        <result property="actStatus" column="act_status"/>
+        <result property="resultStatus" column="result_status"/>
+        <result property="testId" column="test_id"/>
+    </resultMap>
+    <insert id="putData">
+        insert into api_report (report_id,
+                                test_id,
+                                api_path,
+                                header_param,
+                                webform_param,
+                                body_Param,
+                                rely_value,
+                                expect_status,
+                                act_status,
+                                response,
+                                result_status,
+                                api_method
+
+        )
+        value
+        (
+        #{reportId}
+        ,
+        #{testId}
+        ,
+        #{apiPath}
+        ,
+        #{headerParam}
+        ,
+        #{webformParam}
+        ,
+        #{bodyParam}
+        ,
+        #{relyValue}
+        ,
+        #{expectStatus}
+        ,
+        #{actStatus}
+        ,
+        #{response}
+        ,
+        #{resultStatus}
+        ,
+        #{apiMethod}
+        );
+    </insert>
+    <select id="getList" resultType="com.service.apiTest.service.domian.ApiReportList">
+        select c.device        as device,
+               d.id            as testId,
+               c.api_path      as apiPath,
+               d.api_case_mark as apiCaseMark,
+               d.result_status as resultStatus,
+               d.report_id     as reportId
+        from uri c,
+             (select a.report_id     as report_id,
+                     b.api_id        as api_id,
+                     b.id            as id,
+                     a.result_status as result_status,
+                     b.api_case_mark as api_case_mark
+              from api_report a,
+                   apicase b
+              where a.test_id = b.id) d
+        where c.id = d.api_id
+          and d.report_id = #{reportId}
+    </select>
+    <select id="getData" resultMap="apiReportMap">
+        select *
+        from api_report
+        where test_id = #{testId}
+          and report_id = #{reportId}
+    </select>
+    <select id="countOfSuccess" resultType="java.lang.Integer">
+        select count(*)
+        from api_report
+        where result_status = 1
+          and report_id = #{reportId};
+    </select>
+</mapper>

@@ -3,11 +3,21 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.service.apiTest.dom.mapper.TokenMapper">
+    <resultMap id="tokenMap" type="com.service.apiTest.dom.entity.Token">
+        <result property="id" column="id"/>
+        <result property="pdaCookie" column="pda_cookie"/>
+        <result property="tireWebToken" column="tire_web_token"/>
+        <result property="store1" column="store_1"/>
+    </resultMap>
 
     <update id="updateToken">
         update tokens
         set pda_cookie     = #{pdaCookie},
-            tire_web_token = #{tireWebToken}
+            tire_web_token = #{tireWebToken},
+            store_1 = #{store1}
         where id = 1;
     </update>
+    <select id="getData" resultMap="tokenMap">
+        select * from tokens where id = 1;
+    </select>
 </mapper>

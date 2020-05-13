@@ -15,4 +15,5 @@ public class DoTestData {
     private String authorization;
     private JSONArray webformParam = null;
     private String bodyParam = null;
+    private String cookie;
 }

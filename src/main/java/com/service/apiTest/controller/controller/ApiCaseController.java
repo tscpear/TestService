@@ -62,18 +62,18 @@ public class ApiCaseController {
                                     @RequestParam Integer limit,
                                     @RequestParam(required = false) String apiPath,
                                     @RequestParam(required = false) String apiCaseMark,
-                                    @RequestParam(required = false) String device) {
+                                    @RequestParam(required = false) String device,
+                                    @RequestParam(required = false) Integer apiId) {
         ApiBaseRe baseRe = new ApiBaseRe();
 
         try{
             ApiCaseListParam param = new ApiCaseListParam();
             param.setPageBegin(page * limit - limit);
-            param.setPageEnd(page * limit);
+            param.setPageEnd(limit);
             param.setApiPath(apiPath);
             param.setDevice(device);
             param.setApiCaseMark(apiCaseMark);
-
-
+            param.setApiId(apiId);
             baseRe.setData(apiCaseService.getApiCaseList(param));
             baseRe.setCode(1);
 

@@ -3,9 +3,24 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.service.apiTest.dom.mapper.ApiReportMainMapper">
+    <resultMap id="report" type="com.service.apiTest.dom.entity.ApiReportMain">
+        <result property="id" column="id"/>
+        <result property="testList" column="test_list"/>
+        <result property="createTime" column="create_time"/>
+        <result property="success" column="success"/>
+    </resultMap>
 
     <insert id="add">
-        insert into api_report_main (group_id,id) value (#{groupId},#{id});
+        insert into api_report_main (test_list,id) value (#{testList},#{id});
     </insert>
+    <update id="updateSuccess">
+        update api_report_main set success = #{success} where id = #{id}
+    </update>
+    <select id="getList" resultMap="report">
+        select  * from api_report_main order by id desc limit #{pageBegin},#{pageEnd} ;
+    </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from  api_report_main;
+    </select>
 
 </mapper>

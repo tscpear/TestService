@@ -21,4 +21,7 @@ public interface ApiGroupMapper {
     void insert(String list,String type);
 
     List<ApiGroup> getList(ApiGroupParamList param);
+
+    String getTestList(Integer id);
+
 }

@@ -1,6 +1,7 @@
 package com.service.utils.test.method;
 
 import com.service.apiTest.dom.entity.ApiCase;
+import com.service.apiTest.dom.entity.Token;
 import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.GetToken;
 import com.service.utils.test.dom.MyHost;
@@ -48,7 +49,7 @@ public interface DoApiService {
      * @param testId
      * @return
      */
-    DoTestData getTestData(String environment,Integer testId);
+    DoTestData getTestData(String environment, Integer testId, Token token);
 
 
     /**
@@ -56,5 +57,8 @@ public interface DoApiService {
      */
     String getToken(ResponseData data) throws Throwable;
 
+    /**
+     * 通过device 获取需要的账号
+     */
 
 }

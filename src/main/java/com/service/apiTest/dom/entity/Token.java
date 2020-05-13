@@ -7,4 +7,5 @@ public class Token {
     private int id;
     private String pdaCookie;
     private String tireWebToken;
+    private String store1;
 }

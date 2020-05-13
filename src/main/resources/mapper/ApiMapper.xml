@@ -117,6 +117,7 @@
         from uri
         where is_del = 0
         <include refid="list_count"/>
+        order by id desc
         limit #{pageBegin},#{pageEnd};
     </select>
 
@@ -199,8 +200,32 @@
         where id = #{id}
     </select>
     <select id="getApiIdByPath" resultType="java.lang.Integer">
-        select id from uri where api_path = #{path}
+        select id
+        from uri
+        where api_path = #{path}
     </select>
-
+    <select id="getDeviceList" resultType="java.lang.Integer">
+        select device
+        from uri
+        where id in
+        <foreach collection="apiIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getCountReData" resultType="java.lang.Integer">
+        select count(*)
+        from uri
+        where api_path
+            =
+              #{apiPath}
+          and
+                device =
+                #{device}
+    </select>
+    <update id="del">
+        update uri
+        set is_del = 0
+        where id = #{id}
+    </update>
 
 </mapper>

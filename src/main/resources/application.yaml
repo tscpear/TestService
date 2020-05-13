@@ -42,8 +42,11 @@ myhost:
     prod: https://api.zhilunkeji.com
     basic: TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy
     basics: TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4
-    account: [1,2,3,4,5,6]
+    account: [13200000005,2,3,4,5,6]
     accounts: [1,2,3,4,5,6]
+    uatl: https://auth.t.zhilunkeji.com
+    testl: http://auth.zhilun-qa-major.com
+
   pda:
     uat: http://wch.zhilun.com/1001
     test: http://wh.zhilun-qa-minor.com/1001
@@ -57,6 +60,13 @@ myhost:
     basics: TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==
     name: tsc
     password : e10adc3949ba59abbe56e057f20f883e
+  pweb:
+    uat: https://w-t.zhilunkeji.com
+    test: http://wh.zhilun-qa-minor.com/1001
+    tests: http://wh.zhilun-qa-major.com/1001
+    name: test
+    password: e10adc3949ba59abbe56e057f20f883e
+
 
 
 

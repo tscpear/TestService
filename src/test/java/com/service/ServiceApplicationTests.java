@@ -1,11 +1,10 @@
 package com.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.mysql.cj.xdevapi.JsonArray;
 import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.service.impl.ApiServicelmpl;
 import com.service.apiTest.service.service.ApiReportService;
 import com.service.utils.test.dom.DoTestData;
+import com.service.utils.test.dom.ResponseData;
 import com.service.utils.test.dom.StoreHost;
 import com.service.utils.test.method.DoApiService;
 import com.service.utils.test.method.HttpClientService;
@@ -33,7 +32,18 @@ class ServiceApplicationTests {
 
     @Test
     void contextLoads() throws Throwable {
-        apiReportService.addReportMain(11,11);
+       DoTestData doTestData = doApiService.getLoginData("uat","1","1");
+        System.out.println(httpClientService.getResponse(doTestData));
     }
+    @Test
+    void test1(){
+        DoTestData doTestData = doApiService.getLoginData("uat","1","1");
+        ResponseData data = httpClientService.getResponse(doTestData);
+        apiReportService.addReport(data,11,11);
+    }
+//    @Test
+//    void test2(){
+//       tireDataService.doTest("uat","sss");
+//    }
 
 }

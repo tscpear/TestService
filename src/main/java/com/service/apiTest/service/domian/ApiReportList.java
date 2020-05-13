@@ -1,13 +1,14 @@
 package com.service.apiTest.service.domian;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 @Data
 public class ApiReportList {
-    private Integer id;
+    private Integer testId;
     private String device;
-    private String deviceType;
     private String apiPath;
-    private String testMark;
-    private String result;
+    private String apiCaseMark;
+    private String resultStatus;
+    private long reportId;
 }

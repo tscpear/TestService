@@ -3,6 +3,7 @@ package com.service.apiTest.dom.mapper;
 import com.service.apiTest.dom.domin.ApiListParam;
 import com.service.apiTest.dom.entity.Api;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -53,6 +54,7 @@ public interface ApiMapper {
     /**
      * 删除api
      */
+    void del(Integer id);
 
     /**
      * 查询device 与 接口id
@@ -87,6 +89,18 @@ public interface ApiMapper {
      */
     Integer getApiIdByPath(String path);
 
+    /**
+     * 获取设备列表
+     * @param apiIdList
+     * @return
+     */
+    List<String> getDeviceList(@Param("apiIdList") List<Integer> apiIdList);
 
-
+    /**
+     * 查询有没有重复的数据
+     * @param device
+     * @param apiPath
+     * @return
+     */
+    Integer getCountReData(String device,String apiPath);
 }

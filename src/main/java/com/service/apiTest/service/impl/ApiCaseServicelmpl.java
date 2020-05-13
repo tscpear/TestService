@@ -123,16 +123,14 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         List<Integer> caseIdList = new ArrayList<>();
         String device = apiCaseListParam.getDevice();
         String apiPath = apiCaseListParam.getApiPath();
+        List<ApiCase> apiCaseLists = new ArrayList<>();
         if (StringUtils.isEmpty(apiPath) && StringUtils.isEmpty(device)) {
-
             caseIdList = null;
         } else {
-
             caseIdList = apiMapper.getApiIdForCaseList(device, apiPath);
-            System.out.println(caseIdList);
         }
         param.setCaseIdList(caseIdList);
-        List<ApiCase> apiCaseLists = apiCaseMapper.getApiCaseList(param);
+        apiCaseLists = apiCaseMapper.getApiCaseList(param);
         JSONArray caseList = new JSONArray();
         for (ApiCase apiCase : apiCaseLists) {
             ApiCaseList apiCaseList = new ApiCaseList();
@@ -141,7 +139,6 @@ public class ApiCaseServicelmpl implements ApiCaseService {
             ApiData apiData = apiService.getApi(apiId);
             apiCaseList.setApiPath(apiData.getApiPath());
             apiCaseList.setDevice(apiData.getDevice());
-
             caseList.add(apiCaseList);
         }
         return caseList;
@@ -161,22 +158,15 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId(), userId);
         BeanUtils.copyProperties(apiForCase, apiCaseUpdateData);
         BeanUtils.copyProperties(apiCase, apiCaseUpdateData);
-
-
-
         /**
          * 依赖转换
          */
-        if(apiCaseUpdateData.getHasRely()){
-
+        if (apiCaseUpdateData.getHasRely()) {
             if (apiCase.getIsDepend() == 0) {
                 apiCaseUpdateData.setIsDepend(false);
                 apiCaseUpdateData.setHeaderRelyToHandle(b.StringToAO(apiCase.getHeaderRelyToHandle()));
                 apiCaseUpdateData.setWebformRelyToHandle(b.StringToAO(apiCase.getWebformRelyToHandle()));
                 apiCaseUpdateData.setBodyRelyToHandle(b.StringToAO(apiCase.getBodyRelyToHandle()));
-
-
-
             } else {
                 apiCaseUpdateData.setIsDepend(true);
                 /**
@@ -210,7 +200,6 @@ public class ApiCaseServicelmpl implements ApiCaseService {
 
             }
         }
-
 
 
         return apiCaseUpdateData;
