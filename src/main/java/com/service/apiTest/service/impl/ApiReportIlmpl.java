@@ -24,6 +24,7 @@ import com.jayway.jsonpath.JsonPath;
 
 import javax.sound.midi.Soundbank;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,13 +55,16 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public long doTest(JSONArray testId, String environment) {
-        long reportId = System.currentTimeMillis();
-        this.addReportMain(testId.toString(), reportId);
+    public long doTest(JSONArray testId, String environment, long reportId) {
         Token token = tokenMapper.getData();
+        /**
+         * testId 自动排序
+         * @1获取testId isdepend relyCaseId
+         *
+         */
         for (Object ids : testId) {
             Integer id = Integer.parseInt(ids.toString());
-            DoTestData doTestData = doApiService.getTestData(environment, id, token);
+            DoTestData doTestData = doApiService.getTestData(environment, id, token, reportId);
             ResponseData responseData = httpClientService.getResponse(doTestData);
             addReport(responseData, reportId, id);
         }
@@ -69,38 +73,70 @@ public class ApiReportIlmpl implements ApiReportService {
          */
         Integer all = testId.size();
         Integer success = apiReportMapper.countOfSuccess(reportId);
-        String value  = success*100/all+"%";
-        apiReportMainMapper.updateSuccess(value,reportId);
+        String value = success * 100 / all + "%";
+        apiReportMainMapper.updateSuccess(value, reportId);
         return reportId;
     }
 
     @Override
     public void putToken(JSONArray testList, String environment) throws Throwable {
-        Token tokens =tokenMapper.getData();
-        List<Integer> apiIdList = apiCaseMapper.getApiIdFromApiCase(testList);
-        List<String> deviceList = apiMapper.getDeviceList(apiIdList);
-        for (Object device : deviceList) {
-            DoTestData doTestData = doApiService.getLoginData(environment, device.toString(), "1");
-            ResponseData responseData = httpClientService.getResponse(doTestData);
+        Token tokens = tokenMapper.getData();
+        List<String> deviceTypeList = apiCaseMapper.getDeviceType(testList);
+        deviceTypeList = b.removeSame(deviceTypeList);
+
+        for (String deviceType : deviceTypeList) {
+            String device = "";
+            if(deviceType.contains(".")){
+                device = deviceType.split("\\.")[0];
+            }else {
+                device = deviceType;
+            }
+            DoTestData doTestData = doApiService.getLoginData(environment, device, deviceType);
+                ResponseData responseData = httpClientService.getResponse(doTestData);
             String token = doApiService.getToken(responseData);
-            switch (device.toString()) {
+            switch (deviceType) {
                 case "1":
                     tokens.setTireWebToken(token);
                     break;
-                case "2":
+                case "2.1":
                     tokens.setStore1(token);
+                    break;
+                case "2.2":
+                    tokens.setStore2(token);
+                    break;
+                case "2.3":
+                    tokens.setStore3(token);
+                    break;
+                case "2.4":
+                    tokens.setStore4(token);
+                    break;
+                case "2.5":
+                    tokens.setStore5(token);
+                    break;
+                case "2.6":
+                    tokens.setStore6(token);
+                    break;
+                case "2.7":
+                    tokens.setStore7(token);
+                    break;
+                case "3.1":
+                    tokens.setDriver1(token);
+                    break;
+                case "3.2":
+                    tokens.setDriver2(token);
                     break;
                 case "5":
                     tokens.setPdaCookie(token);
+                    break;
 
             }
         }
         tokenMapper.updateToken(tokens);
     }
 
-
-    public void addReportMain(String testList, long reportId) {
-        apiReportMainMapper.add(testList, reportId);
+    @Override
+    public void addReportMain(long reportId) {
+        apiReportMainMapper.add(reportId);
     }
 
     public void addReport(ResponseData data, long reportId, Integer testId) {
@@ -112,6 +148,8 @@ public class ApiReportIlmpl implements ApiReportService {
         Api api = apiMapper.getApiData(apiCase.getApiId());
         report.setExpectStatus(apiCase.getStatusAssertion());
         report.setActStatus(data.getStatus());
+        report.setDevice(api.getDevice());
+        report.setDeviceType(apiCase.getDeviceType()    );
         if (apiCase.getStatusAssertion().equals(data.getStatus())) {
             report.setResultStatus(1);
         } else {
@@ -125,11 +163,13 @@ public class ApiReportIlmpl implements ApiReportService {
                 JSONArray relyParams = b.StringToAO(api.getRelyValue());
                 for (Object relyParam : relyParams) {
                     JSONObject param = b.StringToJson(relyParam.toString());
-
                     String path = param.get("value").toString();
-                    Object values = JsonPath.read(data.getResponse(), path);
-                    value.put(param.get("name").toString(), values);
+                    try {
+                        List<Object> values = JsonPath.read(data.getResponse(), path);
+                        value.put(param.get("name").toString(), values.get(0));
+                    } catch (Exception e) {
 
+                    }
                 }
                 report.setRelyValue(value.toString());
             }
@@ -143,18 +183,19 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public OneReportData getOneReport(Integer testId, long reportId) {
+    public OneReportData getOneReport(Integer id) {
         OneReportData oneReportData = new OneReportData();
-        ApiReport apiReport = apiReportMapper.getData(testId, reportId);
+        ApiReport apiReport = apiReportMapper.getData(id);
         BeanUtils.copyProperties(apiReport, oneReportData);
         oneReportData.setHeaderParam(b.StringToAO(apiReport.getHeaderParam()));
         oneReportData.setWebformParam(b.StringToAO(apiReport.getWebformParam()));
-        oneReportData.setBodyParam(b.StringToAO(apiReport.getBodyParam()));
+        try {
+            oneReportData.setBodyParam(b.StringToAO(apiReport.getBodyParam()));
+        } catch (Exception e) {
+            oneReportData.setBodyParam(b.StringToJson(apiReport.getBodyParam()));
+        }
         oneReportData.setResponse(b.StringToJson(apiReport.getResponse()));
-
-
         return oneReportData;
     }
-
 
 }

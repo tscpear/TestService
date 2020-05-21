@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("api")
 public class ApiController {
@@ -35,8 +37,10 @@ public class ApiController {
             param.setApiMark(apiMark);
             param.setApiPath(apiPath);
             param.setDevice(device);
+            Map<String,Object> map = apiService.getApiList(param);
             baseRe.setCode(1);
-            baseRe.setData(apiService.getApiList(param));
+            baseRe.setData(map.get("list"));
+            baseRe.setCount(map.get("count"));
 
         } catch (Exception e) {
             baseRe.setCode(0);

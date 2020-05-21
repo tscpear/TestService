@@ -10,7 +10,7 @@ public class OneReportData {
     private String apiPath;
     private JSONArray headerParam= JSONArray.parseArray("[]");
     private JSONArray webformParam = JSONArray.parseArray("[]");
-    private JSONArray bodyParam= JSONArray.parseArray("[]");
+    private Object bodyParam;
     private String apiMethod;
 
     private JSONObject response;

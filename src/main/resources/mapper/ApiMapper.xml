@@ -123,7 +123,7 @@
 
 
     <select id="getApiCount" resultType="java.lang.Integer">
-        select count(*) from uri where 1=1
+        select count(*) from uri where is_del = 0
         <include refid="list_count"/>;
     </select>
 
@@ -204,7 +204,7 @@
         from uri
         where api_path = #{path}
     </select>
-    <select id="getDeviceList" resultType="java.lang.Integer">
+    <select id="getDeviceList" resultType="java.lang.String">
         select device
         from uri
         where id in

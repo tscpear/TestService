@@ -8,13 +8,29 @@
         <result property="pdaCookie" column="pda_cookie"/>
         <result property="tireWebToken" column="tire_web_token"/>
         <result property="store1" column="store_1"/>
+        <result property="store2" column="store_2"/>
+        <result property="store3" column="store_3"/>
+        <result property="store4" column="store_4"/>
+        <result property="store5" column="store_5"/>
+        <result property="store6" column="store_6"/>
+        <result property="store7" column="store_7"/>
+        <result property="driver1" column="driver_1"/>
+        <result property="driver2" column="driver_2"/>
     </resultMap>
 
     <update id="updateToken">
         update tokens
         set pda_cookie     = #{pdaCookie},
             tire_web_token = #{tireWebToken},
-            store_1 = #{store1}
+            store_1 = #{store1},
+            store_2 = #{store2},
+            store_3 = #{store3},
+            store_4 = #{store4},
+            store_5 = #{store5},
+            store_6 = #{store6},
+            store_7 = #{store7},
+            driver_1 = #{driver1},
+            driver_2 = #{driver2}
         where id = 1;
     </update>
     <select id="getData" resultMap="tokenMap">

@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ApiServicelmpl implements ApiService {
@@ -32,7 +34,8 @@ public class ApiServicelmpl implements ApiService {
     private ApiCaseMapper apiCaseMapper;
 
     @Override
-    public JSONArray getApiList(ApiListParam params) {
+    public Map<String,Object> getApiList(ApiListParam params) {
+        Map<String,Object> map = new HashMap<>();
         List<Api> apiList = apiMapper.getApiList(params);
         JSONArray apiListDataList = new JSONArray();
         for (Api api : apiList) {
@@ -41,7 +44,9 @@ public class ApiServicelmpl implements ApiService {
             apiListDataList.add(apiListData);
             apiListData.setTestNum(apiCaseMapper.getCountApiCaseByApiId(api.getId()));
         }
-        return apiListDataList;
+       map.put("list",apiListDataList);
+        map.put("count",apiMapper.getApiCount(params));
+        return  map;
     }
 
     @Override

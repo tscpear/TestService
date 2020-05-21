@@ -27,7 +27,7 @@ public interface ApiReportMapper {
      * @param reportId
      * @return
      */
-    ApiReport getData(Integer testId,long reportId);
+    ApiReport getData(Integer id);
 
     /**
      * 获取成功的数量
@@ -35,4 +35,20 @@ public interface ApiReportMapper {
      * @return
      */
    Integer countOfSuccess(long reportId);
+
+    /**
+     * 查最近的一个依赖用例的存储值
+     * @param reportId
+     * @param testId
+     * @return
+     */
+   String getRelyValue(long reportId,Integer testId);
+
+    /**
+     * 获取当前已经执行的测试用例的Id
+     * @param reportId
+     * @return
+     */
+   List<Integer> getNowDoTestId(long reportId);
+
 }

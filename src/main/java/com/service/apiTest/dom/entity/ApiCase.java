@@ -11,6 +11,8 @@ public class ApiCase {
     private String apiCaseMark;
     private String apiCaseLv;
     private String apiCaseType;
+
+
     private String apiHandleParam;
     private String headerHandleParam;
     private String webformHandleParam;
@@ -35,4 +37,6 @@ public class ApiCase {
     private String webformRelyToHandle ;
     private String bodyRelyToHandle ;
 
+
+    
 }

@@ -1,5 +1,6 @@
 package com.service.utils.test.impl;
 
+import com.service.utils.MyBaseChange;
 import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.ResponseData;
 import com.service.utils.test.method.HttpClientService;
@@ -20,6 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,9 +32,13 @@ import java.util.List;
 @Service
 public class HttpClientImpl implements HttpClientService {
 
+    @Autowired
+    private MyBaseChange b;
+
 
     @Override
     public ResponseData getResponse(DoTestData data) {
+        System.out.println(data);
         ResponseData responeData = new ResponseData();
         CloseableHttpClient httpclient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
@@ -67,13 +73,17 @@ public class HttpClientImpl implements HttpClientService {
                 if (!StringUtils.isEmpty(data.getWebformParam()) && data.getWebformParam().length() >= 1) {
                     webform = data.getWebformParam();
                     List<NameValuePair> parame = new ArrayList<>();
-
+                    Object a = webform.get(0);
                     for (Object forms : webform) {
                         JSONObject form = new JSONObject(forms.toString());
                         parame.add(new BasicNameValuePair(form.get("name").toString(), form.get("value").toString()));
                     }
                     HttpEntity entityParam = new UrlEncodedFormEntity(parame, "utf-8");
                     post.setEntity(entityParam);
+                }
+                if (!StringUtils.isEmpty(data.getBodyParam())) {
+                    StringEntity entity = new StringEntity(data.getBodyParam(), "utf-8");
+                    post.setEntity(entity);
                 }
                 response = httpclient.execute(post);
                 JSONArray headerParam = new JSONArray();
@@ -114,6 +124,10 @@ public class HttpClientImpl implements HttpClientService {
                     HttpEntity entityParam = new UrlEncodedFormEntity(parame, "utf-8");
                     put.setEntity(entityParam);
                 }
+                if (!StringUtils.isEmpty(data.getBodyParam())) {
+                    StringEntity entity = new StringEntity(data.getBodyParam(), "utf-8");
+                    put.setEntity(entity);
+                }
                 response = httpclient.execute(put);
                 JSONArray headerParam = new JSONArray();
                 for (Header header : put.getAllHeaders()) {
@@ -126,12 +140,11 @@ public class HttpClientImpl implements HttpClientService {
                 responeData.setHeaderParam(headerParam.toString());
             }
             HttpEntity httpEntity = response.getEntity();
-            responeData.setResponse(EntityUtils.toString(httpEntity, "utf-8"));
+
+            String responseValue =EntityUtils.toString(httpEntity, "utf-8") ;
+            System.out.println(responseValue);
+            responeData.setResponse(responseValue);
             responeData.setStatus(response.getStatusLine().getStatusCode() + "");
-
-
-
-
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -196,12 +209,12 @@ public class HttpClientImpl implements HttpClientService {
                 get.setHeader("Authorization", authorization);
             } else {
                 get.setHeader("cookie", ("JSESSIONID=" + authorization));
-                get.setHeader("Authorization", "$Version=1");
+                get.setHeader("Cookie2", "$Version=1");
             }
         }
         if (!StringUtils.isEmpty(headerParam) && headerParam.length() > 0) {
             for (Object param : headerParam) {
-                JSONObject o = new JSONObject(param);
+                JSONObject o = new JSONObject(param.toString());
                 get.setHeader(o.get("name").toString(), o.get("value").toString());
             }
         }
@@ -214,26 +227,26 @@ public class HttpClientImpl implements HttpClientService {
      */
     public HttpPost getPost(String authorization, String path, JSONArray headerParam, String bodyParam) {
         HttpPost post = new HttpPost(path);
-        if (!StringUtils.isEmpty(authorization)&& !(authorization.contains("null"))) {
+        if (!StringUtils.isEmpty(authorization) && !(authorization.contains("null"))) {
             if (authorization.contains("bearer") || authorization.contains("Basic")) {
                 post.setHeader("Authorization", authorization);
             } else {
                 post.setHeader("cookie", ("JSESSIONID=" + authorization));
-                post.setHeader("Authorization", "$Version=1");
+                post.setHeader("Cookie2", "$Version=1");
             }
         }
-        if (!StringUtils.isEmpty(headerParam)) {
+        if (!StringUtils.isEmpty(bodyParam)) {
+            post.setHeader("Content-Type", "application/json");
+            StringEntity entity = new StringEntity(bodyParam, "utf-8");
+            post.setEntity(entity);
+        }
+        if (!StringUtils.isEmpty(headerParam) && headerParam.length() > 0) {
             for (Object param : headerParam) {
                 JSONObject o = new JSONObject(param.toString());
                 post.setHeader(o.get("name").toString(), o.get("value").toString());
             }
         }
 
-        if (!StringUtils.isEmpty(bodyParam)) {
-            post.setHeader("Content-Type", "application/json");
-            StringEntity entity = new StringEntity(bodyParam, "utf-8");
-            post.setEntity(entity);
-        }
         return post;
     }
 
@@ -242,24 +255,26 @@ public class HttpClientImpl implements HttpClientService {
      */
     public HttpPut getPut(String authorization, String path, JSONArray headerParam, String bodyParam) {
         HttpPut put = new HttpPut(path);
-        if (!StringUtils.isEmpty(authorization)&& !(authorization.contains("null"))) {
+        if (!StringUtils.isEmpty(authorization) && !(authorization.contains("null"))) {
             if (authorization.contains("bearer") || authorization.contains("Basic")) {
                 put.setHeader("Authorization", authorization);
             } else {
                 put.setHeader("cookie", ("JSESSIONID=" + authorization));
-                put.setHeader("Authorization", "$Version=1");
-            }
-        }
-        if (!StringUtils.isEmpty(headerParam)) {
-            for (Object param : headerParam) {
-                JSONObject o = new JSONObject(param);
-                put.setHeader(o.get("name").toString(), o.get("value").toString());
+                put.setHeader("Cookie2", "$Version=1");
             }
         }
         if (!StringUtils.isEmpty(bodyParam)) {
+            put.setHeader("Content-Type", "application/json");
             StringEntity entity = new StringEntity(bodyParam, "utf-8");
             put.setEntity(entity);
         }
+        if (!StringUtils.isEmpty(headerParam) && headerParam.length() > 0) {
+            for (Object param : headerParam) {
+                JSONObject o = new JSONObject(param.toString());
+                put.setHeader(o.get("name").toString(), o.get("value").toString());
+            }
+        }
+
         return put;
     }
 

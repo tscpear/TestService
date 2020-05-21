@@ -3,6 +3,7 @@ package com.service.apiTest.controller.controller;
 import com.service.apiTest.controller.domin.ApiBaseRe;
 import com.service.apiTest.dom.domin.ApiCaseListParam;
 import com.service.apiTest.dom.entity.Api;
+import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.apiTest.controller.domin.ApiCaseData;
 import com.service.apiTest.service.domian.ApiForCase;
@@ -11,6 +12,8 @@ import com.service.apiTest.service.service.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/apicase")
@@ -22,6 +25,8 @@ public class ApiCaseController {
     private ApiMapper apiMapper;
     @Autowired
     private ApiService apiService;
+    @Autowired
+    private  ApiCaseMapper apiCaseMapper;
 
     @GetMapping("/caseAdd")
     @ResponseBody
@@ -74,9 +79,10 @@ public class ApiCaseController {
             param.setDevice(device);
             param.setApiCaseMark(apiCaseMark);
             param.setApiId(apiId);
-            baseRe.setData(apiCaseService.getApiCaseList(param));
+            Map<String,Object> map = apiCaseService.getApiCaseList(param);
+            baseRe.setData(map.get("list"));
             baseRe.setCode(1);
-
+            baseRe.setCount(map.get("count"));
         }catch (Exception e){
             baseRe.setCode(0);
             baseRe.setMsg(e.toString());

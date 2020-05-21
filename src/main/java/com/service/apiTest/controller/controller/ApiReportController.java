@@ -39,15 +39,26 @@ public class ApiReportController {
     @ResponseBody
     public ApiBaseRe doReport(@RequestBody PutToken token) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
-            long reportId = apiReportService.doTest(this.getTestList(token), token.getEnvironment());
-            baseRe.setData(apiReportService.getReportDataList(reportId));
-            baseRe.setCode(1);
-            baseRe.setMsg("执行成功");
-        } catch (Exception e) {
-            baseRe.setMsg(e.toString());
-            baseRe.setCode(0);
-        }
+        long reportId = System.currentTimeMillis();
+//        try {
+//            apiReportService.addReportMain(reportId);
+//            apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId);
+//            baseRe.setData(apiReportService.getReportDataList(reportId));
+//            baseRe.setCode(1);
+//            baseRe.setMsg("执行成功");
+//        } catch (Exception e) {
+//            baseRe.setMsg(e.toString());
+//            baseRe.setCode(0);
+//        }
+        apiReportService.addReportMain(reportId);
+        apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId);
+        baseRe.setData(apiReportService.getReportDataList(reportId));
+        baseRe.setCode(1);
+        baseRe.setMsg("执行成功");
+
+
+//
+
         return baseRe;
     }
 
@@ -76,23 +87,23 @@ public class ApiReportController {
     @ResponseBody
     public ApiBaseRe putToken(@RequestBody PutToken token) throws Throwable {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
+//        try {
             apiReportService.putToken(this.getTestList(token), token.getEnvironment());
             baseRe.setCode(1);
             baseRe.setMsg("token固定成功，确保账号不被重新登入");
-        } catch (Exception e) {
-            baseRe.setMsg(e.toString());
-            baseRe.setCode(0);
-        }
+//        } catch (Exception e) {
+//            baseRe.setMsg(e.toString());
+//            baseRe.setCode(0);
+//        }
         return baseRe;
     }
 
     @GetMapping("/one")
     @ResponseBody
-    public ApiBaseRe getOneReport(@RequestParam Integer testId, @RequestParam long reportId) {
+    public ApiBaseRe getOneReport(@RequestParam Integer id) {
         ApiBaseRe baseRe = new ApiBaseRe();
         try {
-            baseRe.setData(apiReportService.getOneReport(testId, reportId));
+            baseRe.setData(apiReportService.getOneReport(id));
             baseRe.setCode(1);
         } catch (Exception e) {
             baseRe.setCode(0);

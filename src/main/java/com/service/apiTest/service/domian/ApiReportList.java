@@ -11,4 +11,5 @@ public class ApiReportList {
     private String apiCaseMark;
     private String resultStatus;
     private long reportId;
+    private Integer id;
 }

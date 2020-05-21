@@ -27,7 +27,7 @@ public interface ApiCaseMapper {
      * 所有的测试数据的数量
      * @return
      */
-    Integer getCountApiCase();
+    Integer getCountApiCase(NewApiListCaseParam param);
 
     /**
      * 获取测试用例列表
@@ -89,4 +89,7 @@ public interface ApiCaseMapper {
      * @return
      */
     List<Integer> getApiIdFromApiCase(@Param("testIdList") JSONArray testIdList);
+
+
+    List<String> getDeviceType(@Param("testIdList") JSONArray testIdList);
 }

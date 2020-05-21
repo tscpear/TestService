@@ -22,4 +22,5 @@ public class MyHost {
     private String uatl;
     private String testl;
     private String testsl;
+    private List<String> deviceType;
 }

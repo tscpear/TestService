@@ -16,13 +16,18 @@ import com.service.apiTest.service.domian.ApiForCase;
 import com.service.apiTest.service.service.ApiCaseService;
 import com.service.apiTest.service.service.ApiService;
 import com.service.utils.MyBaseChange;
+import com.service.utils.test.dom.DriverAppHost;
+import com.service.utils.test.dom.MyHost;
+import com.service.utils.test.dom.StoreHost;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ApiCaseServicelmpl implements ApiCaseService {
@@ -42,13 +47,17 @@ public class ApiCaseServicelmpl implements ApiCaseService {
 
     @Autowired
     private DeviceTypeMapper deviceTypeMapper;
+    @Autowired
+    private StoreHost storeHost;
+    @Autowired
+    private DriverAppHost driverAppHost;
 
 
     @Override
     public ApiForCase getApiDataForAddCase(Integer apiId, Integer userId) {
         ApiData apiData = apiService.getApi(apiId);
         ApiForCase apiForCase = new ApiForCase();
-        apiForCase.setDeviceTypeList(b.StringToArray(deviceTypeMapper.getDeviceTypeList(apiData.getDevice(), userId).toString()));
+        apiForCase.setDeviceTypeList(this.getDeviceType(apiData.getDevice()));
         BeanUtils.copyProperties(apiData, apiForCase);
         apiForCase.setApiId(apiData.getId());
 
@@ -66,6 +75,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
 
         JSONArray relyTestIdList = new JSONArray();
         if (apiData.getApiParamType().equals("2")) {
+            apiForCase.setHasRely(true);
             apiForCase.setIsDepend(true);
             relyTestIdList.add(this.getSelectRelyValue(apiData.getApiRelyParamName()));
         }
@@ -117,20 +127,24 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
     @Override
-    public JSONArray getApiCaseList(ApiCaseListParam apiCaseListParam) {
+    public Map<String, Object> getApiCaseList(ApiCaseListParam apiCaseListParam) {
+        Map<String, Object> map = new HashMap<>();
         NewApiListCaseParam param = new NewApiListCaseParam();
         BeanUtils.copyProperties(apiCaseListParam, param);
         List<Integer> caseIdList = new ArrayList<>();
         String device = apiCaseListParam.getDevice();
         String apiPath = apiCaseListParam.getApiPath();
         List<ApiCase> apiCaseLists = new ArrayList<>();
-        if (StringUtils.isEmpty(apiPath) && StringUtils.isEmpty(device)) {
-            caseIdList = null;
-        } else {
-            caseIdList = apiMapper.getApiIdForCaseList(device, apiPath);
+        if (StringUtils.isEmpty(apiCaseListParam.getApiId())) {
+            if (StringUtils.isEmpty(apiPath) && StringUtils.isEmpty(device)) {
+                caseIdList = null;
+            } else {
+                caseIdList = apiMapper.getApiIdForCaseList(device, apiPath);
+            }
+            param.setCaseIdList(caseIdList);
         }
-        param.setCaseIdList(caseIdList);
         apiCaseLists = apiCaseMapper.getApiCaseList(param);
+        Integer count = apiCaseMapper.getCountApiCase(param);
         JSONArray caseList = new JSONArray();
         for (ApiCase apiCase : apiCaseLists) {
             ApiCaseList apiCaseList = new ApiCaseList();
@@ -141,7 +155,10 @@ public class ApiCaseServicelmpl implements ApiCaseService {
             apiCaseList.setDevice(apiData.getDevice());
             caseList.add(apiCaseList);
         }
-        return caseList;
+        map.put("list", caseList);
+        map.put("count", count);
+
+        return map;
     }
 
     /**
@@ -158,6 +175,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId(), userId);
         BeanUtils.copyProperties(apiForCase, apiCaseUpdateData);
         BeanUtils.copyProperties(apiCase, apiCaseUpdateData);
+        apiCaseUpdateData.setWebformHandleParam(b.StringToAO(apiCase.getWebformHandleParam()));
         /**
          * 依赖转换
          */
@@ -307,5 +325,24 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         }
 
         return array;
+    }
+
+    /**
+     * 账户类型
+     * @param device
+     * @param e
+     * @return
+     */
+    public JSONArray getDeviceType(String device) {
+        JSONArray a = JSONArray.parseArray("[]");
+        MyHost myHost = new MyHost();
+        if (device.equals("2")) {
+            myHost = storeHost;
+        } else if (device.equals("4") || device.equals(3)) {
+            myHost = driverAppHost;
+        } else {
+            return a;
+        }
+       return b.StringToArray(myHost.getDeviceType().toString());
     }
 }

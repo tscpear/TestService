@@ -11,7 +11,7 @@
     </resultMap>
 
     <insert id="add">
-        insert into api_report_main (test_list,id) value (#{testList},#{id});
+        insert into api_report_main (id) value (#{id});
     </insert>
     <update id="updateSuccess">
         update api_report_main set success = #{success} where id = #{id}

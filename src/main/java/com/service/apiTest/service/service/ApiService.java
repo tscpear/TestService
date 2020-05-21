@@ -8,6 +8,8 @@ import com.service.apiTest.service.domian.ApiDataAU;
 import com.service.apiTest.service.domian.ApiDataDel;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public interface ApiService{
     /**
@@ -15,7 +17,7 @@ public interface ApiService{
      * @param params
      * @return
      */
-    JSONArray getApiList(ApiListParam params);
+    Map<String,Object> getApiList(ApiListParam params);
 
 
     /**

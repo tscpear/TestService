@@ -9,6 +9,8 @@ import com.service.apiTest.service.domian.ApiCaseUpdateData;
 import com.service.apiTest.service.domian.ApiForCase;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public interface ApiCaseService {
     /**
@@ -42,7 +44,7 @@ public interface ApiCaseService {
      * @param apiCaseListParam
      * @return
      */
-    JSONArray getApiCaseList(ApiCaseListParam apiCaseListParam);
+    Map<String,Object> getApiCaseList(ApiCaseListParam apiCaseListParam);
 
     /**
      * 获取更新数据

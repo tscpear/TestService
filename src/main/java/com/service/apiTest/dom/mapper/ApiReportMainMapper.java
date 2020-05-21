@@ -12,10 +12,9 @@ import java.util.List;
 public interface ApiReportMainMapper {
     /**
      * 新增主报告核心
-     * @param testList
      * @param id
      */
-    void add(String testList,long id);
+    void add(long id);
 
     /**
      * 存入成功率

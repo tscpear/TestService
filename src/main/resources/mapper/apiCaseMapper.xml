@@ -103,7 +103,8 @@
     <select id="getCountApiCase" resultType="java.lang.Integer">
         select count(*)
         from apicase
-        where is_del = 0;
+        where is_del = 0
+        <include refid="list_count"/>;
     </select>
 
 
@@ -120,7 +121,7 @@
         from apicase
         where is_del = 0
         <include refid="list_count"/>
-              order by id desc
+        order by id desc
         limit #{pageBegin},#{pageEnd};
     </select>
     <select id="getApiCaseData" resultMap="apiCaseResultMap">
@@ -186,8 +187,16 @@
     <select id="getApiCaseListByApiId" resultMap="apiCaseResultMap">
         select id,api_id,api_case_mark,api_case_lv,api_case_type
         from apicase
-        where is_del = 0 and api_id = #{apiId}
+        where is_del = 0
+          and api_id = #{apiId}
         order by id desc
-        limit #{pageBegin},#{pageEnd};
+                 limit #{pageBegin},#{pageEnd};
+    </select>
+    <select id="getDeviceType" resultType="java.lang.String">
+        select device_type from apicase where id in
+        <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
     </select>
 </mapper>

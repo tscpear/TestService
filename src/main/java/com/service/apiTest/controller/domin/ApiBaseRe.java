@@ -7,5 +7,5 @@ public class ApiBaseRe {
     private int code;
     private String msg;
     private Object data;
-    private Integer count;
+    private Object count;
 }

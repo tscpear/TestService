@@ -22,7 +22,7 @@ public interface ApiReportService {
     List<ApiReportList> getReportList(JSONArray testIdList);
 
 
-    long doTest(JSONArray testId,String environment);
+    long doTest(JSONArray testId,String environment,long reportId);
 
 
     void putToken(JSONArray s,String environment) throws Throwable;
@@ -30,7 +30,7 @@ public interface ApiReportService {
     /**
      * 创建主报告
      */
-//    void addReportMain(Integer groupId,long reportId);
+     void addReportMain(long reportId);
 
     /**
      * 存入详情
@@ -50,5 +50,5 @@ public interface ApiReportService {
      * @param reportId
      * @return
      */
-    OneReportData getOneReport(Integer testId,long reportId);
+    OneReportData getOneReport(Integer id);
 }

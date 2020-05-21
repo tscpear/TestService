@@ -49,7 +49,7 @@ public interface DoApiService {
      * @param testId
      * @return
      */
-    DoTestData getTestData(String environment, Integer testId, Token token);
+    DoTestData getTestData(String environment, Integer testId, Token token,long reportId);
 
 
     /**

@@ -21,4 +21,6 @@ public class ApiReport {
    private  String actStatus;
    private  Integer resultStatus;
    private Integer resultMain;
+   private String device;
+   private String deviceType;
 }
