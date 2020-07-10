@@ -11,6 +11,8 @@ import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.apiTest.service.domian.*;
 import com.service.apiTest.service.service.ApiService;
 import com.service.utils.MyBaseChange;
+import com.service.utils.test.dom.project.Project;
+import com.service.utils.test.dom.project.Project1;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,10 +34,12 @@ public class ApiServicelmpl implements ApiService {
 
     @Autowired
     private ApiCaseMapper apiCaseMapper;
+    @Autowired
+    private Project1 project1;
 
     @Override
-    public Map<String,Object> getApiList(ApiListParam params) {
-        Map<String,Object> map = new HashMap<>();
+    public Map<String, Object> getApiList(ApiListParam params) {
+        Map<String, Object> map = new HashMap<>();
         List<Api> apiList = apiMapper.getApiList(params);
         JSONArray apiListDataList = new JSONArray();
         for (Api api : apiList) {
@@ -44,9 +48,9 @@ public class ApiServicelmpl implements ApiService {
             apiListDataList.add(apiListData);
             apiListData.setTestNum(apiCaseMapper.getCountApiCaseByApiId(api.getId()));
         }
-       map.put("list",apiListDataList);
-        map.put("count",apiMapper.getApiCount(params));
-        return  map;
+        map.put("list", apiListDataList);
+        map.put("count", apiMapper.getApiCount(params));
+        return map;
     }
 
     @Override
@@ -56,7 +60,6 @@ public class ApiServicelmpl implements ApiService {
 
     @Override
     public ApiData getApi(int id) {
-        ApiBaseRe baseRe = new ApiBaseRe();
         Api api = apiMapper.getApiData(id);
         ApiData apiData = new ApiData();
         BeanUtils.copyProperties(api, apiData);
@@ -73,6 +76,9 @@ public class ApiServicelmpl implements ApiService {
                 if (apiRelyParam.size() > 1) {
                     Integer apiId = Integer.parseInt(apiRelyParam.get("name").toString());
                     String apiPath = apiMapper.getPathById(apiId);
+                    if(apiId == 0){
+                        apiPath = "login";
+                    }
                     apiData.setApiRelyParamName(apiPath);
                     apiData.setApiRelyParamValue(apiRelyParam.get("value").toString());
                 }
@@ -154,7 +160,7 @@ public class ApiServicelmpl implements ApiService {
 
     @Override
     public void updateApi(ApiDataAU apiData) throws Throwable {
-        Integer count = apiMapper.countApi(apiData.getDevice(), apiData.getApiPath());
+        Integer count = apiMapper.countApi(apiData.getDevice(), apiData.getApiPath(), apiData.getProjectId());
         if (count > 1) {
             throw new Throwable("接口存在重复类型");
         } else {
@@ -169,10 +175,12 @@ public class ApiServicelmpl implements ApiService {
     @Override
     public void addApi(ApiDataAU apiData) throws Throwable {
         Api api = new Api();
-        Integer count = apiMapper.countApi(apiData.getDevice(), apiData.getApiPath());
+        Integer count = apiMapper.countApi(apiData.getDevice(), apiData.getApiPath(), api.getProjectId());
         if (count > 0) {
             throw new Throwable("存在相同类型的接口");
         } else {
+
+
             this.au(apiData, api);
             api.setCreateUserId(apiData.getUserId());
             apiMapper.addApi(api);
@@ -191,8 +199,8 @@ public class ApiServicelmpl implements ApiService {
      * @return
      */
     @Override
-    public JSONArray searchTest(String path) {
-        List<Api> apiList = apiMapper.getApiForPath(path);
+    public JSONArray searchTest(String path, Integer project) {
+        List<Api> apiList = apiMapper.getApiForPath(path, project);
         JSONArray apiArray = new JSONArray();
         for (Api api : apiList) {
             JSONObject object = new JSONObject();
@@ -200,19 +208,40 @@ public class ApiServicelmpl implements ApiService {
             object.put("text", api.getApiPath());
             apiArray.add(object);
         }
+        if ("login".contains(path)) {
+            JSONObject object = new JSONObject();
+            object.put("value", 0);
+            object.put("text", "login");
+            apiArray.add(object);
+        }
         return apiArray;
     }
 
     @Override
-    public JSONArray searchRelyName(String path) {
-        String relyName = apiMapper.searchRelyName(Integer.parseInt(path));
-        JSONArray namePath = b.StringToArray(relyName);
+    public JSONArray searchRelyName(String path,Integer device,Integer projectId) {
         JSONArray array = new JSONArray();
-        for (Object object : namePath) {
-            JSONObject names = b.StringToJson(object.toString());
-            array.add(names.get("name").toString());
-        }
+        if (path.equals("0")) {
+            Project project = new Project();
+            switch (projectId){
+                case 1:
+                    project = project1;
+            }
+            Map<String,String> loginRely = project.getDevice().get(device-1).getLoginRely();
+            for(String key : loginRely.keySet()){
+                array.add(key);
+            }
 
+
+        } else {
+            String relyName = apiMapper.searchRelyName(Integer.parseInt(path));
+            JSONArray namePath = b.StringToArray(relyName);
+
+            for (Object object : namePath) {
+                JSONObject names = b.StringToJson(object.toString());
+                array.add(names.get("name").toString());
+
+            }
+        }
         return array;
     }
 
@@ -242,6 +271,9 @@ public class ApiServicelmpl implements ApiService {
                 String name = apiData.getApiRelyParamName();
                 if (name.startsWith("/")) {
                     name = apiMapper.getApiIdByPath(name).toString();
+                }
+                if(name.equals("login")){
+                    name = "0";
                 }
                 apiRelyParam.put("name", name);
                 apiRelyParam.put("value", apiData.getApiRelyParamValue());
@@ -330,16 +362,20 @@ public class ApiServicelmpl implements ApiService {
             JSONObject a = object;
             Integer apiId = Integer.parseInt(object.get("apiPath").toString());
             String path = apiMapper.getPathById(apiId);
+            if(apiId==0){
+                path = "login";
+            }
             a.put("apiPath", path);
             result.add(a);
 
         }
         return result;
     }
+
     /**
      * apiPath 转 apiId
      */
-    public String pathToId(String s){
+    public String pathToId(String s) {
         JSONArray result = new JSONArray();
         JSONArray params = b.StringToAO(s);
         for (Object p : params) {

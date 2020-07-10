@@ -27,6 +27,8 @@
         <result property="headerRelyToHandle" column="header_rely_to_handle"/>
         <result property="webformRelyToHandle" column="webform_rely_to_handle"/>
         <result property="bodyRelyToHandle" column="body_rely_to_handle"/>
+        <result property="responseValueExpect" column="response_value_expect"/>
+        <result property="projectId" column="project_id"/>
     </resultMap>
     <sql id="apiCaseData">
         id
@@ -46,7 +48,9 @@
         device_type,
         header_rely_to_handle,
         webform_rely_to_handle,
-        body_rely_to_handle
+        body_rely_to_handle,
+        response_value_expect,
+        project_id
 
     </sql>
     <sql id="apiCaseDatas">
@@ -67,7 +71,9 @@
         #{deviceType},
         #{headerRelyToHandle},
         #{webformRelyToHandle},
-        #{bodyRelyToHandle}
+        #{bodyRelyToHandle},
+        #{responseValueExpect},
+        #{projectId}
 
     </sql>
 
@@ -103,7 +109,7 @@
     <select id="getCountApiCase" resultType="java.lang.Integer">
         select count(*)
         from apicase
-        where is_del = 0
+        where is_del = 0 and project_id = #{projectId}
         <include refid="list_count"/>;
     </select>
 
@@ -119,7 +125,7 @@
     <select id="getApiCaseList" resultMap="apiCaseResultMap">
         select id,api_id,api_case_mark,api_case_lv,api_case_type
         from apicase
-        where is_del = 0
+        where is_del = 0 and project_id = #{projectId}
         <include refid="list_count"/>
         order by id desc
         limit #{pageBegin},#{pageEnd};
@@ -145,7 +151,8 @@
             device_type            = #{deviceType},
             header_rely_to_handle  = #{headerRelyToHandle},
             webform_rely_to_handle = #{webformRelyToHandle},
-            body_rely_to_handle    = #{bodyRelyToHandle}
+            body_rely_to_handle    = #{bodyRelyToHandle},
+            response_value_expect  = #{responseValueExpect}
         where id = #{id};
     </update>
     <update id="delApiCase">
@@ -198,5 +205,14 @@
             #{id}
         </foreach>
 
+    </select>
+    <select id="getDeviceTypeList" resultType="com.service.apiTest.service.domian.DeviceAndType">
+        select distinct uri.device as device,b.device_type as deviceType from uri join (select api_id,device_type from
+        apicase where id in  <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+    </foreach>) b on uri.id = b.api_id order by uri.device;
+    </select>
+    <select id="getApiIdByApiCaseId" resultType="java.lang.Integer">
+        select api_id from apicase where id = #{id};
     </select>
 </mapper>

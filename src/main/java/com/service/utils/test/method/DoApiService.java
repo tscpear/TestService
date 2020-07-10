@@ -6,10 +6,13 @@ import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.GetToken;
 import com.service.utils.test.dom.MyHost;
 import com.service.utils.test.dom.ResponseData;
+import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.xml.crypto.Data;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public interface DoApiService {
@@ -41,7 +44,7 @@ public interface DoApiService {
 //
 //    String getToken(MyHost host, String environment, String basic);
 
-    DoTestData getLoginData(String environment, String device, String userType);
+    DoTestData getLoginData(Integer environment, String device, String userType);
 
     /**
      * 拼接测试用例
@@ -49,7 +52,7 @@ public interface DoApiService {
      * @param testId
      * @return
      */
-    DoTestData getTestData(String environment, Integer testId, Token token,long reportId);
+    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList,Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId);
 
 
     /**
@@ -60,5 +63,16 @@ public interface DoApiService {
     /**
      * 通过device 获取需要的账号
      */
+
+    void doSmsCode(String smsHost, String smsUri, String newSmsParam, JSONArray newSmsHeader);
+
+    /**
+     * 登入接口
+     * @param host
+     * @param uri
+     * @param param
+     * @param header
+     */
+    ResponseData doLogin(String host,String uri,JSONArray param,JSONArray header);
 
 }

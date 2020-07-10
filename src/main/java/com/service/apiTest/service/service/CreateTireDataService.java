@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface CreateTireDataService {
 
-    void getTireTestData(String e, String order) throws Throwable;
+    void getTireTestData(Integer e, String order) throws Throwable;
 
 }

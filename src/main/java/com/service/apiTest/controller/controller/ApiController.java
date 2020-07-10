@@ -28,7 +28,8 @@ public class ApiController {
                              @RequestParam int limit,
                              @RequestParam(required = false) String apiPath,
                              @RequestParam(required = false) String apiMark,
-                             @RequestParam(required = false) String device) {
+                             @RequestParam(required = false) String device,
+                             @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         try {
             ApiListParam param = new ApiListParam();
@@ -37,7 +38,8 @@ public class ApiController {
             param.setApiMark(apiMark);
             param.setApiPath(apiPath);
             param.setDevice(device);
-            Map<String,Object> map = apiService.getApiList(param);
+            param.setProjectId(projectId);
+            Map<String, Object> map = apiService.getApiList(param);
             baseRe.setCode(1);
             baseRe.setData(map.get("list"));
             baseRe.setCount(map.get("count"));
@@ -67,9 +69,9 @@ public class ApiController {
 
     @PostMapping("/update")
     @ResponseBody
-    public ApiBaseRe updateApiData(@RequestBody ApiDataAU apiData) {
+    public ApiBaseRe updateApiData(@RequestBody ApiDataAU apiData, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath());
+        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath(), projectId);
         if (count > 1) {
             baseRe.setCode(0);
             baseRe.setMsg("存在接口路径与设备相同的接口");
@@ -90,14 +92,15 @@ public class ApiController {
 
     @PostMapping("/add")
     @ResponseBody
-    public ApiBaseRe addApiData(@RequestBody ApiDataAU apiData) {
+    public ApiBaseRe addApiData(@RequestBody ApiDataAU apiData, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath());
+        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath(), projectId);
         if (count > 0) {
             baseRe.setCode(0);
             baseRe.setMsg("存在接口路径与设备相同的接口");
         } else {
             try {
+                apiData.setProjectId(projectId);
                 apiService.addApi(apiData);
                 baseRe.setCode(1);
                 baseRe.setMsg("新增成功");
@@ -120,20 +123,20 @@ public class ApiController {
 
     @GetMapping("/searchRely")
     @ResponseBody
-    public ApiBaseRe searchRely(@RequestParam String path) {
+    public ApiBaseRe searchRely(@RequestParam String path,@RequestHeader(name = "projectId")Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         baseRe.setCode(1);
-        baseRe.setData(apiService.searchTest(path));
+        baseRe.setData(apiService.searchTest(path,projectId));
         return baseRe;
     }
 
 
     @GetMapping("/searchRelyName")
     @ResponseBody
-    public ApiBaseRe searchRelyName(@RequestParam String path) {
+    public ApiBaseRe searchRelyName(@RequestParam String path,@RequestParam Integer device,@RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         baseRe.setCode(1);
-        baseRe.setData(apiService.searchRelyName(path));
+        baseRe.setData(apiService.searchRelyName(path,device,projectId));
         return baseRe;
     }
 }

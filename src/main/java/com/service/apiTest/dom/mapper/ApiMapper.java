@@ -49,7 +49,7 @@ public interface ApiMapper {
     /**
      * 查看apiPath method device 的接口数量
      */
-    Integer countApi(String device,String apiPath);
+    Integer countApi(Integer device,String apiPath,Integer projectId);
 
     /**
      * 删除api
@@ -59,14 +59,14 @@ public interface ApiMapper {
     /**
      * 查询device 与 接口id
      */
-    List<Integer> getApiIdForCaseList(String device,String apiPath);
+    List<Integer> getApiIdForCaseList(Integer device,String apiPath,Integer projectId);
 
     /**
      * 获取查找的id path
      * @param path
      * @return
      */
-    List<Api> getApiForPath(String path);
+    List<Api> getApiForPath(String path,Integer projectId);
 
     /**
      * 获取接口路径byid
@@ -102,5 +102,6 @@ public interface ApiMapper {
      * @param apiPath
      * @return
      */
-    Integer getCountReData(String device,String apiPath);
+    Integer getCountReData(Integer device,String apiPath,Integer projectId);
+
 }

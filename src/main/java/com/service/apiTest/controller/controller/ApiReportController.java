@@ -14,6 +14,7 @@ import com.service.apiTest.dom.mapper.ApiReportMainMapper;
 import com.service.apiTest.dom.mapper.ApiReportMapper;
 import com.service.apiTest.service.domian.ApiReportList;
 import com.service.apiTest.service.service.ApiReportService;
+import com.service.utils.MyBaseChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -33,26 +34,26 @@ public class ApiReportController {
     private ApiReportMapper apiReportMapper;
     @Autowired
     private ApiReportMainMapper apiReportMainMapper;
+    @Autowired
+    private MyBaseChange b;
 
 
     @PostMapping("/do")
     @ResponseBody
-    public ApiBaseRe doReport(@RequestBody PutToken token) {
+    public ApiBaseRe doReport(@RequestBody PutToken token,@RequestHeader(name = "projectId")Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        long reportId = System.currentTimeMillis();
-//        try {
-//            apiReportService.addReportMain(reportId);
-//            apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId);
-//            baseRe.setData(apiReportService.getReportDataList(reportId));
-//            baseRe.setCode(1);
-//            baseRe.setMsg("执行成功");
-//        } catch (Exception e) {
-//            baseRe.setMsg(e.toString());
-//            baseRe.setCode(0);
-//        }
-        apiReportService.addReportMain(reportId);
-        apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId);
-        baseRe.setData(apiReportService.getReportDataList(reportId));
+        long reportId;
+        if(token.getReportId()<10000){
+            reportId = System.currentTimeMillis();
+            apiReportService.addReportMain(reportId);
+        }else {
+            reportId = token.getReportId();
+        }
+        apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId,token.getAccountValue(),projectId);
+        JSONObject data = new JSONObject();
+        data.put("list",apiReportService.getReportDataList(reportId));
+        data.put("reportId",reportId);
+        baseRe.setData(data);
         baseRe.setCode(1);
         baseRe.setMsg("执行成功");
 
@@ -73,7 +74,9 @@ public class ApiReportController {
     public ApiBaseRe getReportList(@RequestBody PutToken token) {
         ApiBaseRe baseRe = new ApiBaseRe();
         try {
-            List<ApiReportList> data = apiReportService.getReportList(this.getTestList(token));
+            List<ApiReportList> list = apiReportService.getReportList(this.getTestList(token));
+            JSONObject data = new JSONObject();
+            data.put("list",list);
             baseRe.setData(data);
             baseRe.setCode(1);
         } catch (Exception e) {
@@ -85,10 +88,10 @@ public class ApiReportController {
 
     @PostMapping("/token")
     @ResponseBody
-    public ApiBaseRe putToken(@RequestBody PutToken token) throws Throwable {
+    public ApiBaseRe putToken(@RequestBody PutToken token,@RequestHeader(name = "projectId")Integer projectId) throws Throwable {
         ApiBaseRe baseRe = new ApiBaseRe();
 //        try {
-            apiReportService.putToken(this.getTestList(token), token.getEnvironment());
+            apiReportService.accountLogin(token,projectId);
             baseRe.setCode(1);
             baseRe.setMsg("token固定成功，确保账号不被重新登入");
 //        } catch (Exception e) {
@@ -109,38 +112,74 @@ public class ApiReportController {
             baseRe.setCode(0);
             baseRe.setMsg(e.toString());
         }
-
-
         return baseRe;
     }
 
     @GetMapping("mainList")
     @ResponseBody
     public ApiBaseRe getMainReport(@RequestParam int page,
-                                   @RequestParam int limit) {
+                                   @RequestParam int limit,
+                                   @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         ApiListParam param = new ApiListParam();
         param.setPageBegin(page * limit - limit);
         param.setPageEnd(limit);
+        param.setProjectId(projectId);
         baseRe.setCode(1);
         baseRe.setData(apiReportMainMapper.getList(param));
-        baseRe.setCount(apiReportMainMapper.getCount());
+        baseRe.setCount(apiReportMainMapper.getCount(projectId));
         return baseRe;
+    }
+    /**
+     * 获取报告数据
+     */
+    @PostMapping("reportList")
+    @ResponseBody
+    public ApiBaseRe getReportTableList(@RequestBody PutToken token){
+        ApiBaseRe baseRe = new ApiBaseRe();
+        JSONObject data = new JSONObject();
+        data.put("list",apiReportService.getReportDataList(token.getReportId()));
+        data.put("reportId",token.getReportId());
+        baseRe.setData(data);
+        baseRe.setCode(1);
+        baseRe.setMsg("执行成功");
+        return baseRe;
+    }
+
+
+    /**
+     * 获取账号列表与信息
+     */
+    @PostMapping("account")
+    @ResponseBody
+    public ApiBaseRe getAccout(@RequestBody PutToken putToken,@RequestHeader(name = "projectId") Integer projectId){
+        ApiBaseRe baseRe = new ApiBaseRe();
+        baseRe.setData(apiReportService.getDeviceTypeAndAccountList(putToken.getTestList(),putToken.getEnvironment(),projectId));
+        baseRe.setCode(1);
+        return baseRe;
+
     }
 
     /**
      * 获取testList
      */
     public JSONArray getTestList(PutToken token) {
-        JSONArray testList = new JSONArray();
-        if (token.getTestList().size() >= 1 && token.getGroupId() == 0) {
-            testList = token.getTestList();
-        } else {
+        JSONArray testList;
+        if(token.getReportId()>0){
+            testList = b.StringToArray(apiReportMapper.getNowDoTestId(token.getReportId()).toString());
+        }else if(token.getGroupId() > 0){
             String s = apiGroupMapper.getTestList(token.getGroupId());
             testList = JSONArray.parseArray(s);
+        }else {
+            testList = token.getTestList();
         }
         return testList;
     }
+
+
+
+
+
 
 
 }

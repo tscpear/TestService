@@ -47,7 +47,7 @@ public class HttpClientImpl implements HttpClientService {
         responeData.setBodyParam(data.getBodyParam());
         responeData.setWebformParam(data.getWebformParam() + "");
         try {
-            if (data.getApiMethod().equals("1")) {
+            if (data.getApiMethod()==1) {
                 responeData.setApiMethod("GET");
                 HttpGet get = this.getGet(data.getAuthorization(), path, data.getHeaderParam());
                 RequestConfig requestConfig = RequestConfig.custom()
@@ -63,7 +63,7 @@ public class HttpClientImpl implements HttpClientService {
 
                 }
                 responeData.setHeaderParam(headerParam.toString());
-            } else if (data.getApiMethod().equals("2")) {
+            } else if (data.getApiMethod()==2) {
                 responeData.setApiMethod("POST");
                 HttpPost post = this.getPost(data.getAuthorization(), path, data.getHeaderParam(), data.getBodyParam());
                 RequestConfig requestConfig = RequestConfig.custom()
@@ -174,14 +174,14 @@ public class HttpClientImpl implements HttpClientService {
     /**
      * 合成接口路径
      */
-    public String getRaw(String method, String host, String apiPath, String apiParam, JSONArray webformParam) {
+    public String getRaw(Integer method, String host, String apiPath, String apiParam, JSONArray webformParam) {
         StringBuffer raw = new StringBuffer();
         raw.append(host).append(apiPath);
         if (!StringUtils.isEmpty(apiParam)) {
             raw.append("/").append(apiParam);
         }
 
-        if (!StringUtils.isEmpty(webformParam) && method.equals("1")) {
+        if (!StringUtils.isEmpty(webformParam) && method==1) {
             JSONArray webform = webformParam;
             StringBuffer key;
             for (int i = 0; i < webform.length(); i++) {
@@ -236,8 +236,8 @@ public class HttpClientImpl implements HttpClientService {
             }
         }
         if (!StringUtils.isEmpty(bodyParam)) {
-            post.setHeader("Content-Type", "application/json");
             StringEntity entity = new StringEntity(bodyParam, "utf-8");
+            post.setHeader("Content-Type", "application/json");
             post.setEntity(entity);
         }
         if (!StringUtils.isEmpty(headerParam) && headerParam.length() > 0) {

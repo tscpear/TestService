@@ -6,11 +6,13 @@ import com.service.apiTest.dom.domin.ApiCaseListParam;
 import com.service.apiTest.dom.domin.NewApiListCaseParam;
 import com.service.apiTest.dom.entity.ApiCase;
 import com.service.apiTest.service.domian.ApiReportList;
+import com.service.apiTest.service.domian.DeviceAndType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 @Repository
@@ -92,4 +94,20 @@ public interface ApiCaseMapper {
 
 
     List<String> getDeviceType(@Param("testIdList") JSONArray testIdList);
+
+
+    /**
+     * 通过testIdList  可以获取到设备Id 和账户类型的Id
+     * @param testIdList
+     * @return
+     */
+    List<DeviceAndType> getDeviceTypeList(@Param("testIdList") JSONArray testIdList);
+
+    /**
+     * 通过测试用例id获取 获取apiId
+     * @param id
+     * @return
+     */
+    Integer getApiIdByApiCaseId(Integer id);
+
 }

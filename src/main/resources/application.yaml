@@ -7,9 +7,9 @@ spring:
   #\u914D\u7F6E\u6570\u636E\u5E93
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: db_user
-    password: kybb123456
-    url: jdbc:mysql://dev-mysql.zhilun-base.com:3306/test_tsc_c?useUnicode=true&characterEncoding=UTF8&useSSL=false
+    username: root
+    password: tsc123tsc123
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=UTC
     #\u90AE\u7BB1\u914D\u7F6E
   mail:
     host: smtp.qq.com
@@ -29,7 +29,7 @@ spring:
 mybatis:
   type-aliases-package: com.service
   mapper-locations:
-  - mapper/*
+    - mapper/*
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
@@ -48,7 +48,6 @@ myhost:
     testl: http://auth.zhilun-qa-major.com
     testsl: http://auth.zhilun-qa-minor.com
     deviceType: [1,2,3,4,5,6,7]
-
   pda:
     uat: http://wch.zhilun.com/1001
     test: http://wch.zhilun-qa-minor.com/1001
@@ -61,7 +60,7 @@ myhost:
     basic: TUFOQUdFTUVOVDo2NTRjMzRkMGFkZTc0N2VlYTBmZDgzZmI5N2JlNzI4MA==
     basics: TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==
     name: tsc
-    password : e10adc3949ba59abbe56e057f20f883e
+    password: e10adc3949ba59abbe56e057f20f883e
     tests: http://manager.zhilun-qa-minor.com
   pweb:
     uat: https://w-t.zhilunkeji.com
@@ -75,12 +74,221 @@ myhost:
     tests: http://api.zhilun-qa-minor.com
     account: [13200000001,2,3,4,5,6]
     accounts: [12900000000,2,3,4,5,6]
-    uatl: https://auth.t.zhilunkeji.com
+    uatl: 25d55ad283aa400af464c76d713c07ad
     testl: http://auth.zhilun-qa-major.com
     testsl: http://auth.zhilun-qa-minor.com
     basic: VFJVQ0tFUjo2NDVjOGE5MjllNmM0MTJjOWZlYmY5MGIyYWQwNzM3NA==
     basics: VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==
     deviceType: [1,2,3,4,5,6,7]
+  driversapp:
+    uat: https://api.t.zhilunkeji.com
+    test: http://api.zhilun-qa-major.com
+    tests: http://api.zhilun-qa-minor.com
+    account: [13200000001,2,3,4,5,6]
+    accounts: [12900000000,2,3,4,5,6]
+    uatl: 25d55ad283aa400af464c76d713c07ad
+    testl: http://auth.zhilun-qa-major.com
+    testsl: http://auth.zhilun-qa-minor.com
+    basic: RU5URVJQUklTRV9VU0VSOjlIR291Wk1UQ0VGNllMVzA0SVF0QWhkS3FreWJsejc1T05yMw==
+    basics: VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==
+project:
+  project1:
+    environment:
+      - 准生产
+      - 测试主
+      - 测试次
+    name: 知轮
+    id: 1
+    device:
+      - device1:
+        id: 1
+        name: 管理后台
+        loginType: 1
+        loginParam: {username: username,password: e10adc3949ba59abbe56e057f20f883e,grant_type: password}
+        smsParam: {}
+        smsUri:
+        smsLoginParam: {}
+        loginUri: /oauth/token
+        tokenPath: $.access_token
+        loginRely:
+          userId: $.userId
+          token: $.access_token
+        deviceTypeList:
+          - 唐胖的测试账号
+          - type2
+        environment:
+          - loginHost: https://ra.t.zhilunkeji.com
+            loginHeader: {Authorization: Basic TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==}
+            smsHeader: {}
+            account:
+              - - tsc
+                - tsccs
+              - - 1358809666
+            host: https://ra.t.zhilunkeji.com
+          - loginHost: http://manager.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==}
+            smsHeader: {}
+            account:
+              - - tsc
+                - tsccs
+              - - 1358809666
+            host: http://api.zhilun-qa-minor.com
+          - loginHost: http://manager.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw== }
+            smsHeader: {}
+            account:
+              - - tsc
+                - tscpear
+              - - 1358809666
+            host: https://api.t.zhilunkeji.com
+      - device2:
+        id: 2
+        name: 知轮商家
+        loginType: 1
+        smsParam: {deviceId: "719910247738029",mobile: "username"}
+        loginParam:
+          application: app_zhilun
+          deviceId: 022f96f1cdaa4569810f601a0e830b06
+          grant_type: store_password
+          mobile: username
+          password: e10adc3949ba59abbe56e057f20f883e
+        smsLoginParam: {smsCode: cf79ae6addba60ad018347359bd144d2,deviceId: 719910247738029,mobile: username,version: 3.0.0,grant_type: sms_code}
+        smsUri: /sms/code
+        loginUri: /oauth/token
+        tokenPath: $.access_token
+        loginRely:
+          token: $.access_token
+        deviceTypeList:
+          - 网红门店账号
+          - 网红门店下服务车账号
+          - 普通门店账号
+          - 普通社会服务车账号
+          - 取货点
+          - 取货方门店账号
+          - 取货方门店下服务车账号
+          - 取货方社会服务车账号
+        environment:
+          - loginHost: https://auth.t.zhilunkeji.com
+            loginHeader: {Authorization: Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4}
+            smsHeader: {}
+            account:
+              - - 13588096710
+                - 12900000205
+              - - 12900000205
+            host: https://api-t.zhilunkeji.com
+          - loginHost: http://auth.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4}
+            smsHeader: {}
+            account:
+              - - 12900000205
+                - 12900000205
+              - - 12900000205
+            host: http://api.zhilun-qa-minor.com
+          - loginHost: http://auth.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4}
+            smsHeader: {}
+            account:
+              - - 13588096710
+                - 186571905346
+              - - 1358809666
+            host: https://api.t.zhilunkeji.com
+      - device3:
+        id: 3
+        name: 知轮三包
+        loginType: 1
+        smsParam: {deviceId: "719910247738029",mobile: "username"}
+        loginParam:
+          grant_type: password
+          username: username
+          password: e10adc3949ba59abbe56e057f20f883e
+        smsLoginParam: {smsCode: cf79ae6addba60ad018347359bd144d2,deviceId: 719910247738029,mobile: username,version: 3.0.0,grant_type: sms_code}
+        smsUri: /sms/code
+        loginUri: /oauth/token
+        tokenPath: $.access_token
+        loginRely:
+          token: $.access_token
+        deviceTypeList:
+          - 唐胖的测试账号
+        environment:
+          - loginHost: https://auth-t.zhilunkeji.com
+            loginHeader: {Authorization: Basic VEhSRUVHVUFSQU5URUU6b052bEphN1VuSUF5Slk5Z2hZWkFRcVR5aTZldTRP}
+            smsHeader: {}
+            account:
+              - - 13588096710
+            host: https://api-t.zhilunkeji.com
+          - loginHost: http://auth.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic VEhSRUVHVUFSQU5URUU6b052bEphN1VuSUF5Slk5Z2hZWkFRcVR5aTZldTRP}
+            smsHeader: {}
+            account:
+              - - 12900000205
+                - 12900000205
+              - - 12900000205
+            host: http://api.zhilun-qa-major.com
+          - loginHost: http://auth.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic VEhSRUVHVUFSQU5URUU6b052bEphN1VuSUF5Slk5Z2hZWkFRcVR5aTZldTRP}
+            smsHeader: {}
+            account:
+              - - 13588096710
+                - 186571905346
+              - - 1358809666
+            host: http://api.zhilun-qa-minor.com
+      - device4:
+        id: 4
+        name: 知轮通
+        loginType: 1
+        smsParam: {}
+        loginParam:
+          grant_type: password
+          username: username
+          password: e10adc3949ba59abbe56e057f20f883e
+          application: app_message
+          appVersionCode: 217
+        smsLoginParam: {smsCode: cf79ae6addba60ad018347359bd144d2,deviceId: 719910247738029,mobile: username,version: 3.0.0,grant_type: sms_code}
+        smsUri: /sms/code
+        loginUri: /oauth/token
+        tokenPath: $.access_token
+        loginRely:
+          token: $.access_token
+          userId: $.userId
+          scope: $.scope
+        deviceTypeList:
+          - 业务员-管理员账号
+          - 业务员-员工
+          - 业务员-主管
+          - 合作公司-老板
+          - 合作公司-财务
+          - 合作公司-后勤
+          - 合作公司-主管
+          - 合作公司-经理-手下有人
+          - 合作公司-经理-手下无人
+        environment:
+          - loginHost: https://auth-t.zhilunkeji.com
+            loginHeader: {Authorization: Basic Q1VTVE9NRVJfU0VSVklDRTpvTnZsSmE3VW5JQXlKWTlnaFlaQVFxVHlpNmV1NE8=}
+            smsHeader: {}
+            account:
+              - - 13588096730
+            host: https://api-t.zhilunkeji.com
+          - loginHost: http://auth.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic VEhSRUVHVUFSQU5URUU6b052bEphN1VuSUF5Slk5Z2hZWkFRcVR5aTZldTRP}
+            smsHeader: {}
+            account:
+              - - 12900000205
+                - 12900000205
+              - - 12900000205
+            host: http://api.zhilun-qa-major.com
+          - loginHost: http://auth.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic VEhSRUVHVUFSQU5URUU6b052bEphN1VuSUF5Slk5Z2hZWkFRcVR5aTZldTRP}
+            smsHeader: {}
+            account:
+              - - 13588096710
+                - 186571905346
+              - - 1358809666
+            host: http://api.zhilun-qa-minor.com
+
+
+
+
+
 
 
 

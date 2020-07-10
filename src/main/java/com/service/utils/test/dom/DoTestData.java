@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Data
 public class DoTestData {
     private String apiPath;
-    private String apiMethod;
+    private Integer apiMethod;
     private String apiParam;
     private String host;
     private JSONArray headerParam = null;

@@ -18,13 +18,13 @@ public interface ApiCaseService {
      * @param apiId
      * @return
      */
-    ApiForCase getApiDataForAddCase(Integer apiId,Integer userId);
+    ApiForCase getApiDataForAddCase(Integer apiId,Integer userId,Integer projectId);
 
     /**
      * 新增测试用例
      * @param apiCaseData
      */
-    void  addApiCaseData(ApiCaseData apiCaseData);
+    void  addApiCaseData(ApiCaseData apiCaseData,Integer projectId);
 
     /**
      * 获取对应的API的测试数量
@@ -51,14 +51,14 @@ public interface ApiCaseService {
      * @param id
      * @return
      */
-    ApiCaseUpdateData getApiCaseData(int id,Integer userId);
+    ApiCaseUpdateData getApiCaseData(int id,Integer userId,Integer projectId);
 
     /**
      * 更新用例数据
      * @param apiCaseData
      */
 
-    void updateApiCaseData(ApiCaseData apiCaseData);
+    void updateApiCaseData(ApiCaseData apiCaseData,Integer projectId);
 
     /**
      * 删除接口用例；的淑君

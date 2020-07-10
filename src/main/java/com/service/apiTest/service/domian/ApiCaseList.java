@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Data
 public class ApiCaseList {
     private Integer id;
-    private String device;
+    private int device;
     private  String apiPath;
     private String apiId;
     private String apiCaseMark;

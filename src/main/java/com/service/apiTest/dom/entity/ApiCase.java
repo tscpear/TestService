@@ -19,11 +19,11 @@ public class ApiCase {
     private String bodyHandleParam;
     private String relyCaseId;
     private Integer isDepend;
-    private String deviceType;
+    private Integer deviceType;
     private String statusAssertion;
     private String otherAssertionType;
-//    private String responseAssertion;
-//    private String sqlAssertion;
+    private String responseValueExpect;
+
 
 
     private Integer isDel;
@@ -36,7 +36,6 @@ public class ApiCase {
     private String headerRelyToHandle ;
     private String webformRelyToHandle ;
     private String bodyRelyToHandle ;
+    private Integer projectId;
 
-
-    
 }

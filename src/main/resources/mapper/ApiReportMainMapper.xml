@@ -17,10 +17,10 @@
         update api_report_main set success = #{success} where id = #{id}
     </update>
     <select id="getList" resultMap="report">
-        select  * from api_report_main order by id desc limit #{pageBegin},#{pageEnd} ;
+        select * from api_report_main where project_id = #{projectId} order by create_time desc limit #{pageBegin},#{pageEnd} ;
     </select>
     <select id="getCount" resultType="java.lang.Integer">
-        select count(*) from  api_report_main;
+        select count(*) from api_report_main where project_id = #{projectId};
     </select>
 
 </mapper>

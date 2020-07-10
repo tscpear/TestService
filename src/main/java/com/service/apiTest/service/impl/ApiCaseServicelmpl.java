@@ -19,6 +19,8 @@ import com.service.utils.MyBaseChange;
 import com.service.utils.test.dom.DriverAppHost;
 import com.service.utils.test.dom.MyHost;
 import com.service.utils.test.dom.StoreHost;
+import com.service.utils.test.dom.project.Project;
+import com.service.utils.test.dom.project.Project1;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,13 +53,15 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     private StoreHost storeHost;
     @Autowired
     private DriverAppHost driverAppHost;
+    @Autowired
+    private Project1 project1;
 
 
     @Override
-    public ApiForCase getApiDataForAddCase(Integer apiId, Integer userId) {
+    public ApiForCase getApiDataForAddCase(Integer apiId, Integer userId, Integer projectId) {
         ApiData apiData = apiService.getApi(apiId);
         ApiForCase apiForCase = new ApiForCase();
-        apiForCase.setDeviceTypeList(this.getDeviceType(apiData.getDevice()));
+        apiForCase.setDeviceTypeList(this.getDeviceType(projectId, apiData.getDevice()));
         BeanUtils.copyProperties(apiData, apiForCase);
         apiForCase.setApiId(apiData.getId());
 
@@ -112,8 +116,8 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
     @Override
-    public void addApiCaseData(ApiCaseData apiCaseData) {
-        apiCaseMapper.addApiCaseData(this.updateAndAdd(apiCaseData));
+    public void addApiCaseData(ApiCaseData apiCaseData, Integer projectId) {
+        apiCaseMapper.addApiCaseData(this.updateAndAdd(apiCaseData, projectId));
     }
 
     @Override
@@ -131,15 +135,16 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         Map<String, Object> map = new HashMap<>();
         NewApiListCaseParam param = new NewApiListCaseParam();
         BeanUtils.copyProperties(apiCaseListParam, param);
-        List<Integer> caseIdList = new ArrayList<>();
-        String device = apiCaseListParam.getDevice();
+        List<Integer> caseIdList;
+        Integer device = apiCaseListParam.getDevice();
         String apiPath = apiCaseListParam.getApiPath();
-        List<ApiCase> apiCaseLists = new ArrayList<>();
+        Integer projectId = apiCaseListParam.getProjectId();
+        List<ApiCase> apiCaseLists;
         if (StringUtils.isEmpty(apiCaseListParam.getApiId())) {
             if (StringUtils.isEmpty(apiPath) && StringUtils.isEmpty(device)) {
                 caseIdList = null;
             } else {
-                caseIdList = apiMapper.getApiIdForCaseList(device, apiPath);
+                caseIdList = apiMapper.getApiIdForCaseList(device, apiPath, projectId);
             }
             param.setCaseIdList(caseIdList);
         }
@@ -169,13 +174,25 @@ public class ApiCaseServicelmpl implements ApiCaseService {
      * @return
      */
     @Override
-    public ApiCaseUpdateData getApiCaseData(int id, Integer userId) {
+    public ApiCaseUpdateData getApiCaseData(int id, Integer userId, Integer projectId) {
         ApiCaseUpdateData apiCaseUpdateData = new ApiCaseUpdateData();
         ApiCase apiCase = apiCaseMapper.getApiCaseData(id);
-        ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId(), userId);
+        ApiForCase apiForCase = this.getApiDataForAddCase(apiCase.getApiId(), userId, projectId);
         BeanUtils.copyProperties(apiForCase, apiCaseUpdateData);
         BeanUtils.copyProperties(apiCase, apiCaseUpdateData);
         apiCaseUpdateData.setWebformHandleParam(b.StringToAO(apiCase.getWebformHandleParam()));
+        JSONArray otherAssertionType = b.StringToArray(apiCase.getOtherAssertionType());
+        apiCaseUpdateData.setOtherAssertionType(otherAssertionType);
+        Integer deviceId = apiForCase.getDevice();
+        for (Object o : otherAssertionType) {
+            switch (o.toString()) {
+                case "2":
+                    apiCaseUpdateData.setResponseValueExpect(b.StringToAO(apiCase.getResponseValueExpect()));
+                    break;
+            }
+        }
+
+
         /**
          * 依赖转换
          */
@@ -224,8 +241,8 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
     @Override
-    public void updateApiCaseData(ApiCaseData apiCaseData) {
-        apiCaseMapper.updateApiCaseData(this.updateAndAdd(apiCaseData));
+    public void updateApiCaseData(ApiCaseData apiCaseData, Integer projectId) {
+        apiCaseMapper.updateApiCaseData(this.updateAndAdd(apiCaseData, projectId));
     }
 
     @Override
@@ -242,7 +259,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
 
-    public ApiCase updateAndAdd(ApiCaseData apiCaseData) {
+    public ApiCase updateAndAdd(ApiCaseData apiCaseData, Integer projectId) {
         ApiCase apiCase = new ApiCase();
         BeanUtils.copyProperties(apiCaseData, apiCase);
 
@@ -253,6 +270,9 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         apiCase.setHeaderRelyToHandle(apiCaseData.getHeaderRelyToHandle().toString());
         apiCase.setWebformRelyToHandle(apiCaseData.getWebformRelyToHandle().toString());
         apiCase.setBodyRelyToHandle(apiCaseData.getBodyRelyToHandle().toString());
+        apiCase.setOtherAssertionType(apiCaseData.getOtherAssertionType().toString());
+        apiCase.setResponseValueExpect(apiCaseData.getResponseValueExpect().toString());
+        apiCase.setProjectId(projectId);
 
         JSONArray relySelect = b.StringToAO(apiCaseData.getSelectRelyCase().toString());
         JSONArray array = new JSONArray();
@@ -284,20 +304,29 @@ public class ApiCaseServicelmpl implements ApiCaseService {
      * @param s
      * @return
      */
-    public JSONObject getSelectRelyValue(String s) {
-        String name = s;
-        String ids = apiMapper.getApiIdByPath(name).toString();
+    public JSONObject getSelectRelyValue(String name) {
         JSONObject object = new JSONObject();
-        Integer id = Integer.parseInt(ids);
-        String apiPath = apiMapper.getPathById(id);
-        object.put("apiPath", apiPath);
-        List<ApiCase> relyTest = apiCaseMapper.getTestForRely(id);
         JSONArray array = new JSONArray();
-        for (ApiCase relys : relyTest) {
+        if (name.equals("login")) {
             JSONObject a = new JSONObject();
-            a.put("apiCaseId", relys.getId().toString());
-            a.put("apiCaseMark", relys.getApiCaseMark());
+            a.put("apiCaseId", "0");
+            a.put("apiCaseMark", "登入");
+            object.put("apiPath", "login");
             array.add(a);
+        } else {
+            String ids = apiMapper.getApiIdByPath(name).toString();
+
+            Integer id = Integer.parseInt(ids);
+            String apiPath = apiMapper.getPathById(id);
+            object.put("apiPath", apiPath);
+            List<ApiCase> relyTest = apiCaseMapper.getTestForRely(id);
+
+            for (ApiCase relys : relyTest) {
+                JSONObject a = new JSONObject();
+                a.put("apiCaseId", relys.getId().toString());
+                a.put("apiCaseMark", relys.getApiCaseMark());
+                array.add(a);
+            }
         }
         object.put("relyCase", array);
         return object;
@@ -329,20 +358,21 @@ public class ApiCaseServicelmpl implements ApiCaseService {
 
     /**
      * 账户类型
+     *
      * @param device
      * @param e
      * @return
      */
-    public JSONArray getDeviceType(String device) {
-        JSONArray a = JSONArray.parseArray("[]");
-        MyHost myHost = new MyHost();
-        if (device.equals("2")) {
-            myHost = storeHost;
-        } else if (device.equals("4") || device.equals(3)) {
-            myHost = driverAppHost;
-        } else {
-            return a;
+    public List<String> getDeviceType(Integer projectId, Integer device) {
+
+        Project project = new Project();
+        switch (projectId) {
+            case 1:
+                project = project1;
+                break;
+
         }
-       return b.StringToArray(myHost.getDeviceType().toString());
+        return project.getDevice().get(device - 1).getDeviceTypeList();
+
     }
 }

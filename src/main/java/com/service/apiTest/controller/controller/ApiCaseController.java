@@ -21,42 +21,36 @@ public class ApiCaseController {
 
     @Autowired
     private ApiCaseService apiCaseService;
-    @Autowired
-    private ApiMapper apiMapper;
-    @Autowired
-    private ApiService apiService;
-    @Autowired
-    private  ApiCaseMapper apiCaseMapper;
 
     @GetMapping("/caseAdd")
     @ResponseBody
-    public ApiBaseRe getApiForCaseData(@RequestParam int apiId,@RequestParam Integer userId) {
+    public ApiBaseRe getApiForCaseData(@RequestParam int apiId, @RequestParam Integer userId, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
-            ApiForCase apiForCase = apiCaseService.getApiDataForAddCase(apiId,userId);
+//        try {
+            ApiForCase apiForCase = apiCaseService.getApiDataForAddCase(apiId, userId, projectId);
             baseRe.setCode(1);
             baseRe.setData(apiForCase);
 
-        } catch (Exception e) {
-            baseRe.setCode(0);
-            baseRe.setMsg(e.toString());
-        }
+//        } catch (Exception e) {
+//            baseRe.setCode(0);
+//            baseRe.setMsg(e.toString());
+//        }
 
         return baseRe;
     }
 
     @PostMapping("/add")
     @ResponseBody
-    public ApiBaseRe addApiCase(@RequestBody ApiCaseData apiCaseData) {
+    public ApiBaseRe addApiCase(@RequestBody ApiCaseData apiCaseData, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
-            apiCaseService.addApiCaseData(apiCaseData);
+//        try {
+            apiCaseService.addApiCaseData(apiCaseData, projectId);
             baseRe.setCode(1);
             baseRe.setMsg("新增成功");
-        } catch (Exception e) {
-            baseRe.setCode(0);
-            baseRe.setMsg(e.toString());
-        }
+//        } catch (Exception e) {
+//            baseRe.setCode(0);
+//            baseRe.setMsg(e.toString());
+//        }
 
         return baseRe;
     }
@@ -67,11 +61,12 @@ public class ApiCaseController {
                                     @RequestParam Integer limit,
                                     @RequestParam(required = false) String apiPath,
                                     @RequestParam(required = false) String apiCaseMark,
-                                    @RequestParam(required = false) String device,
-                                    @RequestParam(required = false) Integer apiId) {
+                                    @RequestParam(required = false) Integer device,
+                                    @RequestParam(required = false) Integer apiId,
+                                    @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
 
-        try{
+        try {
             ApiCaseListParam param = new ApiCaseListParam();
             param.setPageBegin(page * limit - limit);
             param.setPageEnd(limit);
@@ -79,11 +74,12 @@ public class ApiCaseController {
             param.setDevice(device);
             param.setApiCaseMark(apiCaseMark);
             param.setApiId(apiId);
-            Map<String,Object> map = apiCaseService.getApiCaseList(param);
+            param.setProjectId(projectId);
+            Map<String, Object> map = apiCaseService.getApiCaseList(param);
             baseRe.setData(map.get("list"));
             baseRe.setCode(1);
             baseRe.setCount(map.get("count"));
-        }catch (Exception e){
+        } catch (Exception e) {
             baseRe.setCode(0);
             baseRe.setMsg(e.toString());
         }
@@ -93,12 +89,12 @@ public class ApiCaseController {
 
     @GetMapping("/caseUpdate")
     @ResponseBody
-    public ApiBaseRe getCaseAdd(@RequestParam Integer id,@RequestParam Integer userId){
+    public ApiBaseRe getCaseAdd(@RequestParam Integer id, @RequestParam Integer userId, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try{
-            baseRe.setData(apiCaseService.getApiCaseData(id,userId));
+        try {
+            baseRe.setData(apiCaseService.getApiCaseData(id, userId,projectId));
             baseRe.setCode(1);
-        }catch (Exception e){
+        } catch (Exception e) {
             baseRe.setCode(0);
             baseRe.setMsg(e.toString());
         }
@@ -107,26 +103,26 @@ public class ApiCaseController {
 
     @PostMapping("/update")
     @ResponseBody
-    public ApiBaseRe updateApiCase(@RequestBody ApiCaseData apiCaseData ){
-       ApiBaseRe baseRe = new ApiBaseRe();
-       try{
-           apiCaseService.updateApiCaseData(apiCaseData);
-           baseRe.setCode(1);
-           baseRe.setMsg("新增成功");
-       }catch (Exception e){
-           baseRe.setCode(0);
-           baseRe.setMsg(e.toString());
-       }
-       return baseRe;
+    public ApiBaseRe updateApiCase(@RequestBody ApiCaseData apiCaseData, @RequestHeader(name = "projectId") Integer projectId) {
+        ApiBaseRe baseRe = new ApiBaseRe();
+        try {
+            apiCaseService.updateApiCaseData(apiCaseData, projectId);
+            baseRe.setCode(1);
+            baseRe.setMsg("更新成功");
+        } catch (Exception e) {
+            baseRe.setCode(0);
+            baseRe.setMsg(e.toString());
+        }
+        return baseRe;
     }
 
 
     @PostMapping("/del")
     @ResponseBody
-    public ApiBaseRe delApiCase(@RequestParam Integer id,@RequestParam Integer userId){
-        ApiBaseRe baseRe =new ApiBaseRe();
+    public ApiBaseRe delApiCase(@RequestParam Integer id, @RequestParam Integer userId) {
+        ApiBaseRe baseRe = new ApiBaseRe();
         try {
-            apiCaseService.delApiCase(id,userId);
+            apiCaseService.delApiCase(id, userId);
             baseRe.setCode(1);
             baseRe.setMsg("删除成功");
         } catch (Throwable throwable) {

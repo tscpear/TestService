@@ -33,7 +33,7 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
 
 
     @Override
-    public void getTireTestData(String environment, String orderSn) throws Throwable {
+    public void getTireTestData(Integer environment, String orderSn) throws Throwable {
         this.test13(environment);
         Token token = tokenMapper.getData();
         String oderId = this.test1(environment, orderSn, token);
@@ -89,8 +89,8 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
     }
 
 
-    public JSONObject doTest(String environment, Integer testId, Token token) {
-        DoTestData doTestData = doApiService.getTestData(environment, testId, token, 0);
+    public JSONObject doTest(Integer environment, Integer testId, Token token) {
+        DoTestData doTestData = doApiService.getTestData(environment, testId, null, null,0,null,1);
         ResponseData responseData = httpClientService.getResponse(doTestData);
         System.out.println(responseData.getResponse());
         return new JSONObject(responseData.getResponse());
@@ -100,9 +100,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
     /**
      * 进入出库单列表，获取id
      */
-    public String test1(String environment, String orderSn, Token token) throws Throwable {
+    public String test1(Integer environment, String orderSn, Token token) throws Throwable {
         System.err.println("test1");
-        JSONArray array = new JSONArray(this.doTest(environment, 29, token).get("datas").toString());
+        JSONArray array = new JSONArray(this.doTest(environment, 29, null).get("datas").toString());
         String id;
         for (Object a : array) {
             JSONObject object = new JSONObject(a.toString());
@@ -121,9 +121,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param oderId
      * @param orderSn
      */
-    public JSONObject test2(String environment, Token token, String oderId, String orderSn) {
+    public JSONObject test2(Integer environment, Token token, String oderId, String orderSn) {
         System.err.println("test2");
-        DoTestData doTestData = doApiService.getTestData(environment, 33, token, 0);
+        DoTestData doTestData = doApiService.getTestData(environment, 33, null, null,0,null,0);
         JSONArray array = new JSONArray();
         JSONObject id = new JSONObject();
         id.put("name", "id");
@@ -148,9 +148,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param goodsOfNum
      * @return
      */
-    public List<String> test3(Integer testId, String environment, Token token, Integer goodsOfNum) {
+    public List<String> test3(Integer testId, Integer environment, Token token, Integer goodsOfNum) {
         System.err.println("test3");
-        JSONObject data1 = new JSONObject(this.doTest(environment, testId, token).get("data").toString());
+        JSONObject data1 = new JSONObject(this.doTest(environment, testId, null).get("data").toString());
         JSONArray list = new JSONArray(data1.get("list").toString());
         List<String> barcodeList = new ArrayList<>();
         for (int i = 0; i < goodsOfNum + 10; i++) {
@@ -167,7 +167,7 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param token
      * @return
      */
-    public String test4(String environment, Token token) {
+    public String test4(Integer environment, Token token) {
         System.err.println("test4");
         JSONObject data = this.doTest(environment, 48, token);
         return data.get("id").toString();
@@ -181,9 +181,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param intoOrderSn
      * @param barcode
      */
-    public JSONObject test5(String environment, Token token, String intoOrderSn, String barcode) {
+    public JSONObject test5(Integer environment, Token token, String intoOrderSn, String barcode) {
         System.err.println("test5");
-        DoTestData doTestData = doApiService.getTestData(environment, 49, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 49, null,null, 1,null,1);
         JSONObject webformParam = new JSONObject();
         webformParam.put("id", intoOrderSn);
         webformParam.put("tyreNum", barcode);
@@ -200,9 +200,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param barcodeData
      * @param intoOrderSn
      */
-    public boolean test6(String environment, Token token, JSONObject barcodeData, String intoOrderSn) {
+    public boolean test6(Integer environment, Token token, JSONObject barcodeData, String intoOrderSn) {
         System.err.println("test6");
-        DoTestData doTestData = doApiService.getTestData(environment, 50, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 50, null,null, 1,null,1);
         JSONObject webformParam = new JSONObject();
         webformParam.put("id", intoOrderSn);
         webformParam.put("detailTyreNumId", barcodeData.get("id"));
@@ -236,9 +236,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param token
      * @param intoOrderSn
      */
-    public void test7(String environment, Token token, String intoOrderSn) {
+    public void test7(Integer environment, Token token, String intoOrderSn) {
         System.err.println("test7");
-        DoTestData doTestData = doApiService.getTestData(environment, 51, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 51, null, null,1,null,1);
         JSONObject webformParam = new JSONObject();
         webformParam.put("id", intoOrderSn);
         doTestData.setWebformParam(b.oToA(webformParam, "name", "value"));
@@ -253,9 +253,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param token
      * @param outOrderSn
      */
-    public void test8(String environment, Token token, String outOrderSn) {
+    public void test8(Integer environment, Token token, String outOrderSn) {
         System.err.println("test8");
-        DoTestData doTestData = doApiService.getTestData(environment, 43, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 43, null,null, 1,null,1);
         JSONObject webformParam = new JSONObject();
         webformParam.put("id", outOrderSn);
         doTestData.setWebformParam(b.oToA(webformParam, "name", "value"));
@@ -271,9 +271,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param barcode
      * @param outOrderSnSmall
      */
-    public void test9(String environment, Token token, String barcode, String outOrderSnSmall) {
+    public void test9(Integer environment, Token token, String barcode, String outOrderSnSmall) {
         System.err.println("test9");
-        DoTestData doTestData = doApiService.getTestData(environment, 52, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 52, null,null, 1,null,1);
         JSONObject webformParam = new JSONObject();
         webformParam.put("id", outOrderSnSmall);
         webformParam.put("tyreNum", barcode);
@@ -290,9 +290,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param token
      * @param outOrderSn
      */
-    public void test10(String environment, Token token, String outOrderSn) throws InterruptedException {
+    public void test10(Integer environment, Token token, String outOrderSn) throws InterruptedException {
         System.err.println("test10");
-        DoTestData doTestData = doApiService.getTestData(environment, 53, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 53, null,null, 1,null,1);
         JSONObject webformParam = new JSONObject();
         webformParam.put("id", outOrderSn);
         doTestData.setWebformParam(b.oToA(webformParam, "name", "value"));
@@ -310,10 +310,10 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param oderSn
      * @return
      */
-    public JSONArray test11(String environment, Token token, String oderSn) throws InterruptedException {
+    public JSONArray test11(Integer environment, Token token, String oderSn) throws InterruptedException {
         System.err.println("test11");
         System.err.println();
-        DoTestData doTestData = doApiService.getTestData(environment, 54, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 54, null,null, 1,null,1);
         JSONObject webformParam = new JSONObject();
         webformParam.put("pageNum", 1);
         webformParam.put("pageSize", 60);
@@ -331,9 +331,9 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * @param token
      * @param array
      */
-    public void test12(String environment, Token token, JSONArray array) {
+    public void test12(Integer environment, Token token, JSONArray array) {
         System.err.println("test12");
-        DoTestData doTestData = doApiService.getTestData(environment, 55, token, 1);
+        DoTestData doTestData = doApiService.getTestData(environment, 55, null,null, 1,null,1);
         JSONObject param = new JSONObject();
         String storePhone = "";
         Integer storeUserId = 0;
@@ -357,7 +357,7 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
 
     }
 
-    public void test13(String environment) throws Throwable {
+    public void test13(Integer environment) throws Throwable {
         com.alibaba.fastjson.JSONArray array = new com.alibaba.fastjson.JSONArray();
         array.add(55);
         array.add(49);

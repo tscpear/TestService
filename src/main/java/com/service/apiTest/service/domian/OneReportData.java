@@ -20,4 +20,5 @@ public class OneReportData {
     private  String actStatus;
     private  Integer resultStatus;
     private Integer resultMain;
+    private JSONArray responseValueExpectResult = JSONArray.parseArray("[]");
 }

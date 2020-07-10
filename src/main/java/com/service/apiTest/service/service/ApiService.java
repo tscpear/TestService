@@ -52,13 +52,13 @@ public interface ApiService{
      * @param path
      * @return
      */
-    JSONArray searchTest(String path);
+    JSONArray searchTest(String path,Integer projectId);
 
     /**
      * 查询依赖数据的name
      * @param path
      * @return
      */
-    JSONArray searchRelyName(String path);
+    JSONArray searchRelyName(String path,Integer device,Integer projectId);
 
 }

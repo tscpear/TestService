@@ -9,16 +9,19 @@
         <result property="apiPath" column="api_path"/>
         <result property="apiMethod" column="api_method"/>
         <result property="response" column="response"/>
+        <result property="responseBaseExpectResult" column="response_base_expect_result"/>
         <result property="relyValue" column="rely_value"/>
         <result property="headerParam" column="header_param"/>
         <result property="webformParam" column="webform_param"/>
-        <result property="bodyParam" column="body_Param"/>
+        <result property="bodyParam" column="body_param"/>
         <result property="expectStatus" column="expect_status"/>
         <result property="actStatus" column="act_status"/>
         <result property="resultStatus" column="result_status"/>
         <result property="testId" column="test_id"/>
         <result property="device" column="device"/>
         <result property="deviceType" column="device_type"/>
+        <result property="resultMain" column="result_main"/>
+        <result property="responseValueExpectResult" column="response_value_expect_result"/>
     </resultMap>
     <insert id="putData">
         insert into api_report (report_id,
@@ -26,7 +29,7 @@
                                 api_path,
                                 header_param,
                                 webform_param,
-                                body_Param,
+                                body_param,
                                 rely_value,
                                 expect_status,
                                 act_status,
@@ -34,7 +37,10 @@
                                 result_status,
                                 api_method,
                                 device,
-                                device_type
+                                device_type,
+                                response_base_expect_result,
+                                response_value_expect_result,
+                                result_main
         )
         value
         (
@@ -65,23 +71,55 @@
         #{device}
         ,
         #{deviceType}
+        ,
+        #{responseBaseExpectResult}
+        ,
+        #{responseValueExpectResult}
+        ,
+        #{resultMain}
         )
     </insert>
+    <update id="updateByReportId">
+        update api_report
+        set api_path                     = #{apiPath},
+            header_param                 = #{headerParam},
+            webform_param                = #{webformParam},
+            body_param                   = #{bodyParam},
+            rely_value                   = #{relyValue},
+            expect_status                = #{expectStatus},
+            act_status                   = #{actStatus},
+            response                     = #{response},
+            result_status                = #{resultStatus},
+            api_method                   = #{apiMethod},
+            device                       = #{device},
+            device_type                  = #{deviceType},
+            response_base_expect_result  = #{responseBaseExpectResult},
+            response_value_expect_result = #{responseValueExpectResult},
+            result_main                  = #{resultMain}
+        where report_id = #{reportId}
+          and test_id = #{testId}
+
+
+    </update>
     <select id="getList" resultType="com.service.apiTest.dom.entity.ApiReport">
         select c.device        as device,
                d.id            as testId,
                c.api_path      as apiPath,
                d.api_case_mark as apiCaseMark,
-               d.result_status as resultStatus,
+               d.act_status    as actStatus,
                d.report_id     as reportId,
-               d.aid           as id
+               d.aid           as id,
+               d.result_main   as resultMain,
+               d.device_type as deviceType
         from uri c,
              (select a.report_id     as report_id,
                      b.api_id        as api_id,
                      b.id            as id,
-                     a.result_status as result_status,
+                     a.act_status    as act_status,
                      b.api_case_mark as api_case_mark,
-                     a.id            as aid
+                     a.id            as aid,
+                     a.result_main   as result_main,
+                     b.device_type as device_type
               from api_report a,
                    apicase b
               where a.test_id = b.id) d
@@ -97,7 +135,7 @@
     <select id="countOfSuccess" resultType="java.lang.Integer">
         select count(*)
         from api_report
-        where result_status = 1
+        where result_main = 0
           and report_id = #{reportId};
     </select>
     <select id="getRelyValue" resultType="java.lang.String">
@@ -112,5 +150,11 @@
         select test_id
         from api_report
         where report_id = #{reportId}
+    </select>
+    <select id="findReportIdAndTestId" resultType="java.lang.Integer">
+        select count(*)
+        from api_report
+        where report_id = #{reportId}
+          and test_id = #{testId}
     </select>
 </mapper>

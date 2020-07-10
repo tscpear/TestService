@@ -1,5 +1,7 @@
 package com.service.utils.test.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
 import com.mysql.cj.xdevapi.JsonArray;
 import com.service.apiTest.dom.entity.Api;
 import com.service.apiTest.dom.entity.ApiCase;
@@ -11,8 +13,12 @@ import com.service.apiTest.dom.mapper.ApiReportMapper;
 import com.service.apiTest.service.service.ApiReportService;
 import com.service.utils.MyBaseChange;
 import com.service.utils.test.dom.*;
+import com.service.utils.test.dom.project.Device;
+import com.service.utils.test.dom.project.Project;
+import com.service.utils.test.dom.project.Project1;
 import com.service.utils.test.method.DoApiService;
 import com.service.utils.test.method.HttpClientService;
+import org.apache.catalina.Host;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,9 +56,10 @@ public class DoApiImpl implements DoApiService {
     private ApiReportMapper apiReportMapper;
     @Autowired
     private ApiReportService apiReportService;
+    @Autowired
+    private Project1 project1;
 
-
-    public String getAccount(String device, String environment, String deviceType) {
+    public String getAccount(String device, Integer environment, String deviceType) {
         MyHost myHost = this.selectHost(device);
         Integer i = Integer.parseInt(deviceType);
         if (environment.equals("uat") || environment.equals("prod")) {
@@ -63,32 +70,32 @@ public class DoApiImpl implements DoApiService {
     }
 
 
-    public String getHost(MyHost myHost, String environment, boolean isLogin, String device) {
+    public String getHost(MyHost myHost, Integer environment, boolean isLogin, String device) {
         String host = null;
         switch (environment) {
-            case "uat":
-                if (isLogin && (device.equals("2")|| device.equals("4")|| device.equals("3"))) {
+            case 1:
+                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
                     host = myHost.getUatl();
                 } else {
                     host = myHost.getUat();
                 }
                 break;
-            case "prod":
-                if (isLogin &&(device.equals("2")|| device.equals("4")|| device.equals("3"))) {
+            case 2:
+                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
 
                 } else {
                     host = myHost.getProd();
                 }
                 break;
-            case "test":
-                if (isLogin && (device.equals("2")|| device.equals("4")|| device.equals("3"))) {
+            case 3:
+                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
                     host = myHost.getTestl();
                 } else {
                     host = myHost.getTest();
                 }
                 break;
-            case "tests":
-                if (isLogin && (device.equals("2")|| device.equals("4")|| device.equals("3"))) {
+            case 4:
+                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
                     host = myHost.getTestsl();
                 } else {
                     host = myHost.getTests();
@@ -102,7 +109,7 @@ public class DoApiImpl implements DoApiService {
     }
 
 
-    public String getBasic(String device, String environment) {
+    public String getBasic(String device, Integer environment) {
         MyHost myHost = this.selectHost(device);
         if (environment.equals("uat") || environment.equals("prod")) {
             return myHost.getBasic();
@@ -112,25 +119,25 @@ public class DoApiImpl implements DoApiService {
 
     }
 
-    public String getToken(MyHost host, String environment, String basic) {
-        DoTestData data = new DoTestData();
-        data.setApiMethod("2");
-        if (environment.equals("uat")) {
-            data.setHost("https://auth.t.zhilunkeji.com");
-        }
-        data.setApiPath("/sms/code");
-        data.setBodyParam("{\"deviceId\":\"719910247738029\",\"mobile\":\"12900000001\"}");
-
-        httpClientService.getResponse(data).toString();
-        data.setApiPath("/oauth/token");
-        data.setAuthorization("Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy");
-        data.setBodyParam(null);
-        JSONArray objects = new JSONArray("[{\"name\":\"smsCode\",\"value\":\"cf79ae6addba60ad018347359bd144d2\"},{\"name\":\"deviceId\",\"value\":\"719910247738029\"},{\"name\":\"mobile\",\"value\":\"12900000001\"},{\"name\":\"version\",\"value\":\"2.7.7\"},{\"name\":\"grant_type\",\"value\":\"sms_code\"}]");
-        data.setWebformParam(objects);
-        return httpClientService.getResponse(data).toString();
-
-
-    }
+//    public String getToken(MyHost host, String environment, String basic) {
+//        DoTestData data = new DoTestData();
+//        data.setApiMethod("2");
+//        if (environment.equals("uat")) {
+//            data.setHost("https://auth.t.zhilunkeji.com");
+//        }
+//        data.setApiPath("/sms/code");
+//        data.setBodyParam("{\"deviceId\":\"719910247738029\",\"mobile\":\"12900000001\"}");
+//
+//        httpClientService.getResponse(data).toString();
+//        data.setApiPath("/oauth/token");
+//        data.setAuthorization("Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy");
+//        data.setBodyParam(null);
+//        JSONArray objects = new JSONArray("[{\"name\":\"smsCode\",\"value\":\"cf79ae6addba60ad018347359bd144d2\"},{\"name\":\"deviceId\",\"value\":\"719910247738029\"},{\"name\":\"mobile\",\"value\":\"12900000001\"},{\"name\":\"version\",\"value\":\"2.7.7\"},{\"name\":\"grant_type\",\"value\":\"sms_code\"}]");
+//        data.setWebformParam(objects);
+//        return httpClientService.getResponse(data).toString();
+//
+//
+//    }
 
     public MyHost selectHost(String device) {
         switch (device) {
@@ -161,20 +168,20 @@ public class DoApiImpl implements DoApiService {
      * @return
      */
     @Override
-    public DoTestData getLoginData(String environment, String device, String deviceType) {
+    public DoTestData getLoginData(Integer environment, String device, String deviceType) {
         DoTestData data = new DoTestData();
         MyHost myHostData = selectHost(device);
         data.setHost(getHost(myHostData, environment, true, device));
-        data.setApiMethod("2");
+//        data.setApiMethod("2");
         JSONObject webformParam = new JSONObject();
         if (device.equals("5")) {
             data.setApiPath("/scan/login.do");
-            webformParam.put("username",myHostData.getName());
-            webformParam.put("password",myHostData.getPassword());
-            webformParam.put("scanVersion","20200303");
-            webformParam.put("x","113.236565");
-            webformParam.put("y","35.250118");
-            webformParam.put("deviceNum","ZX1G42CPJD");
+            webformParam.put("username", myHostData.getName());
+            webformParam.put("password", myHostData.getPassword());
+            webformParam.put("scanVersion", "20200303");
+            webformParam.put("x", "113.236565");
+            webformParam.put("y", "35.250118");
+            webformParam.put("deviceNum", "ZX1G42CPJD");
         } else if (device.equals("2") || device.equals("4") || device.equals("3")) {
 
             data.setApiPath("/oauth/token");
@@ -184,44 +191,44 @@ public class DoApiImpl implements DoApiService {
             } else {
                 mobileList = myHostData.getAccounts();
             }
-            String mobileValue =  mobileList.get(Integer.parseInt(deviceType.split("\\.")[1])-1);
+            String mobileValue = mobileList.get(Integer.parseInt(deviceType.split("\\.")[1]) - 1);
             String grantValue;
-            if(mobileValue.equals("13588096710")){
+            if (mobileValue.equals("13588096710")) {
                 grantValue = "store_password";
-                webformParam.put("password","21218cca77804d2ba1922c33e0151105");
-                webformParam.put("application","app_zhilun");
+                webformParam.put("password", "21218cca77804d2ba1922c33e0151105");
+                webformParam.put("application", "app_zhilun");
 
-            }else{
+            } else {
                 ResponseData data1 = httpClientService.getResponse(this.getSmCodeData(environment, device, deviceType));
-                webformParam.put("smsCode","cf79ae6addba60ad018347359bd144d2");
+                webformParam.put("smsCode", "cf79ae6addba60ad018347359bd144d2");
                 grantValue = "sms_code";
             }
-            webformParam.put("mobile",mobileValue);
-            webformParam.put("deviceId","719910247738029");
-            webformParam.put("grant_type",grantValue);
-            if (device.equals("4")|| device.equals("3")) {
-                webformParam.put("application","app_driver");
-                webformParam.put("appVersionCode","132");
+            webformParam.put("mobile", mobileValue);
+            webformParam.put("deviceId", "719910247738029");
+            webformParam.put("grant_type", grantValue);
+            if (device.equals("4") || device.equals("3")) {
+                webformParam.put("application", "app_driver");
+                webformParam.put("appVersionCode", "132");
             } else {
-                webformParam.put("version","2.7.7");
+                webformParam.put("version", "2.7.7");
             }
 
         } else {
             data.setApiPath("/oauth/token");
             webformParam.put("username", myHostData.getName());
-            webformParam.put("password",myHostData.getPassword());
-            webformParam.put("grant_type","password");
+            webformParam.put("password", myHostData.getPassword());
+            webformParam.put("grant_type", "password");
         }
-        data.setWebformParam(b.oToA(webformParam,"name","value"));
+        data.setWebformParam(b.oToA(webformParam, "name", "value"));
         data.setAuthorization("Basic " + getBasic(device, environment));
         return data;
     }
 
 
-    public DoTestData getSmCodeData(String environment, String device, String deviceType) {
+    public DoTestData getSmCodeData(Integer environment, String device, String deviceType) {
 
         DoTestData data = new DoTestData();
-        data.setApiMethod("2");
+//        data.setApiMethod("2");
         MyHost myHostData = selectHost(device);
         data.setHost(getHost(myHostData, environment, true, device));
         data.setApiPath("/sms/code");
@@ -234,7 +241,7 @@ public class DoApiImpl implements DoApiService {
         }
         JSONObject json = new JSONObject();
         json.put("deviceId", "719910247738029");
-        json.put("mobile", mobileList.get(Integer.parseInt(deviceType.split("\\.")[1])-1));
+        json.put("mobile", mobileList.get(Integer.parseInt(deviceType.split("\\.")[1]) - 1));
         if (device.equals("4")) {
             json.put("application", "app_driver");
             json.put("appVersionCode", "132");
@@ -250,11 +257,25 @@ public class DoApiImpl implements DoApiService {
     }
 
     @Override
-    public DoTestData getTestData(String environment, Integer testId, Token token, long reportId) {
+    public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList,Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId) {
+        Project project = new Project();
+        switch (projectId) {
+            case 1:
+                project = project1;
+                break;
+        }
         DoTestData data = new DoTestData();
         ApiCase apiCase = apiCaseMapper.getApiCaseData(testId);
         Integer apiId = apiCase.getApiId();
         Api api = apiMapper.getApiData(apiId);
+        Integer deviceId = api.getDevice();
+        Integer deviceType = apiCase.getDeviceType();
+        String key = deviceId + "." + deviceType;
+        Map<String, String> paths = project.getDevice().get(deviceId - 1).getLoginRely();
+        String loginRely = newDataList.get(key);
+        String tokenValue = tokenList.get(key);
+
+
         /**
          * 判断被依赖的测试用例是否执行了
          */
@@ -265,14 +286,32 @@ public class DoApiImpl implements DoApiService {
             for (Object o : testList) {
                 JSONObject os = new JSONObject(o.toString());
                 Integer relyTestId = Integer.parseInt(os.get("apiCaseId").toString());
-                System.out.println(!nowDoTestList.contains(relyTestId));
-                if (!nowDoTestList.contains(relyTestId)) {
-                    relyTestListId.put(relyTestId);
+                if (relyTestId > 0) {
+                    System.out.println(!nowDoTestList.contains(relyTestId));
+                    if (!nowDoTestList.contains(relyTestId)) {
+                        relyTestListId.put(relyTestId);
+                    }
                 }
+
             }
             com.alibaba.fastjson.JSONArray array = b.StringToArray(relyTestListId.toString());
-            apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId);
+            if (array.size() > 0) {
+                apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId);
+
+            }
+
+
         }
+
+
+        /**
+         * 合成依赖数据
+         */
+        Map<Integer, Map<String, String>> newRely = new HashMap<>();
+        if(apiCase.getIsDepend() == 1){
+            newRely = this.getRelyValue(paths,apiCase,loginRely,reportId);
+        }
+
 
 
         //请求方法
@@ -280,10 +319,19 @@ public class DoApiImpl implements DoApiService {
         //uri
         data.setApiPath(api.getApiPath());
         //获取host基础数据
-        MyHost myHostData = selectHost(api.getDevice());
+//        MyHost myHostData = selectHost(api.getDevice());
         //host
-        data.setHost(getHost(myHostData, environment, false, api.getDevice()));
+//        data.setHost(getHost(myHostData, environment, false, api.getDevice()));
         //apiParam
+
+
+        /**
+         * host
+         */
+
+
+        String host = project.getDevice().get(deviceId - 1).getEnvironment().get(environment - 1).getHost();
+        data.setHost(host);
         String apiParamType = api.getApiParamType();
         switch (apiParamType) {
             case "1":
@@ -297,18 +345,23 @@ public class DoApiImpl implements DoApiService {
                     JSONObject apiRelyParam = new JSONObject(api.getApiRelyParam());
                     Integer relyTestId = 0;
                     JSONArray array = new JSONArray(apiCase.getRelyCaseId());
-                    for (Object as : array) {
-                        JSONObject a = new JSONObject(as.toString());
-                        if (a.get("apiPath").toString().equals(apiRelyParam.get("name").toString())) {
-                            relyTestId = Integer.parseInt(a.get("apiCaseId").toString());
-                            break;
-                        }
-                    }
-                    try {
-                        JSONObject relyValue = new JSONObject(apiReportMapper.getRelyValue(reportId, relyTestId));
-                        data.setApiParam(relyValue.get(apiRelyParam.get("value").toString()).toString());
-                    } catch (Exception e) {
+                    if (apiRelyParam.get("name").equals("0")) {
+                        data.setApiParam(newRely.get(0).get(apiRelyParam.get("value")));
 
+                    } else {
+                        for (Object as : array) {
+                            JSONObject a = new JSONObject(as.toString());
+                            if (a.get("apiPath").toString().equals(apiRelyParam.get("name").toString())) {
+                                relyTestId = Integer.parseInt(a.get("apiCaseId").toString());
+                                break;
+                            }
+                        }
+                        try {
+                            JSONObject relyValue = new JSONObject(apiReportMapper.getRelyValue(reportId, relyTestId));
+                            data.setApiParam(relyValue.get(apiRelyParam.get("value").toString()).toString());
+                        } catch (Exception e) {
+
+                        }
                     }
 
                 } else {
@@ -317,9 +370,9 @@ public class DoApiImpl implements DoApiService {
                 break;
         }
         //header
-        data.setHeaderParam(this.OAddOs(api.getHeaderParamType(), api.getHeaderFiexdParam(), apiCase.getHeaderHandleParam()));
+        data.setHeaderParam(this.OAddOs(api.getHeaderParamType(), api.getHeaderFiexdParam(), apiCase.getHeaderHandleParam(), api.getHeaderRelyParam(),newRely));
         //webform
-        data.setWebformParam(this.OAddOs(api.getWebformParamType(), api.getWebformFiexdParam(), apiCase.getWebformHandleParam()));
+        data.setWebformParam(this.OAddOs(api.getWebformParamType(), api.getWebformFiexdParam(), apiCase.getWebformHandleParam(), api.getWebformRelyParam(),newRely));
         //bodParam
         JSONArray bodyParamType = new JSONArray(api.getBodyParamType());
         if (bodyParamType.length() > 0) {
@@ -331,57 +384,8 @@ public class DoApiImpl implements DoApiService {
             String bodyString = b.getJSONString(api.getBodyFiexdParam());
             data.setBodyParam(bodyString);
         }
-        //token
-        String authorization = "";
-        JSONObject tokenData;
-        switch (apiCase.getDeviceType()) {
-            case "1":
-                tokenData = new JSONObject(token.getTireWebToken());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "2.1":
-                tokenData = new JSONObject(token.getStore1());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "2.2":
-                tokenData = new JSONObject(token.getStore2());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "2.3":
-                tokenData = new JSONObject(token.getStore3());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "2.4":
-                tokenData = new JSONObject(token.getStore4());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "2.5":
-                tokenData = new JSONObject(token.getStore5());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "2.6":
-                tokenData = new JSONObject(token.getStore6());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "2.7":
-                tokenData = new JSONObject(token.getStore7());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "3.1":
-                tokenData = new JSONObject(token.getDriver1());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "3.2":
-                tokenData = new JSONObject(token.getDriver2());
-                authorization = tokenData.get("token_type").toString() + " " + tokenData.get("access_token").toString();
-                break;
-            case "5":
-                tokenData = new JSONObject(token.getPdaCookie());
-                authorization = tokenData.get("cookie").toString();
-                break;
-
-        }
-        data.setAuthorization(authorization);
+        String token = "bearer  " + tokenValue;
+        data.setAuthorization(token);
 
         /**
          * 登入接口的数据依赖
@@ -402,6 +406,33 @@ public class DoApiImpl implements DoApiService {
             throw new Throwable(data.getResponse());
         }
 
+    }
+
+    @Override
+    public void doSmsCode(String smsHost, String smsUri, String newSmsParam, JSONArray newSmsHeader) {
+        DoTestData doTestData = new DoTestData();
+        doTestData.setHost(smsHost);
+        doTestData.setBodyParam(newSmsParam);
+        doTestData.setHeaderParam(newSmsHeader);
+        doTestData.setApiPath(smsUri);
+        doTestData.setApiMethod(2);
+        doTestData.setAuthorization("null");
+        ResponseData responseData = httpClientService.getResponse(doTestData);
+        System.out.println(responseData.toString());
+    }
+
+    @Override
+    public ResponseData doLogin(String host, String uri, JSONArray param, JSONArray header) {
+        DoTestData doTestData = new DoTestData();
+        doTestData.setHost(host);
+        doTestData.setWebformParam(param);
+        doTestData.setHeaderParam(header);
+        doTestData.setApiPath(uri);
+        doTestData.setApiMethod(2);
+        doTestData.setAuthorization("null");
+        ResponseData responseData = httpClientService.getResponse(doTestData);
+        System.out.println(responseData.toString());
+        return responseData;
     }
 
     /**
@@ -434,7 +465,7 @@ public class DoApiImpl implements DoApiService {
     /**
      * 道法 多重数据合体之术
      */
-    public JSONArray OAddOs(String type, String fiexdParam, String handleParm) {
+    public JSONArray OAddOs(String type, String fiexdParam, String handleParm, String relyParam, Map<Integer, Map<String, String>> newRely) {
         JSONArray param = new JSONArray("[]");
         JSONArray paramType = new JSONArray(type);
         if (paramType.length() >= 1) {
@@ -443,6 +474,20 @@ public class DoApiImpl implements DoApiService {
                 for (Object pt : paramType) {
                     switch (pt.toString()) {
                         case "2":
+                            JSONArray array = new JSONArray(relyParam);
+                            JSONArray relyParams = new JSONArray();
+                            for(Object a : array){
+                                JSONObject object = new JSONObject();
+                                JSONObject o = new JSONObject(a.toString());
+                                String name = o.get("name").toString();
+                                String valueName = o.get("value").toString();
+                                Integer apiPath = Integer.parseInt(o.get("apiPath").toString());
+                                String newValue = newRely.get(apiPath).get(valueName);
+                                object.put("name",name);
+                                object.put("value",newValue);
+                                relyParams.put(object);
+                            }
+                            param = this.OAddO(param,relyParams);
                             break;
                         case "3":
                             JSONArray handleParam = new JSONArray(handleParm);
@@ -454,4 +499,53 @@ public class DoApiImpl implements DoApiService {
         }
         return param;
     }
+
+    /**
+     * 增加aplication
+     */
+    public JSONArray addAplication(JSONArray header, Integer deviceType) {
+        String type = "";
+        if (deviceType == 1) {
+            type = "management";
+        } else if (deviceType == 2) {
+            type = "app_zhilun";
+        } else {
+
+        }
+        JSONObject o = new JSONObject();
+        o.put("name", "application");
+        o.put("value", type);
+        header.put(o);
+        return header;
+    }
+
+    /**
+     * 合成apiId 对应的 Map<name,value>
+     */
+    public Map<Integer, Map<String, String>> getRelyValue(Map<String, String> paths, ApiCase apiCase, String loginRely, long reportId) {
+        JSONArray relyCaseList = new JSONArray(apiCase.getRelyCaseId());
+        Map<String,String> loginRelyParam = new HashMap<>();
+        Map<Integer, Map<String, String>> newRely = new HashMap<>();
+        for (Object relyCase : relyCaseList) {
+            JSONObject relyCaseValue = new JSONObject(relyCase.toString());
+            Integer relyTestId = Integer.parseInt(relyCaseValue.get("apiCaseId").toString());
+            if (relyTestId > 0) {
+                String relyValues = apiReportMapper.getRelyValue(reportId, relyTestId);
+                Gson gson = new Gson();
+                Map<String, String> rely = new HashMap<>();
+                rely = gson.fromJson(relyValues, rely.getClass());
+                Integer apiId = apiCaseMapper.getApiIdByApiCaseId(relyTestId);
+                newRely.put(apiId, rely);
+            } else {
+                for (String key : paths.keySet()) {
+                    String value = paths.get(key);
+                    String newValue = b.getValueFormJsonByPath(loginRely, value).toString();
+                    loginRelyParam.put(key, newValue);
+                }
+                newRely.put(0, loginRelyParam);
+            }
+        }
+        return newRely;
+    }
+
 }

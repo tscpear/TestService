@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.service.apiTest.controller.domin.ApiCaseData;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ApiCaseUpdateData extends ApiCaseData {
     private Integer id;
@@ -23,11 +25,12 @@ public class ApiCaseUpdateData extends ApiCaseData {
     private JSONArray webformFiexdParam= JSONArray.parseArray("[]");
 
 
+
     private JSONArray bodyParamType= JSONArray.parseArray("['0']");
     private String bodyFiexdParam;
 
-    private String deviceType;
-
+    private Integer deviceType;
+    private List<String> deviceTypeList;
     private JSONArray selectRelyCase = JSONArray.parseArray("[]");
     private JSONArray relyCaseId = JSONArray.parseArray("[]");
 

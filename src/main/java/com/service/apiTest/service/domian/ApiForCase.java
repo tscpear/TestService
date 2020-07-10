@@ -3,6 +3,8 @@ package com.service.apiTest.service.domian;
 import com.alibaba.fastjson.JSONArray;
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 public class ApiForCase {
@@ -27,8 +29,8 @@ public class ApiForCase {
     private JSONArray bodyParamType= JSONArray.parseArray("['0']");
     private String bodyFiexdParam;
     private JSONArray bodyHandleParam= JSONArray.parseArray("[]");
-    private JSONArray deviceTypeList= JSONArray.parseArray("[]");
-    private String device ;
+    private List<String> deviceTypeList;
+    private Integer device ;
 
     private JSONArray selectRelyCase = JSONArray.parseArray("[]");
 

@@ -8,6 +8,7 @@ public class ApiListData {
     private String apiPath;
     private String apiMark;
     private Integer testNum;
-    private String apiMethod;
-    private  String device;
+    private Integer apiMethod;
+    private  Integer device;
 }
+

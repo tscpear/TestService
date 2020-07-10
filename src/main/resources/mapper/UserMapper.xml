@@ -8,7 +8,9 @@
         from user where username
              =
              #{username}
-
+    </select>
+    <select id="getProject" resultType="com.service.user.dao.entity.ProjectData">
+        select * from project;
     </select>
 
 </mapper>

@@ -8,8 +8,8 @@ import lombok.Data;
 public class ApiData {
     private int id;
     private String apiPath;
-    private String device;
-    private String apiMethod;
+    private int device;
+    private int apiMethod;
     private String apiMark;
     private String apiParamType = "0";
     private String apiFiexdParam;
@@ -30,4 +30,5 @@ public class ApiData {
     private Boolean isRely;
     private JSONArray relyValue = JSONArray.parseArray("[]");
     private String responseBase;
+    private Integer projectId;
 }

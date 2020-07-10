@@ -8,8 +8,8 @@ import java.util.Date;
 public class Api {
     private int id;
     private String apiPath;
-    private String device;
-    private String apiMethod;
+    private Integer device;
+    private Integer apiMethod;
     private String apiMark;
     private String apiParamType;
     private String apiFiexdParam;
@@ -35,4 +35,5 @@ public class Api {
     private Date createTime;
     private Integer createUserId;
     private String responseBase;
+    private Integer projectId;
 }

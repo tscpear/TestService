@@ -15,6 +15,16 @@ public interface ApiReportMapper {
     void putData(ApiReport report);
 
     /**
+     * 重新执行的时候 更新数据
+     */
+    void updateByReportId(ApiReport report);
+    /**
+     * 查看该reportId 是否存在
+     */
+    Integer findReportIdAndTestId(ApiReport report);
+
+
+    /**
      * 查询列表
      * @param reportId
      * @return
@@ -50,5 +60,6 @@ public interface ApiReportMapper {
      * @return
      */
    List<Integer> getNowDoTestId(long reportId);
+
 
 }

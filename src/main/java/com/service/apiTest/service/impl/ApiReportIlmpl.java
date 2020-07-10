@@ -2,30 +2,39 @@ package com.service.apiTest.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.service.apiTest.controller.domin.PutToken;
 import com.service.apiTest.dom.domin.ApiCaseForReport;
-import com.service.apiTest.dom.entity.Api;
-import com.service.apiTest.dom.entity.ApiCase;
-import com.service.apiTest.dom.entity.ApiReport;
-import com.service.apiTest.dom.entity.Token;
+import com.service.apiTest.dom.entity.*;
 import com.service.apiTest.dom.mapper.*;
 import com.service.apiTest.service.domian.ApiReportList;
+import com.service.apiTest.service.domian.DeviceAndType;
 import com.service.apiTest.service.domian.OneReportData;
 import com.service.apiTest.service.service.ApiReportService;
 import com.service.utils.MyBaseChange;
+import com.service.utils.MyVerification;
 import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.ResponseData;
+import com.service.utils.test.dom.project.Device;
+import com.service.utils.test.dom.project.EData;
+import com.service.utils.test.dom.project.Project;
+import com.service.utils.test.dom.project.Project1;
 import com.service.utils.test.method.DoApiService;
 import com.service.utils.test.method.HttpClientService;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.Data;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jayway.jsonpath.JsonPath;
+import org.springframework.util.StringUtils;
 
 import javax.sound.midi.Soundbank;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ApiReportIlmpl implements ApiReportService {
@@ -46,6 +55,12 @@ public class ApiReportIlmpl implements ApiReportService {
     private ApiReportMapper apiReportMapper;
     @Autowired
     private MyBaseChange b;
+    @Autowired
+    private MyVerification v;
+    @Autowired
+    private Project1 project1;
+    @Autowired
+    private NewTokenMapper newTokenMapper;
 
     @Override
     public List<ApiReportList> getReportList(JSONArray testIdList) {
@@ -55,8 +70,25 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public long doTest(JSONArray testId, String environment, long reportId) {
-        Token token = tokenMapper.getData();
+    public long doTest(JSONArray testId, Integer environment, long reportId, List<String> accountValue, Integer projectId) {
+        Map<String, String> newTokenList = new HashMap<>();
+        Map<String,String> newDataList = new HashMap<>();
+        for (String accounts : accountValue) {
+            NewToken newToken = new NewToken();
+            Integer deviceId = Integer.parseInt(accounts.split("\\.")[0]);
+            Integer deviceType = Integer.parseInt(accounts.split("\\.")[1]);
+            Integer acountId = Integer.parseInt(accounts.split("\\.")[2]);
+            newToken.setEnvironment(environment);
+            newToken.setDeviceId(deviceId);
+            newToken.setDeviceType(deviceType);
+            newToken.setProjectId(projectId);
+            newToken.setAccountId(acountId);
+            String newName = deviceId + "." + deviceType;
+            String tokenValue = newTokenMapper.getToken(newToken);
+            String data = newTokenMapper.getData(newToken);
+            newTokenList.put(newName, tokenValue);
+            newDataList.put(newName,data);
+        }
         /**
          * testId 自动排序
          * @1获取testId isdepend relyCaseId
@@ -64,7 +96,7 @@ public class ApiReportIlmpl implements ApiReportService {
          */
         for (Object ids : testId) {
             Integer id = Integer.parseInt(ids.toString());
-            DoTestData doTestData = doApiService.getTestData(environment, id, token, reportId);
+            DoTestData doTestData = doApiService.getTestData(environment, id, newTokenList,newDataList, reportId, accountValue, projectId);
             ResponseData responseData = httpClientService.getResponse(doTestData);
             addReport(responseData, reportId, id);
         }
@@ -79,20 +111,20 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public void putToken(JSONArray testList, String environment) throws Throwable {
+    public void putToken(JSONArray testList, Integer environment) throws Throwable {
         Token tokens = tokenMapper.getData();
         List<String> deviceTypeList = apiCaseMapper.getDeviceType(testList);
         deviceTypeList = b.removeSame(deviceTypeList);
 
         for (String deviceType : deviceTypeList) {
             String device = "";
-            if(deviceType.contains(".")){
+            if (deviceType.contains(".")) {
                 device = deviceType.split("\\.")[0];
-            }else {
+            } else {
                 device = deviceType;
             }
             DoTestData doTestData = doApiService.getLoginData(environment, device, deviceType);
-                ResponseData responseData = httpClientService.getResponse(doTestData);
+            ResponseData responseData = httpClientService.getResponse(doTestData);
             String token = doApiService.getToken(responseData);
             switch (deviceType) {
                 case "1":
@@ -139,24 +171,83 @@ public class ApiReportIlmpl implements ApiReportService {
         apiReportMainMapper.add(reportId);
     }
 
+    @Override
     public void addReport(ResponseData data, long reportId, Integer testId) {
         ApiReport report = new ApiReport();
         report.setReportId(reportId);
         report.setTestId(testId);
         BeanUtils.copyProperties(data, report);
+
+
         ApiCase apiCase = apiCaseMapper.getApiCaseData(testId);
         Api api = apiMapper.getApiData(apiCase.getApiId());
+
+
         report.setExpectStatus(apiCase.getStatusAssertion());
         report.setActStatus(data.getStatus());
-        report.setDevice(api.getDevice());
-        report.setDeviceType(apiCase.getDeviceType()    );
+//        report.setDevice(api.getDevice());
+        report.setDeviceType(apiCase.getDeviceType());
+
+        /**
+         * 返回状态值断言
+         */
         if (apiCase.getStatusAssertion().equals(data.getStatus())) {
+            report.setResultMain(0);
             report.setResultStatus(1);
         } else {
             report.setResultStatus(0);
+            report.setResultMain(1);
+        }
+        /**
+         * 其他断言
+         */
+        if (report.getResultStatus() == 1) {
+            JSONArray otherAssertionType = b.StringToArray(apiCase.getOtherAssertionType());
+            for (Object o : otherAssertionType) {
+                if (report.getResultMain() != 0) {
+                    break;
+                }
+                switch (Integer.parseInt(o.toString())) {
+                    case 1:
+                        if (v.isSameJSONObject(api.getResponseBase(), report.getResponse())) {
+                            report.setResponseBaseExpectResult(1);
+                        } else {
+                            report.setResponseBaseExpectResult(0);
+                            report.setResultMain(2);
+                        }
+                        break;
+                    case 2:
+                        JSONArray responseValueExpect = b.StringToAO(apiCase.getResponseValueExpect());
+                        JSONArray responseValueExpectRelust = new JSONArray();
+                        for (Object expect : responseValueExpect) {
+                            JSONObject expectValueOld = b.StringToJson(expect.toString());
+                            JSONObject expectValueNew = new JSONObject();
+                            String path = expectValueOld.get("name").toString();
+                            String expectValue = expectValueOld.get("value").toString();
+                            String actValue = b.getValueFormJsonByPath(report.getResponse(), path).toString();
+                            expectValueNew.put("path", path);
+                            expectValueNew.put("expectValue", expectValue);
+                            expectValueNew.put("actValue", actValue);
+                            responseValueExpectRelust.add(expectValueNew);
+                            if (!actValue.equals(expectValue)) {
+                                report.setResultMain(3);
+                            }
+                        }
+                        report.setResponseValueExpectResult(responseValueExpectRelust.toString());
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                }
+            }
         }
 
-        if (report.getResultStatus() == 1) {
+
+        /**
+         * 存储依赖值
+         */
+        if (report.getResultMain() == 0) {
             Integer isRely = api.getIsRely();
             if (isRely == 1) {
                 JSONObject value = new JSONObject();
@@ -174,7 +265,12 @@ public class ApiReportIlmpl implements ApiReportService {
                 report.setRelyValue(value.toString());
             }
         }
-        apiReportMapper.putData(report);
+
+        if (apiReportMapper.findReportIdAndTestId(report) > 0) {
+            apiReportMapper.updateByReportId(report);
+        } else {
+            apiReportMapper.putData(report);
+        }
     }
 
     @Override
@@ -189,13 +285,150 @@ public class ApiReportIlmpl implements ApiReportService {
         BeanUtils.copyProperties(apiReport, oneReportData);
         oneReportData.setHeaderParam(b.StringToAO(apiReport.getHeaderParam()));
         oneReportData.setWebformParam(b.StringToAO(apiReport.getWebformParam()));
+        oneReportData.setResponseValueExpectResult(b.StringToAO(apiReport.getResponseValueExpectResult()));
         try {
             oneReportData.setBodyParam(b.StringToAO(apiReport.getBodyParam()));
         } catch (Exception e) {
             oneReportData.setBodyParam(b.StringToJson(apiReport.getBodyParam()));
         }
-        oneReportData.setResponse(b.StringToJson(apiReport.getResponse()));
+        if (v.isJsonObject(apiReport.getResponse())) {
+            oneReportData.setResponse(b.StringToJson(apiReport.getResponse()));
+        } else {
+            JSONObject o = new JSONObject();
+            o.put("非json返回值", apiReport.getResponse());
+            oneReportData.setResponse(o);
+        }
+
         return oneReportData;
     }
 
+    @Override
+    public List<DeviceAndType> getDeviceTypeAndAccountList(JSONArray testList, Integer projectId, Integer environment) {
+        List<DeviceAndType> deviceAndTypeList = apiCaseMapper.getDeviceTypeList(testList);
+        Project project = new Project();
+        if (projectId == 1) {
+            project = project1;
+        }
+        List<DeviceAndType> newDeviceAndTypeList = new ArrayList<>();
+        for (DeviceAndType deviceAndType : deviceAndTypeList) {
+            deviceAndType.setDeviceName(project.getDevice().get(deviceAndType.getDevice() - 1).getName());
+            deviceAndType.setDeviceTypeName(project.getDevice().get(deviceAndType.getDevice() - 1).getDeviceTypeList().get(deviceAndType.getDeviceType() - 1));
+            deviceAndType.setAccountList(project.getDevice().get(deviceAndType.getDevice() - 1).getEnvironment().get(environment - 1).getAccount().get(deviceAndType.getDeviceType() - 1));
+            newDeviceAndTypeList.add(deviceAndType);
+        }
+        return newDeviceAndTypeList;
+    }
+
+    @Override
+    public void accountLogin(PutToken putToken, Integer projectId) {
+        ResponseData responseData = new ResponseData();
+        Project project = new Project();
+        switch (projectId) {
+            case 1:
+                project = project1;
+                break;
+        }
+        Integer environment = putToken.getEnvironment();
+        List<String> accountValueList = putToken.getAccountValue();
+        for (String values : accountValueList) {
+            Integer deviceId = Integer.parseInt(values.split("\\.")[0]);
+            Integer deviceTypeId = Integer.parseInt(values.split("\\.")[1]);
+            Integer accountId = Integer.parseInt(values.split("\\.")[2]);
+            Device device = project.getDevice().get(deviceId - 1);
+            Integer loginType = device.getLoginType();
+            EData eData = device.getEnvironment().get(environment - 1);
+            String account = eData.getAccount().get(deviceTypeId - 1).get(accountId - 1);
+            String loginHost = eData.getLoginHost();
+            String loginUri = device.getLoginUri();
+            String tokenPath = device.getTokenPath();
+            Map<String, String> loginHeader = eData.getLoginHeader();
+            org.json.JSONArray newLoginHeader = new org.json.JSONArray();
+            if (!StringUtils.isEmpty(loginHeader)) {
+                newLoginHeader = b.mapToArray(loginHeader);
+            }
+            if (loginType == 0) {
+
+                /**
+                 * 获取验证码的接口
+                 */
+                Map<String, String> smsParam = device.getSmsParam();
+                String smsUri = device.getSmsUri();
+                Map<String, String> smsHeader = eData.getSmsHeader();
+                org.json.JSONArray newSmsHeader = new org.json.JSONArray();
+                if (!StringUtils.isEmpty(smsHeader)) {
+                    newSmsHeader = b.mapToArray(smsHeader);
+                }
+                smsParam = b.replaceValueOfMap(smsParam, "username", account);
+                String newSmsParam = JSONObject.toJSONString(smsParam);
+                doApiService.doSmsCode(loginHost, smsUri, newSmsParam, newSmsHeader);
+
+                /**
+                 * 使用验证码登入的接口
+                 */
+                org.json.JSONArray newSmsLoginParam = new org.json.JSONArray();
+                Map<String, String> smsLoginParam = device.getSmsLoginParam();
+                smsLoginParam = b.replaceValueOfMap(smsLoginParam, "username", account);
+                if (!StringUtils.isEmpty(smsLoginParam)) {
+                    newSmsLoginParam = b.mapToArray(smsLoginParam);
+
+                }
+                responseData = doApiService.doLogin(loginHost, loginUri, newSmsLoginParam, newLoginHeader);
+            } else {
+                /**
+                 * 直接密码账号登入
+                 */
+                Map<String, String> loginParam = device.getLoginParam();
+                loginParam = b.replaceValueOfMap(loginParam, "username", account);
+                org.json.JSONArray newLoginParam = new org.json.JSONArray();
+                if (!StringUtils.isEmpty(loginParam)) {
+                    newLoginParam = b.mapToArray(loginParam);
+                }
+                responseData = doApiService.doLogin(loginHost, loginUri, newLoginParam, newLoginHeader);
+
+
+            }
+
+            this.depositToken(responseData, projectId, deviceId, environment, deviceTypeId, accountId, tokenPath);
+
+
+        }
+    }
+
+    public void login(String loginHost) {
+
+    }
+
+    /**
+     * 存入token
+     */
+    public void depositToken(ResponseData data, Integer projectId, Integer device, Integer environment, Integer deviceType, Integer accountId, String tokenPath) {
+        NewToken newToken = new NewToken();
+        newToken.setAccountId(accountId);
+        newToken.setDeviceId(device);
+        newToken.setProjectId(projectId);
+        newToken.setDeviceType(deviceType);
+        newToken.setEnvironment(environment);
+
+        if (data.getStatus().equals("200")) {
+            newToken.setData(data.getResponse());
+            newToken.setToken(b.getValueFormJsonByPath(data.getResponse(), tokenPath).toString());
+        }
+
+        /**
+         * 查看账号是否在数据库是否存在
+         */
+        Integer hasAccount = newTokenMapper.countOfAccount(newToken);
+        if (hasAccount > 0) {
+            /**
+             * 更新数据
+             */
+            newTokenMapper.updateToken(newToken);
+
+        } else {
+            /**
+             * 插入新数据
+             */
+            newTokenMapper.insertAccount(newToken);
+        }
+    }
 }

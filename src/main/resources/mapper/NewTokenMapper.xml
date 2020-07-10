@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.apiTest.dom.mapper.NewTokenMapper">
+    <resultMap id="newToken" type="com.service.apiTest.dom.entity.NewToken">
+        <result property="id" column="id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="deviceType" column="device_type"/>
+        <result property="accountId" column="account_id"/>
+        <result property="data" column="data"/>
+        <result property="token" column="token"/>
+        <result property="environment" column="environment"/>
+    </resultMap>
+    <select id="countOfAccount" resultType="java.lang.Integer">
+        select count(*)
+        from new_token
+        where project_id = #{projectId}
+          and device_id = #{deviceId}
+          and device_type = #{deviceType}
+          and account_id = #{accountId}
+          and environment = #{environment}
+    </select>
+    <update id="updateToken">
+        update new_token
+        set token = #{token},
+            data  = #{data}
+        where project_id = #{projectId}
+          and device_id = #{deviceId}
+          and device_type = #{deviceType}
+          and account_id = #{accountId}
+          and environment = #{environment}
+    </update>
+    <insert id="insertAccount">
+        insert into new_token (project_id,
+                               device_id,
+                               device_type,
+                               account_id,
+                               environment,
+                               token,
+                               data
+        )
+        value
+        (
+        #{projectId}
+        ,
+        #{deviceId}
+        ,
+        #{deviceType}
+        ,
+        #{accountId}
+        ,
+        #{environment}
+        ,
+        #{token}
+        ,
+        #{data}
+        )
+    </insert>
+    <select id="getToken" resultType="java.lang.String">
+        select token
+        from new_token
+        where project_id = #{projectId}
+          and
+            device_id = #{deviceId}
+          and
+            device_type = #{deviceType}
+          and
+            environment = #{environment}
+          and
+            account_id = #{accountId}
+    </select>
+    <select id="getData" resultType="java.lang.String">
+        select data
+        from new_token
+        where project_id = #{projectId}
+          and
+            device_id = #{deviceId}
+          and
+            device_type = #{deviceType}
+          and
+            environment = #{environment}
+          and
+            account_id = #{accountId}
+    </select>
+</mapper>

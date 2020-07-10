@@ -8,6 +8,7 @@ public class ApiCaseListParam {
     private int PageEnd;
     private String apiPath;
     private String apiCaseMark;
-    private String device;
+    private Integer device;
     private Integer apiId;
+    private Integer projectId;
 }

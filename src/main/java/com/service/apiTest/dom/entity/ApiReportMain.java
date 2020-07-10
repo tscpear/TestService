@@ -10,4 +10,5 @@ public class ApiReportMain {
     private String testList;
     private Date createTime;
     private String success;
+    private Integer projectId;
 }

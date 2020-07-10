@@ -34,5 +34,5 @@ public interface ApiReportMainMapper {
      * 获取总量
      * @return
      */
-    Integer getCount();
+    Integer getCount(Integer projectId);
 }

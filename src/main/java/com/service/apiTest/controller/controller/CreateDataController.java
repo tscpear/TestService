@@ -19,7 +19,7 @@ public class CreateDataController {
 
     @GetMapping("/tire")
     @ResponseBody
-    public ApiBaseRe getTireData(@RequestParam(required = false) String orderSn,@RequestParam String environment) {
+    public ApiBaseRe getTireData(@RequestParam(required = false) String orderSn,@RequestParam Integer environment) {
         ApiBaseRe baseRe = new ApiBaseRe();
         try {
             createTireDataService.getTireTestData(environment, orderSn);
