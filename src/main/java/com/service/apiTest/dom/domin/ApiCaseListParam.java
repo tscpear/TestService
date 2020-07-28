@@ -11,4 +11,5 @@ public class ApiCaseListParam {
     private Integer device;
     private Integer apiId;
     private Integer projectId;
+    private Integer apiCaseType;
 }

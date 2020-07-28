@@ -12,4 +12,5 @@ public class PutToken {
     Integer environment;
     long  reportId =0;
     List<String> accountValue;
+    List<String> wxCode;
 }

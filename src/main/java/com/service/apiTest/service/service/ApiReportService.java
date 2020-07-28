@@ -69,5 +69,5 @@ public interface ApiReportService {
      * 新的固定token的方法
      * @param putToken
      */
-    void accountLogin(PutToken putToken,Integer projectId);
+    String accountLogin(PutToken putToken,Integer projectId);
 }

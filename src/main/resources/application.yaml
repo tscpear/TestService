@@ -98,7 +98,7 @@ project:
       - 测试主
       - 测试次
     name: 知轮
-    id: 1
+    id: 1 
     device:
       - device1:
         id: 1
@@ -125,6 +125,7 @@ project:
                 - tsccs
               - - 1358809666
             host: https://ra.t.zhilunkeji.com
+
           - loginHost: http://manager.zhilun-qa-major.com
             loginHeader: {Authorization: Basic TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==}
             smsHeader: {}
@@ -132,7 +133,9 @@ project:
               - - tsc
                 - tsccs
               - - 1358809666
-            host: http://api.zhilun-qa-minor.com
+            host: http://manager.zhilun-qa-major.com
+
+
           - loginHost: http://manager.zhilun-qa-minor.com
             loginHeader: {Authorization: Basic TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw== }
             smsHeader: {}
@@ -140,7 +143,10 @@ project:
               - - tsc
                 - tscpear
               - - 1358809666
-            host: https://api.t.zhilunkeji.com
+            host: http://manager.zhilun-qa-minor.com
+
+
+
       - device2:
         id: 2
         name: 知轮商家
@@ -158,6 +164,9 @@ project:
         tokenPath: $.access_token
         loginRely:
           token: $.access_token
+          userId: $.userId
+          userType: $.userType
+          scope: $.scope
         deviceTypeList:
           - 网红门店账号
           - 网红门店下服务车账号
@@ -168,6 +177,7 @@ project:
           - 取货方门店下服务车账号
           - 取货方社会服务车账号
         environment:
+#          准生产
           - loginHost: https://auth.t.zhilunkeji.com
             loginHeader: {Authorization: Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4}
             smsHeader: {}
@@ -176,6 +186,7 @@ project:
                 - 12900000205
               - - 12900000205
             host: https://api-t.zhilunkeji.com
+#            测试主
           - loginHost: http://auth.zhilun-qa-major.com
             loginHeader: {Authorization: Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4}
             smsHeader: {}
@@ -183,7 +194,8 @@ project:
               - - 12900000205
                 - 12900000205
               - - 12900000205
-            host: http://api.zhilun-qa-minor.com
+            host: http://api.zhilun-qa-major.com
+#            测试次
           - loginHost: http://auth.zhilun-qa-minor.com
             loginHeader: {Authorization: Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4}
             smsHeader: {}
@@ -191,7 +203,7 @@ project:
               - - 13588096710
                 - 186571905346
               - - 1358809666
-            host: https://api.t.zhilunkeji.com
+            host: http://api.zhilun-qa-minor.com
       - device3:
         id: 3
         name: 知轮三包
@@ -232,6 +244,8 @@ project:
                 - 186571905346
               - - 1358809666
             host: http://api.zhilun-qa-minor.com
+
+
       - device4:
         id: 4
         name: 知轮通
@@ -284,7 +298,257 @@ project:
                 - 186571905346
               - - 1358809666
             host: http://api.zhilun-qa-minor.com
+      - device5:
+        id: 5
+        name: 分仓终端
+        loginType: 1
+        smsParam: {}
+        loginParam:
+          username: username
+          password: 123456
+          scanVersion: 20200303
+          y: 35.250118
+          x: 113.236565
+          deviceNum: ZX1G42CPJD
+        smsLoginParam: {smsCode: cf79ae6addba60ad018347359bd144d2,deviceId: 719910247738029,mobile: username,version: 3.0.0,grant_type: sms_code}
+        smsUri: sms/code
+        loginUri: /scan/login.do
+        tokenPath: $.access_token
+        loginRely:
+          token: $.access_token
+          userId: $.userId
+          scope: $.scope
+        deviceTypeList:
+          - test
+        environment:
+          - loginHost: http://wch.zhilun.com/1001
+            loginHeader: {Content-Type: application/x-www-form-urlencoded}
+            smsHeader: {}
+            account:
+              - - test
+            host: http://wch.zhilun.com/1001
+          - loginHost: http://wch.zhilun-qa-major.com/1001
+            loginHeader: {}
+            smsHeader: {}
+            account:
+              - - 12900000205
+                - 12900000205
+              - - 12900000205
+            host: http://wch.zhilun-qa-major.com
+          - loginHost: http://wch.zhilun-qa-minor.com/1001
+            loginHeader: {}
+            smsHeader: {}
+            account:
+              - - 13588096710
+                - 186571905346
+              - - 1358809666
+            host: http://wch.zhilun-qa-minor.com
+      - device6:
+        id: 6
+        name: 知轮车服
+        loginType: 0
+        smsParam:
+          deviceId: b8d0ec531985fa7ab475e995deb45826
+          mobile: username
+          application: app_driver
+          appVersionCode: 138
+        loginParam:
+          grant_type: password
+          username: username
+          password: e10adc3949ba59abbe56e057f20f883e
+          application: app_message
+          appVersionCode: 217
+        smsLoginParam:
+          grant_type: sms_code
+          deviceId: b8d0ec531985fa7ab475e995deb45826
+          mobile: username
+          smsCode: cf79ae6addba60ad018347359bd144d2
+          application: app_driver
+          appVersionCode: 138
+        smsUri: /sms/code
+        loginUri: /oauth/token
+        tokenPath: $.access_token
+        loginRely:
+          token: $.access_token
+          userId: $.userId
+          scope: $.scope
+        deviceTypeList:
+          - 普通司机账号
+        environment:
+          - loginHost: https://auth-t.zhilunkeji.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: https://api-t.zhilunkeji.com
+          - loginHost: http://auth.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://api.zhilun-qa-major.com
+          - loginHost: http://auth.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://api.zhilun-qa-minor.com
+      - device7:
+        id: 7
+        name: 司机小程序
+        loginType: 0
+        smsParam:
+          deviceId: wxCode
+          mobile: username
+        loginParam:
+          grant_type: password
+          username: username
+          password: e10adc3949ba59abbe56e057f20f883e
+          application: app_message
+          appVersionCode: 217
+        smsLoginParam:
+          mobile: username
+          smsCode: cf79ae6addba60ad018347359bd144d2
+          grant_type: wechat_mobile
+          source: wechart
+          code: wxCode
+          inviter:
+          channelName:
+          application: app_driver_applets
+        smsUri: /sms/code/wechat
+        loginUri: /oauth/token
+        tokenPath: $.access_token
+        loginRely:
+          token: $.access_token
+          userId: $.userId
+          scope: $.scope
+        deviceTypeList:
+          - 普通司机账号
+        environment:
+          - loginHost: https://auth-t.zhilunkeji.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: https://api-t.zhilunkeji.com
 
+
+          - loginHost: http://auth.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://api.zhilun-qa-major.com
+
+
+          - loginHost: http://auth.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://api.zhilun-qa-minor.com
+      - device8:
+        id: 8
+        name: 知轮商城
+        loginType: 1
+        smsParam:
+          deviceId: wxCode
+          mobile: username
+        loginParam: {}
+        smsLoginParam:
+          mobile: username
+          smsCode: cf79ae6addba60ad018347359bd144d2
+          grant_type: wechat_mobile
+          source: wechart
+          code: wxCode
+          inviter:
+          channelName:
+          application: app_driver_applets
+        smsUri: /sms/code/wechat
+        loginUri: /member/login/createZhilun
+        tokenPath: $.LOGINTOKEN
+        loginRely:
+          token: $.token
+          LOGINTOKEN: $.LOGINTOKEN
+          accId: $.accId
+        deviceTypeList:
+          - 普通司机账号
+        environment:
+          - loginHost: https://auth-t.zhilunkeji.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: https://api-t.zhilunkeji.com
+
+
+          - loginHost: http://shop.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://shop.zhilun-qa-major.com
+
+
+          - loginHost: http://shop.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://shop.zhilun-qa-minor.com
+      - device9:
+        id: 9
+        name: 分仓后台
+        loginType: 1
+        smsParam:
+          deviceId: wxCode
+          mobile: username
+        loginParam: {}
+        smsLoginParam:
+          mobile: username
+          smsCode: cf79ae6addba60ad018347359bd144d2
+          grant_type: wechat_mobile
+          source: wechart
+          code: wxCode
+          inviter:
+          channelName:
+          application: app_driver_applets
+        smsUri: /sms/code/wechat
+        loginUri: /member/login/createZhilun
+        tokenPath: $.LOGINTOKEN
+        loginRely:
+          token: $.token
+          LOGINTOKEN: $.LOGINTOKEN
+          accId: $.accId
+        deviceTypeList:
+          - 普通司机账号
+        environment:
+          - loginHost: https://auth-t.zhilunkeji.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: https://api-t.zhilunkeji.com
+
+
+          - loginHost: http://shop.zhilun-qa-major.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://shop.zhilun-qa-major.com
+
+
+          - loginHost: http://shop.zhilun-qa-minor.com
+            loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
+            smsHeader: {}
+            account:
+              - - 12900000001
+            host: http://shop.zhilun-qa-minor.com
+user:
+  ip:
+    - 192.168.20.135
+    - 127.0.0.1
 
 
 

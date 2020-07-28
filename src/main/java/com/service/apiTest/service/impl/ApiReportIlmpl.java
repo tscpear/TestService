@@ -25,20 +25,19 @@ import lombok.Data;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.jayway.jsonpath.JsonPath;
 import org.springframework.util.StringUtils;
 
 import javax.sound.midi.Soundbank;
+import javax.xml.transform.Source;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ApiReportIlmpl implements ApiReportService {
-
     @Autowired
     private ApiCaseMapper apiCaseMapper;
     @Autowired
@@ -58,9 +57,10 @@ public class ApiReportIlmpl implements ApiReportService {
     @Autowired
     private MyVerification v;
     @Autowired
-    private Project1 project1;
+    private Project project1;
     @Autowired
     private NewTokenMapper newTokenMapper;
+
 
     @Override
     public List<ApiReportList> getReportList(JSONArray testIdList) {
@@ -72,7 +72,7 @@ public class ApiReportIlmpl implements ApiReportService {
     @Override
     public long doTest(JSONArray testId, Integer environment, long reportId, List<String> accountValue, Integer projectId) {
         Map<String, String> newTokenList = new HashMap<>();
-        Map<String,String> newDataList = new HashMap<>();
+        Map<String, String> newDataList = new HashMap<>();
         for (String accounts : accountValue) {
             NewToken newToken = new NewToken();
             Integer deviceId = Integer.parseInt(accounts.split("\\.")[0]);
@@ -84,10 +84,14 @@ public class ApiReportIlmpl implements ApiReportService {
             newToken.setProjectId(projectId);
             newToken.setAccountId(acountId);
             String newName = deviceId + "." + deviceType;
+
             String tokenValue = newTokenMapper.getToken(newToken);
+            if (StringUtils.isEmpty(tokenValue)) {
+                tokenValue = newTokenMapper.getCookie(newToken);
+            }
             String data = newTokenMapper.getData(newToken);
             newTokenList.put(newName, tokenValue);
-            newDataList.put(newName,data);
+            newDataList.put(newName, data);
         }
         /**
          * testId 自动排序
@@ -96,7 +100,7 @@ public class ApiReportIlmpl implements ApiReportService {
          */
         for (Object ids : testId) {
             Integer id = Integer.parseInt(ids.toString());
-            DoTestData doTestData = doApiService.getTestData(environment, id, newTokenList,newDataList, reportId, accountValue, projectId);
+            DoTestData doTestData = doApiService.getTestData(environment, id, newTokenList, newDataList, reportId, accountValue, projectId);
             ResponseData responseData = httpClientService.getResponse(doTestData);
             addReport(responseData, reportId, id);
         }
@@ -320,16 +324,21 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public void accountLogin(PutToken putToken, Integer projectId) {
+    public String accountLogin(PutToken putToken, Integer projectId) {
+        String msg = "";
         ResponseData responseData = new ResponseData();
         Project project = new Project();
         switch (projectId) {
             case 1:
-                project = project1;
+                BeanUtils.copyProperties(project1, project);
                 break;
         }
+
+        List<String> wxCode = putToken.getWxCode();
         Integer environment = putToken.getEnvironment();
         List<String> accountValueList = putToken.getAccountValue();
+
+
         for (String values : accountValueList) {
             Integer deviceId = Integer.parseInt(values.split("\\.")[0]);
             Integer deviceTypeId = Integer.parseInt(values.split("\\.")[1]);
@@ -352,6 +361,7 @@ public class ApiReportIlmpl implements ApiReportService {
                  * 获取验证码的接口
                  */
                 Map<String, String> smsParam = device.getSmsParam();
+                String deviceName = device.getName();
                 String smsUri = device.getSmsUri();
                 Map<String, String> smsHeader = eData.getSmsHeader();
                 org.json.JSONArray newSmsHeader = new org.json.JSONArray();
@@ -359,7 +369,17 @@ public class ApiReportIlmpl implements ApiReportService {
                     newSmsHeader = b.mapToArray(smsHeader);
                 }
                 smsParam = b.replaceValueOfMap(smsParam, "username", account);
+                if (deviceName.contains("小程序")) {
+                    try {
+                        String wxCodeValue = wxCode.get(0);
+                        wxCode.remove(wxCodeValue);
+                        smsParam = b.replaceValueOfMap(smsParam, "wxCode", wxCodeValue);
+                    } catch (Exception e) {
+                        return "wxCode不足";
+                    }
+                }
                 String newSmsParam = JSONObject.toJSONString(smsParam);
+
                 doApiService.doSmsCode(loginHost, smsUri, newSmsParam, newSmsHeader);
 
                 /**
@@ -367,11 +387,21 @@ public class ApiReportIlmpl implements ApiReportService {
                  */
                 org.json.JSONArray newSmsLoginParam = new org.json.JSONArray();
                 Map<String, String> smsLoginParam = device.getSmsLoginParam();
+                if (deviceName.contains("小程序")) {
+                    try {
+                        String wxCodeValue = wxCode.get(0);
+                        wxCode.remove(wxCodeValue);
+                        smsLoginParam = b.replaceValueOfMap(smsLoginParam, "wxCode", wxCodeValue);
+                    } catch (Exception e) {
+                        return "wxCode不足";
+                    }
+                }
                 smsLoginParam = b.replaceValueOfMap(smsLoginParam, "username", account);
                 if (!StringUtils.isEmpty(smsLoginParam)) {
                     newSmsLoginParam = b.mapToArray(smsLoginParam);
 
                 }
+
                 responseData = doApiService.doLogin(loginHost, loginUri, newSmsLoginParam, newLoginHeader);
             } else {
                 /**
@@ -385,13 +415,14 @@ public class ApiReportIlmpl implements ApiReportService {
                 }
                 responseData = doApiService.doLogin(loginHost, loginUri, newLoginParam, newLoginHeader);
 
-
+            }
+            String sucess = this.depositToken(responseData, projectId, deviceId, environment, deviceTypeId, accountId, tokenPath);
+            if (!sucess.equals("success")) {
+                msg = "账号  " + account + "登入失败：" + sucess + "!";
             }
 
-            this.depositToken(responseData, projectId, deviceId, environment, deviceTypeId, accountId, tokenPath);
-
-
         }
+        return msg;
     }
 
     public void login(String loginHost) {
@@ -401,7 +432,7 @@ public class ApiReportIlmpl implements ApiReportService {
     /**
      * 存入token
      */
-    public void depositToken(ResponseData data, Integer projectId, Integer device, Integer environment, Integer deviceType, Integer accountId, String tokenPath) {
+    public String depositToken(ResponseData data, Integer projectId, Integer device, Integer environment, Integer deviceType, Integer accountId, String tokenPath) {
         NewToken newToken = new NewToken();
         newToken.setAccountId(accountId);
         newToken.setDeviceId(device);
@@ -411,7 +442,15 @@ public class ApiReportIlmpl implements ApiReportService {
 
         if (data.getStatus().equals("200")) {
             newToken.setData(data.getResponse());
-            newToken.setToken(b.getValueFormJsonByPath(data.getResponse(), tokenPath).toString());
+            try {
+                String token = b.getValueFormJsonByPath(data.getResponse(), tokenPath).toString();
+                token = "bearer " + token;
+                newToken.setToken(token);
+            } catch (Exception e) {
+                newToken.setCookie(data.getCookie());
+            }
+        } else {
+            return data.getResponse();
         }
 
         /**
@@ -430,5 +469,6 @@ public class ApiReportIlmpl implements ApiReportService {
              */
             newTokenMapper.insertAccount(newToken);
         }
+        return "success";
     }
 }

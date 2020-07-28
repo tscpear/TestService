@@ -12,4 +12,5 @@ public class NewApiListCaseParam {
     private String apiCaseMark;
     private List<Integer> caseIdList;
     private Integer projectId;
+    private Integer apiCaseType;
 }

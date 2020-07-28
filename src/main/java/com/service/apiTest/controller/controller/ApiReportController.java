@@ -91,9 +91,15 @@ public class ApiReportController {
     public ApiBaseRe putToken(@RequestBody PutToken token,@RequestHeader(name = "projectId")Integer projectId) throws Throwable {
         ApiBaseRe baseRe = new ApiBaseRe();
 //        try {
-            apiReportService.accountLogin(token,projectId);
-            baseRe.setCode(1);
-            baseRe.setMsg("token固定成功，确保账号不被重新登入");
+            String msg = apiReportService.accountLogin(token,projectId);
+            if(msg.equals("")){
+                baseRe.setCode(1);
+                baseRe.setMsg("token固定成功，确保账号不被重新登入");
+            }else {
+                baseRe.setCode(0);
+                baseRe.setMsg(msg);
+            }
+
 //        } catch (Exception e) {
 //            baseRe.setMsg(e.toString());
 //            baseRe.setCode(0);
@@ -154,7 +160,7 @@ public class ApiReportController {
     @ResponseBody
     public ApiBaseRe getAccout(@RequestBody PutToken putToken,@RequestHeader(name = "projectId") Integer projectId){
         ApiBaseRe baseRe = new ApiBaseRe();
-        baseRe.setData(apiReportService.getDeviceTypeAndAccountList(putToken.getTestList(),putToken.getEnvironment(),projectId));
+        baseRe.setData(apiReportService.getDeviceTypeAndAccountList(this.getTestList(putToken),putToken.getEnvironment(),projectId));
         baseRe.setCode(1);
         return baseRe;
 

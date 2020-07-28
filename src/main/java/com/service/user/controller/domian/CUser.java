@@ -8,5 +8,6 @@ public class CUser {
     private String username;
     private String password;
     private Integer projectId;
+    private String token;
 
 }

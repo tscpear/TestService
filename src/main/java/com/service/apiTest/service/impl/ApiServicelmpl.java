@@ -35,7 +35,7 @@ public class ApiServicelmpl implements ApiService {
     @Autowired
     private ApiCaseMapper apiCaseMapper;
     @Autowired
-    private Project1 project1;
+    private Project project1;
 
     @Override
     public Map<String, Object> getApiList(ApiListParam params) {
@@ -383,6 +383,9 @@ public class ApiServicelmpl implements ApiService {
             String name = object.get("apiPath").toString();
             if (name.startsWith("/")) {
                 object.put("apiPath", apiMapper.getApiIdByPath(name));
+            }
+            if(name.equals("login")){
+                object.put("apiPath", "0");
             }
             result.add(object);
         }

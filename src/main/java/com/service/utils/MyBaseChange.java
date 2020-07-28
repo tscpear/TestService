@@ -9,10 +9,7 @@ import org.springframework.util.StringUtils;
 
 
 import java.text.BreakIterator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MyBaseChange {
@@ -173,12 +170,15 @@ public class MyBaseChange {
      * 更换Map<String,String>替换固定值，专门给登入接口用的
      */
     public Map<String,String> replaceValueOfMap(Map<String,String> map,String oldValue,String newValue){
-        for(String key:map.keySet()){
-            if(oldValue.equals(map.get(key))){
-                map.put(key,newValue);
+        Map<String,String> target = new HashMap<>(map);
+        for(String key:target.keySet()){
+            if(oldValue.equals(target.get(key))){
+                target.put(key,newValue);
                 break;
             }
         }
-        return map;
+
+        return target;
     }
+
 }

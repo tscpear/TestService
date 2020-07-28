@@ -12,6 +12,7 @@
         <result property="data" column="data"/>
         <result property="token" column="token"/>
         <result property="environment" column="environment"/>
+        <result property="cookie" column="cookie"/>
     </resultMap>
     <select id="countOfAccount" resultType="java.lang.Integer">
         select count(*)
@@ -25,7 +26,8 @@
     <update id="updateToken">
         update new_token
         set token = #{token},
-            data  = #{data}
+            data  = #{data},
+            cookie = #{cookie}
         where project_id = #{projectId}
           and device_id = #{deviceId}
           and device_type = #{deviceType}
@@ -39,7 +41,8 @@
                                account_id,
                                environment,
                                token,
-                               data
+                               data,
+                               cookie
         )
         value
         (
@@ -56,6 +59,8 @@
         #{token}
         ,
         #{data}
+        ,
+        #{cookie}
         )
     </insert>
     <select id="getToken" resultType="java.lang.String">
@@ -73,6 +78,19 @@
     </select>
     <select id="getData" resultType="java.lang.String">
         select data
+        from new_token
+        where project_id = #{projectId}
+          and
+            device_id = #{deviceId}
+          and
+            device_type = #{deviceType}
+          and
+            environment = #{environment}
+          and
+            account_id = #{accountId}
+    </select>
+    <select id="getCookie" resultType="java.lang.String">
+        select cookie
         from new_token
         where project_id = #{projectId}
           and

@@ -11,4 +11,6 @@ public class DUser implements Serializable {
     private int id;
     private String username;
     private String password;
+    private String token;
+    private long tokenTime;
 }

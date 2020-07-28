@@ -19,4 +19,10 @@ public interface UserMapper {
 
 
     List<ProjectData> getProject();
+
+
+    void updateToken(String token,String username,long tokenTime);
+
+
+    DUser getUserBy(String token);
 }

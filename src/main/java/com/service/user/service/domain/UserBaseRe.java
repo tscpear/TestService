@@ -17,4 +17,5 @@ public class UserBaseRe {
     private String projectName;
     private List<String> environment;
     private List<String> device;
+    private String token;
 }

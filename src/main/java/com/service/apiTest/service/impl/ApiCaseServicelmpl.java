@@ -54,7 +54,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     @Autowired
     private DriverAppHost driverAppHost;
     @Autowired
-    private Project1 project1;
+    private Project project1;
 
 
     @Override
@@ -92,7 +92,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
                 break;
             }
         }
-        for (Object type : apiData.getHeaderParamType()) {
+        for (Object type : apiData.getWebformParamType()) {
             if (type.toString().equals("2")) {
                 apiForCase.setHasRely(true);
                 this.addrely(webformRelyParam, relyTestIdList);
@@ -100,7 +100,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
                 break;
             }
         }
-        for (Object type : apiData.getHeaderParamType()) {
+        for (Object type : apiData.getBodyParamType()   ) {
             if (type.toString().equals("2")) {
                 apiForCase.setHasRely(true);
                 this.addrely(bodyRelyParam, relyTestIdList);
@@ -221,7 +221,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
                     for (Object relyIds : relyCaseId) {
                         JSONObject relyId = b.StringToJson(relyIds.toString());
                         String path = relyId.get("apiPath").toString();
-                        if (!path.startsWith("/")) {
+                        if (!path.startsWith("/") && !path.equals("login")) {
                             path = apiMapper.getPathById(Integer.parseInt(path));
                         }
                         if (rely.get("apiPath").toString().equals(path)) {

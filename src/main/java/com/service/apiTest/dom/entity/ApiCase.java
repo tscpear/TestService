@@ -9,8 +9,8 @@ public class ApiCase {
     private Integer id;
     private Integer apiId;
     private String apiCaseMark;
-    private String apiCaseLv;
-    private String apiCaseType;
+    private Integer apiCaseLv;
+    private Integer apiCaseType;
 
 
     private String apiHandleParam;

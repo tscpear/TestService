@@ -57,7 +57,7 @@ public class DoApiImpl implements DoApiService {
     @Autowired
     private ApiReportService apiReportService;
     @Autowired
-    private Project1 project1;
+    private Project project1;
 
     public String getAccount(String device, Integer environment, String deviceType) {
         MyHost myHost = this.selectHost(device);
@@ -183,7 +183,6 @@ public class DoApiImpl implements DoApiService {
             webformParam.put("y", "35.250118");
             webformParam.put("deviceNum", "ZX1G42CPJD");
         } else if (device.equals("2") || device.equals("4") || device.equals("3")) {
-
             data.setApiPath("/oauth/token");
             List<String> mobileList = new ArrayList<>();
             if (environment.equals("uat")) {
@@ -257,7 +256,7 @@ public class DoApiImpl implements DoApiService {
     }
 
     @Override
-    public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList,Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId) {
+    public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList, Map<String, String> newDataList, long reportId, List<String> accountValue, Integer projectId) {
         Project project = new Project();
         switch (projectId) {
             case 1:
@@ -274,6 +273,8 @@ public class DoApiImpl implements DoApiService {
         Map<String, String> paths = project.getDevice().get(deviceId - 1).getLoginRely();
         String loginRely = newDataList.get(key);
         String tokenValue = tokenList.get(key);
+
+
 
 
         /**
@@ -308,10 +309,9 @@ public class DoApiImpl implements DoApiService {
          * 合成依赖数据
          */
         Map<Integer, Map<String, String>> newRely = new HashMap<>();
-        if(apiCase.getIsDepend() == 1){
-            newRely = this.getRelyValue(paths,apiCase,loginRely,reportId);
+        if (apiCase.getIsDepend() == 1) {
+            newRely = this.getRelyValue(paths, apiCase, loginRely, reportId);
         }
-
 
 
         //请求方法
@@ -370,9 +370,9 @@ public class DoApiImpl implements DoApiService {
                 break;
         }
         //header
-        data.setHeaderParam(this.OAddOs(api.getHeaderParamType(), api.getHeaderFiexdParam(), apiCase.getHeaderHandleParam(), api.getHeaderRelyParam(),newRely));
+        data.setHeaderParam(this.OAddOs(api.getHeaderParamType(), api.getHeaderFiexdParam(), apiCase.getHeaderHandleParam(), api.getHeaderRelyParam(), newRely));
         //webform
-        data.setWebformParam(this.OAddOs(api.getWebformParamType(), api.getWebformFiexdParam(), apiCase.getWebformHandleParam(), api.getWebformRelyParam(),newRely));
+        data.setWebformParam(this.OAddOs(api.getWebformParamType(), api.getWebformFiexdParam(), apiCase.getWebformHandleParam(), api.getWebformRelyParam(), newRely));
         //bodParam
         JSONArray bodyParamType = new JSONArray(api.getBodyParamType());
         if (bodyParamType.length() > 0) {
@@ -384,8 +384,7 @@ public class DoApiImpl implements DoApiService {
             String bodyString = b.getJSONString(api.getBodyFiexdParam());
             data.setBodyParam(bodyString);
         }
-        String token = "bearer  " + tokenValue;
-        data.setAuthorization(token);
+        data.setAuthorization(tokenValue);
 
         /**
          * 登入接口的数据依赖
@@ -476,18 +475,21 @@ public class DoApiImpl implements DoApiService {
                         case "2":
                             JSONArray array = new JSONArray(relyParam);
                             JSONArray relyParams = new JSONArray();
-                            for(Object a : array){
+                            for (Object a : array) {
                                 JSONObject object = new JSONObject();
                                 JSONObject o = new JSONObject(a.toString());
                                 String name = o.get("name").toString();
                                 String valueName = o.get("value").toString();
                                 Integer apiPath = Integer.parseInt(o.get("apiPath").toString());
+                                if(apiPath==0){
+
+                                }
                                 String newValue = newRely.get(apiPath).get(valueName);
-                                object.put("name",name);
-                                object.put("value",newValue);
+                                object.put("name", name);
+                                object.put("value", newValue);
                                 relyParams.put(object);
                             }
-                            param = this.OAddO(param,relyParams);
+                            param = this.OAddO(param, relyParams);
                             break;
                         case "3":
                             JSONArray handleParam = new JSONArray(handleParm);
@@ -524,7 +526,7 @@ public class DoApiImpl implements DoApiService {
      */
     public Map<Integer, Map<String, String>> getRelyValue(Map<String, String> paths, ApiCase apiCase, String loginRely, long reportId) {
         JSONArray relyCaseList = new JSONArray(apiCase.getRelyCaseId());
-        Map<String,String> loginRelyParam = new HashMap<>();
+        Map<String, String> loginRelyParam = new HashMap<>();
         Map<Integer, Map<String, String>> newRely = new HashMap<>();
         for (Object relyCase : relyCaseList) {
             JSONObject relyCaseValue = new JSONObject(relyCase.toString());

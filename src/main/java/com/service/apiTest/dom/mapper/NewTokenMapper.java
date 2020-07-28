@@ -39,4 +39,11 @@ public interface NewTokenMapper {
      * @return
      */
     String getData(NewToken newToken);
+
+    /**
+     * 获取token
+     * @param newToken
+     * @return
+     */
+    String getCookie(NewToken newToken);
 }

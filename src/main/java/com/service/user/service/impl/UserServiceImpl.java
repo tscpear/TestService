@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -22,13 +23,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
    private UserMapper userMapper;
     @Autowired
-    private Project1 project1;
+    private Project project1;
 
 
 
     @Override
     public UserBaseRe login(CUser cUser) {
-
         UserBaseRe baseRe = new UserBaseRe();
         DUser dUser = userMapper.getUserByName(cUser.getUsername());
         if(dUser.getPassword()==null){
@@ -43,7 +43,6 @@ public class UserServiceImpl implements UserService {
                 if(cUser.getProjectId() == 1){
                     project = project1;
                 }
-
                 baseRe.setEnvironment(project1.getEnvironment());
                 baseRe.setProjectName(project1.getName());
                 List<Device> devices = project1.getDevice();
@@ -52,9 +51,19 @@ public class UserServiceImpl implements UserService {
                     device.add(d.getName());
                 }
                 baseRe.setDevice(device);
+
+                /**
+                 * 生成token
+                 */
+                String token = UUID.randomUUID().toString().replace("-", "");
+                long tokenTime = System.currentTimeMillis();
+                userMapper.updateToken(token,cUser.getUsername(),tokenTime);
+                baseRe.setToken(token);
+
             } else {
                 baseRe.setCode(0);
                 baseRe.setMsg("密码错误");
+
             }
         }
 

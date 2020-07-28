@@ -84,6 +84,9 @@
         <if test="apiId != null">
             and api_id = #{apiId}
         </if>
+        <if test="apiCaseType != null">
+            and api_case_type = #{apiCaseType}
+        </if>
         <if test="caseIdList!=null">
             <if test="caseIdList.size > 0">
                 and api_id in
@@ -157,7 +160,7 @@
     </update>
     <update id="delApiCase">
         update apicase
-        set is_del = 1 and del_user_id = #{userId}
+        set is_del = 1 and del_user_id = #{userId} and id = #{id}
     </update>
     <select id="findApiCaseOfLv" resultType="java.lang.String">
         select api_case_lv

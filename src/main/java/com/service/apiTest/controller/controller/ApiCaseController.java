@@ -63,7 +63,9 @@ public class ApiCaseController {
                                     @RequestParam(required = false) String apiCaseMark,
                                     @RequestParam(required = false) Integer device,
                                     @RequestParam(required = false) Integer apiId,
+                                    @RequestParam(required = false) Integer apiCaseType,
                                     @RequestHeader(name = "projectId") Integer projectId) {
+
         ApiBaseRe baseRe = new ApiBaseRe();
 
         try {
@@ -75,6 +77,7 @@ public class ApiCaseController {
             param.setApiCaseMark(apiCaseMark);
             param.setApiId(apiId);
             param.setProjectId(projectId);
+            param.setApiCaseType(apiCaseType);
             Map<String, Object> map = apiCaseService.getApiCaseList(param);
             baseRe.setData(map.get("list"));
             baseRe.setCode(1);
@@ -91,13 +94,13 @@ public class ApiCaseController {
     @ResponseBody
     public ApiBaseRe getCaseAdd(@RequestParam Integer id, @RequestParam Integer userId, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
+//        try {
             baseRe.setData(apiCaseService.getApiCaseData(id, userId,projectId));
             baseRe.setCode(1);
-        } catch (Exception e) {
-            baseRe.setCode(0);
-            baseRe.setMsg(e.toString());
-        }
+//        } catch (Exception e) {
+//            baseRe.setCode(0);
+//            baseRe.setMsg(e.toString());
+//        }
         return baseRe;
     }
 

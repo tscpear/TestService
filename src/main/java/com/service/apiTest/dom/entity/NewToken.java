@@ -12,4 +12,5 @@ public class NewToken {
     private String data;
     private String token;
     private Integer accountId;
+    private String cookie;
 }
