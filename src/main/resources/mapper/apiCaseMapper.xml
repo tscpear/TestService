@@ -29,6 +29,8 @@
         <result property="bodyRelyToHandle" column="body_rely_to_handle"/>
         <result property="responseValueExpect" column="response_value_expect"/>
         <result property="projectId" column="project_id"/>
+        <result property="closeCase" column="close_case"/>
+        <result property="preCase" column="pre_case"/>
     </resultMap>
     <sql id="apiCaseData">
         id
@@ -50,7 +52,9 @@
         webform_rely_to_handle,
         body_rely_to_handle,
         response_value_expect,
-        project_id
+        project_id,
+        close_case,
+        pre_case
 
     </sql>
     <sql id="apiCaseDatas">
@@ -73,7 +77,9 @@
         #{webformRelyToHandle},
         #{bodyRelyToHandle},
         #{responseValueExpect},
-        #{projectId}
+        #{projectId},
+        #{closeCase},
+        #{preCase}
 
     </sql>
 
@@ -155,7 +161,9 @@
             header_rely_to_handle  = #{headerRelyToHandle},
             webform_rely_to_handle = #{webformRelyToHandle},
             body_rely_to_handle    = #{bodyRelyToHandle},
-            response_value_expect  = #{responseValueExpect}
+            response_value_expect  = #{responseValueExpect},
+            close_case             = #{closeCase},
+            pre_case               = #{preCase}
         where id = #{id};
     </update>
     <update id="delApiCase">
@@ -216,6 +224,8 @@
     </foreach>) b on uri.id = b.api_id order by uri.device;
     </select>
     <select id="getApiIdByApiCaseId" resultType="java.lang.Integer">
-        select api_id from apicase where id = #{id};
+        select api_id
+        from apicase
+        where id = #{id};
     </select>
 </mapper>

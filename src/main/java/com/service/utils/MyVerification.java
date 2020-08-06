@@ -2,6 +2,7 @@ package com.service.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.jayway.jsonpath.JsonPath;
+import com.service.utils.MyObject.MyJsonPath;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -111,9 +112,17 @@ public class MyVerification {
      * 判断路径与值是否一致
      */
     public boolean pathAndValue(String path, String value, String json) {
-        if (b.getValueFormJsonByPath(json,path).equals(value)) {
-            return true;
+        MyJsonPath jsonPath = new MyJsonPath();
+        Integer type = jsonPath.getType();
+        if(type == 1){
+
+
+
+
         }
+
+
+
         return false;
     }
 

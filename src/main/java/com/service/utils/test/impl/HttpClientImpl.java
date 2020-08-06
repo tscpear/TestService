@@ -76,7 +76,7 @@ public class HttpClientImpl implements HttpClientService {
                     Object a = webform.get(0);
                     for (Object forms : webform) {
                         JSONObject form = new JSONObject(forms.toString());
-                        parame.add(new BasicNameValuePair(form.get("name").toString(), form.get("value").toString()));
+                        parame.add(new BasicNameValuePair(form.get("name").toString(), b.SToN(form.get("value").toString())));
                     }
                     HttpEntity entityParam = new UrlEncodedFormEntity(parame, "utf-8");
                     post.setEntity(entityParam);
@@ -119,7 +119,7 @@ public class HttpClientImpl implements HttpClientService {
 
                     for (Object forms : webform) {
                         JSONObject form = new JSONObject(forms.toString());
-                        parame.add(new BasicNameValuePair(form.get("name").toString(), form.get("value").toString()));
+                        parame.add(new BasicNameValuePair(form.get("name").toString(), b.SToN(form.get("value").toString())));
                     }
                     HttpEntity entityParam = new UrlEncodedFormEntity(parame, "utf-8");
                     put.setEntity(entityParam);

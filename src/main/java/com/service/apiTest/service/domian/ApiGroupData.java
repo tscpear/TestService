@@ -6,8 +6,7 @@ import lombok.Data;
 @Data
 public class ApiGroupData {
     private Integer id;
-    private JSONArray testList = JSONArray.parseArray("[]");
-    private String userType;
+    private JSONArray caseList = JSONArray.parseArray("[]");
     private String groupMark;
-    private String groupType;
 }
+

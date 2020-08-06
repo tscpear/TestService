@@ -110,7 +110,7 @@
                d.report_id     as reportId,
                d.aid           as id,
                d.result_main   as resultMain,
-               d.device_type as deviceType
+               d.device_type   as deviceType
         from uri c,
              (select a.report_id     as report_id,
                      b.api_id        as api_id,
@@ -119,7 +119,7 @@
                      b.api_case_mark as api_case_mark,
                      a.id            as aid,
                      a.result_main   as result_main,
-                     b.device_type as device_type
+                     b.device_type   as device_type
               from api_report a,
                    apicase b
               where a.test_id = b.id) d
@@ -156,5 +156,10 @@
         from api_report
         where report_id = #{reportId}
           and test_id = #{testId}
+    </select>
+    <select id="getLatestCase" resultType="java.lang.Integer">
+        select test_id
+        from api_report
+        where id = (select Max(id) from api_report where report_id = #{reportId})
     </select>
 </mapper>

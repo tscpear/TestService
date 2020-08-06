@@ -30,4 +30,6 @@ public class ApiCaseData {
     private JSONArray headerRelyToHandle = JSONArray.parseArray("[]");
     private JSONArray webformRelyToHandle = JSONArray.parseArray("[]");
     private JSONArray bodyRelyToHandle = JSONArray.parseArray("[]");
+    private Integer closeCase;
+    private JSONArray preCase = JSONArray.parseArray("[]");
 }

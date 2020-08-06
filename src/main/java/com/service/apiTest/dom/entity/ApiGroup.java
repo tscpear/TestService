@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class ApiGroup {
     private Integer id;
-    private String testList;
-    private String userType;
+    private String caseList;
     private String groupMark;
-    private String groupType;
+    private Integer isDel;
+    private Integer projectId;
 }

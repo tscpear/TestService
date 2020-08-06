@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PreDestroy;
 import javax.validation.groups.Default;
@@ -275,11 +276,10 @@ public class DoApiImpl implements DoApiService {
         String tokenValue = tokenList.get(key);
 
 
-
-
         /**
          * 判断被依赖的测试用例是否执行了
          */
+
         if (apiCase.getIsDepend() == 1) {
             JSONArray testList = new JSONArray(apiCase.getRelyCaseId());
             List<Integer> nowDoTestList = apiReportMapper.getNowDoTestId(reportId);
@@ -300,10 +300,35 @@ public class DoApiImpl implements DoApiService {
                 apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId);
 
             }
-
-
         }
 
+        /**
+         * 判断前置用例是否被执行
+         */
+        if (!StringUtils.isEmpty(apiCase.getPreCase())) {
+            JSONArray preCase = new JSONArray(apiCase.getPreCase());
+            for (Object o : preCase) {
+                switch (Integer.parseInt(o.toString())) {
+                    case 1:
+                        break;
+                    case 2:
+                        /**
+                         * 贴身测试用例
+                         */
+                        Integer closeCase = apiCase.getCloseCase();
+                        Integer a = apiReportMapper.getLatestCase(reportId);
+                        if (a != closeCase) {
+                            List<Integer> newList = new ArrayList<>();
+                            newList.add(closeCase);
+
+
+                            apiReportService.doTest(b.StringToArray(newList.toString()), environment, reportId, accountValue, projectId);
+                        }
+                        break;
+                }
+            }
+
+        }
 
         /**
          * 合成依赖数据
@@ -421,17 +446,30 @@ public class DoApiImpl implements DoApiService {
     }
 
     @Override
-    public ResponseData doLogin(String host, String uri, JSONArray param, JSONArray header) {
+    public ResponseData doLogin(String host, String uri, JSONArray param, JSONArray header, String authorization) {
         DoTestData doTestData = new DoTestData();
         doTestData.setHost(host);
         doTestData.setWebformParam(param);
         doTestData.setHeaderParam(header);
         doTestData.setApiPath(uri);
         doTestData.setApiMethod(2);
-        doTestData.setAuthorization("null");
+        doTestData.setAuthorization(authorization);
         ResponseData responseData = httpClientService.getResponse(doTestData);
         System.out.println(responseData.toString());
         return responseData;
+    }
+
+    @Override
+    public String getDoorCookie(String host, String uri) {
+        DoTestData doTestData = new DoTestData();
+        doTestData.setHost(host);
+        doTestData.setWebformParam(null);
+        doTestData.setHeaderParam(null);
+        doTestData.setApiPath(uri);
+        doTestData.setApiMethod(1);
+        doTestData.setAuthorization("null");
+        ResponseData responseData = httpClientService.getResponse(doTestData);
+        return responseData.getCookie();
     }
 
     /**
@@ -481,7 +519,7 @@ public class DoApiImpl implements DoApiService {
                                 String name = o.get("name").toString();
                                 String valueName = o.get("value").toString();
                                 Integer apiPath = Integer.parseInt(o.get("apiPath").toString());
-                                if(apiPath==0){
+                                if (apiPath == 0) {
 
                                 }
                                 String newValue = newRely.get(apiPath).get(valueName);

@@ -44,7 +44,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
         DUser dUser = userMapper.getUserBy(token);
         long NowTime = System.currentTimeMillis();
-        if (StringUtils.isEmpty(dUser) || NowTime - dUser.getTokenTime() > 2592000) {
+        if (StringUtils.isEmpty(dUser) || NowTime - dUser.getTokenTime() > 86400000) {
             this.handleFalseResponse(response, "重新登入", 3);
             return false;
         }
@@ -96,7 +96,6 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (ip != null && ip.contains(",")) {
             ip = ip.substring(0, ip.indexOf(",")).trim();
         }
-        System.out.println(ip);
         return ip;
 
     }

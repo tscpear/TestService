@@ -61,5 +61,11 @@ public interface ApiReportMapper {
      */
    List<Integer> getNowDoTestId(long reportId);
 
+    /**
+     * 查看最新（上一个执行的测试用例）
+     * @param reportId
+     * @return
+     */
+   Integer getLatestCase(long reportId);
 
 }

@@ -73,6 +73,13 @@ public interface DoApiService {
      * @param param
      * @param header
      */
-    ResponseData doLogin(String host,String uri,JSONArray param,JSONArray header);
+    ResponseData doLogin(String host,String uri,JSONArray param,JSONArray header,String authorization);
+
+
+
+    String getDoorCookie(String host,String uri);
+
+
+
 
 }

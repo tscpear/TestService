@@ -5,20 +5,23 @@
 <mapper namespace="com.service.apiTest.dom.mapper.ApiGroupMapper">
     <resultMap id="apiGroupMap" type="com.service.apiTest.dom.entity.ApiGroup">
         <result property="id" column="id"/>
-        <result property="testList" column="test_list"/>
-        <result property="userType" column="user_type"/>
+        <result property="caseList" column="case_list"/>
+        <result property="isDel" column="is_del"/>
         <result property="groupMark" column="group_mark"/>
-        <result property="groupType" column="group_type"/>
+        <result property="projectId" column="project_id"/>
     </resultMap>
-    <insert id="insert">
-        insert into api_group (test_list, user_type
+    <insert id="insertGroup" parameterType="com.service.apiTest.dom.entity.ApiGroup">
+        insert into api_group (case_list, group_mark, project_id
         )
         value
         (
-        #{list}
+        #{caseList}
         ,
-        #{type}
-        );
+        #{groupMark}
+        ,
+        #{projectId}
+
+        )
     </insert>
     <select id="getUserType" resultType="java.lang.String">
         select user_type
@@ -28,11 +31,36 @@
     <select id="getList" resultMap="apiGroupMap">
         select *
         from api_group
-        where is_del = 1;
+        where is_del = 1
+          and project_id = #{projectId};
     </select>
     <select id="getTestList" resultType="java.lang.String">
         select test_list
         from api_group
         where id = #{id}
+    </select>
+    <select id="getGroup" resultMap="apiGroupMap">
+        select *
+        from api_group
+        where id = #{id}
+          and project_id = #{projectId}
+    </select>
+    <select id="updateGroup">
+        update api_group
+        set case_list = #{caseList},
+            group_mark=#{groupMark}
+        where project_id = #{projectId}
+          and id = #{id}
+    </select>
+    <update id="delGroup">
+        update api_group
+        set is_del = 0
+        where id = #{id};
+    </update>
+    <select id="getDataForReadyGroup" resultType="com.service.apiTest.dom.entity.DoGroupReadyData">
+        select a.api_case_mark as apiCaseMark,uri.api_path as apiPath from apicase a,uri where uri.id = a.api_id and a.id
+        in <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+    </foreach>)
     </select>
 </mapper>

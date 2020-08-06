@@ -38,4 +38,7 @@ public class ApiCase {
     private String bodyRelyToHandle ;
     private Integer projectId;
 
+    private Integer closeCase;
+    private String preCase;
+
 }

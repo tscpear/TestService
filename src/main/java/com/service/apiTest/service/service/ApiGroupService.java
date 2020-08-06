@@ -1,12 +1,10 @@
 package com.service.apiTest.service.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.service.apiTest.controller.domin.RequestApiGroup;
 import com.service.apiTest.dom.domin.ApiGroupParamList;
-import com.service.apiTest.dom.entity.ApiGroup;
-import com.service.apiTest.service.domian.ApiGroupData;
+import com.service.apiTest.dom.entity.DoGroupReadyData;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface ApiGroupService {
@@ -15,5 +13,13 @@ public interface ApiGroupService {
      */
     JSONArray getList(ApiGroupParamList param);
 
+    void addGroup(RequestApiGroup requestApiGroup);
 
+    RequestApiGroup getRequestApiGroup(Integer id,Integer projectId);
+
+    void updateGroup(RequestApiGroup requestApiGroup);
+
+    void delGroup(Integer id);
+
+    DoGroupReadyData getDoGroupReadyData(Integer id,Integer projectId);
 }

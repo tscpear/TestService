@@ -1,8 +1,12 @@
 package com.service.apiTest.dom.mapper;
 
+import com.alibaba.fastjson.JSONArray;
 import com.service.apiTest.dom.domin.ApiGroupParamList;
+import com.service.apiTest.dom.entity.Api;
 import com.service.apiTest.dom.entity.ApiGroup;
+import com.service.apiTest.service.domian.DataForReadyGroup;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,11 +21,18 @@ public interface ApiGroupMapper {
      */
     String getUserType(Integer id);
 
-
-    void insert(String list,String type);
-
     List<ApiGroup> getList(ApiGroupParamList param);
 
     String getTestList(Integer id);
+
+    void insertGroup(ApiGroup apiGroup);
+
+    ApiGroup getGroup(Integer projectId,Integer id);
+
+    void updateGroup(ApiGroup apiGroup);
+
+    void delGroup(Integer id);
+
+    List<DataForReadyGroup> getDataForReadyGroup(@Param("testIdList") JSONArray testIdList);
 
 }

@@ -3,6 +3,7 @@ package com.service.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.JsonPath;
+import com.service.utils.MyObject.MyJsonPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -136,19 +137,25 @@ public class MyBaseChange {
     /**
      * 获取路径值
      */
-    public Object getValueFormJsonByPath(String json, String path) {
+    public MyJsonPath getValueFormJsonByPath(String json, String path) {
+        MyJsonPath myJsonPath = new MyJsonPath();
         try {
             List<Object> values = JsonPath.read(json, path);
-            return values.get(0);
+            myJsonPath.setType(1);
+            myJsonPath.setValue(values);
+            return myJsonPath;
         } catch (Exception e) {
             try {
                 Boolean values = JsonPath.read(json, path);
-                return values.toString();
+                myJsonPath.setType(2);
+                myJsonPath.setValue(values.toString());
+                return myJsonPath;
             } catch (Exception e1) {
-                return JsonPath.read(json, path).toString();
-
+                String values = JsonPath.read(json, path).toString();
+                myJsonPath.setType(2);
+                myJsonPath.setValue(values);
+                return myJsonPath;
             }
-
         }
     }
 
@@ -157,23 +164,24 @@ public class MyBaseChange {
      */
     public org.json.JSONArray mapToArray(Map<String, String> map) {
         org.json.JSONArray array = new org.json.JSONArray();
-        for(String key:map.keySet()){
+        for (String key : map.keySet()) {
             org.json.JSONObject object = new org.json.JSONObject();
             String value = map.get(key);
-            object.put("name",key);
-            object.put("value",value);
+            object.put("name", key);
+            object.put("value", value);
             array.put(object.toString());
         }
         return array;
     }
+
     /**
      * 更换Map<String,String>替换固定值，专门给登入接口用的
      */
-    public Map<String,String> replaceValueOfMap(Map<String,String> map,String oldValue,String newValue){
-        Map<String,String> target = new HashMap<>(map);
-        for(String key:target.keySet()){
-            if(oldValue.equals(target.get(key))){
-                target.put(key,newValue);
+    public Map<String, String> replaceValueOfMap(Map<String, String> map, String oldValue, String newValue) {
+        Map<String, String> target = new HashMap<>(map);
+        for (String key : target.keySet()) {
+            if (oldValue.equals(target.get(key))) {
+                target.put(key, newValue);
                 break;
             }
         }
@@ -181,4 +189,13 @@ public class MyBaseChange {
         return target;
     }
 
+    /**
+     * 空值转换
+     */
+    public String SToN(String s) {
+        if ("null".equals(s)) {
+            return null;
+        }
+        return s;
+    }
 }

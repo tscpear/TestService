@@ -181,6 +181,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         BeanUtils.copyProperties(apiForCase, apiCaseUpdateData);
         BeanUtils.copyProperties(apiCase, apiCaseUpdateData);
         apiCaseUpdateData.setWebformHandleParam(b.StringToAO(apiCase.getWebformHandleParam()));
+        apiCaseUpdateData.setPreCase(b.StringToArray(apiCase.getPreCase()));
         JSONArray otherAssertionType = b.StringToArray(apiCase.getOtherAssertionType());
         apiCaseUpdateData.setOtherAssertionType(otherAssertionType);
         Integer deviceId = apiForCase.getDevice();
@@ -272,6 +273,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
         apiCase.setBodyRelyToHandle(apiCaseData.getBodyRelyToHandle().toString());
         apiCase.setOtherAssertionType(apiCaseData.getOtherAssertionType().toString());
         apiCase.setResponseValueExpect(apiCaseData.getResponseValueExpect().toString());
+        apiCase.setPreCase(apiCaseData.getPreCase().toJSONString());
         apiCase.setProjectId(projectId);
 
         JSONArray relySelect = b.StringToAO(apiCaseData.getSelectRelyCase().toString());

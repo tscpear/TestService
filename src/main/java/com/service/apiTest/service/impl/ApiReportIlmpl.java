@@ -11,6 +11,7 @@ import com.service.apiTest.service.domian.DeviceAndType;
 import com.service.apiTest.service.domian.OneReportData;
 import com.service.apiTest.service.service.ApiReportService;
 import com.service.utils.MyBaseChange;
+import com.service.utils.MyObject.MyJsonPath;
 import com.service.utils.MyVerification;
 import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.ResponseData;
@@ -65,6 +66,9 @@ public class ApiReportIlmpl implements ApiReportService {
     @Override
     public List<ApiReportList> getReportList(JSONArray testIdList) {
         List<ApiReportList> apiCaseList = apiCaseMapper.getApiCaseListForReport(testIdList);
+
+
+
 
         return apiCaseList;
     }
@@ -228,13 +232,21 @@ public class ApiReportIlmpl implements ApiReportService {
                             JSONObject expectValueNew = new JSONObject();
                             String path = expectValueOld.get("name").toString();
                             String expectValue = expectValueOld.get("value").toString();
-                            String actValue = b.getValueFormJsonByPath(report.getResponse(), path).toString();
+                            MyJsonPath actValue = b.getValueFormJsonByPath(report.getResponse(), path);
                             expectValueNew.put("path", path);
                             expectValueNew.put("expectValue", expectValue);
-                            expectValueNew.put("actValue", actValue);
+                            expectValueNew.put("actValue", actValue.getValue().toString());
                             responseValueExpectRelust.add(expectValueNew);
-                            if (!actValue.equals(expectValue)) {
-                                report.setResultMain(3);
+                            if(actValue.getType() ==1){
+                                JSONArray newExpectValue = b.StringToArray(expectValue);
+                                JSONArray newActValue = b.StringToArray(actValue.getValue().toString());
+                                if(newExpectValue == newActValue){
+                                    report.setResultMain(3);
+                                }
+                            }else {
+                                if (!actValue.getValue().equals(expectValue)) {
+                                    report.setResultMain(3);
+                                }
                             }
                         }
                         report.setResponseValueExpectResult(responseValueExpectRelust.toString());
@@ -308,7 +320,16 @@ public class ApiReportIlmpl implements ApiReportService {
 
     @Override
     public List<DeviceAndType> getDeviceTypeAndAccountList(JSONArray testList, Integer projectId, Integer environment) {
+        /**
+         * 增加前置用例的账户体系
+         */
+
+
+
+
         List<DeviceAndType> deviceAndTypeList = apiCaseMapper.getDeviceTypeList(testList);
+
+
         Project project = new Project();
         if (projectId == 1) {
             project = project1;
@@ -402,18 +423,29 @@ public class ApiReportIlmpl implements ApiReportService {
 
                 }
 
-                responseData = doApiService.doLogin(loginHost, loginUri, newSmsLoginParam, newLoginHeader);
+                responseData = doApiService.doLogin(loginHost, loginUri, newSmsLoginParam, newLoginHeader, "null");
             } else {
                 /**
                  * 直接密码账号登入
+                 *
                  */
+                String authorization = "null";
+                if (loginType == 3) {
+                    /**
+                     * 先获取原始cookie
+                     */
+
+                    String cookieUri = device.getSmsUri();
+                    String doorCookie = doApiService.getDoorCookie(loginHost, cookieUri);
+                    authorization = doorCookie;
+                }
                 Map<String, String> loginParam = device.getLoginParam();
                 loginParam = b.replaceValueOfMap(loginParam, "username", account);
                 org.json.JSONArray newLoginParam = new org.json.JSONArray();
                 if (!StringUtils.isEmpty(loginParam)) {
                     newLoginParam = b.mapToArray(loginParam);
                 }
-                responseData = doApiService.doLogin(loginHost, loginUri, newLoginParam, newLoginHeader);
+                responseData = doApiService.doLogin(loginHost, loginUri, newLoginParam, newLoginHeader, authorization);
 
             }
             String sucess = this.depositToken(responseData, projectId, deviceId, environment, deviceTypeId, accountId, tokenPath);
@@ -443,7 +475,7 @@ public class ApiReportIlmpl implements ApiReportService {
         if (data.getStatus().equals("200")) {
             newToken.setData(data.getResponse());
             try {
-                String token = b.getValueFormJsonByPath(data.getResponse(), tokenPath).toString();
+                String token = b.getValueFormJsonByPath(data.getResponse(), tokenPath).getValue().toString();
                 token = "bearer " + token;
                 newToken.setToken(token);
             } catch (Exception e) {

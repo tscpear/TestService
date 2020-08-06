@@ -13,4 +13,5 @@ public class ApiReportList {
     private long reportId;
     private Integer id;
     private Integer deviceType;
+
 }
