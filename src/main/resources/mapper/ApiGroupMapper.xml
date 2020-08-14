@@ -57,10 +57,17 @@
         set is_del = 0
         where id = #{id};
     </update>
-    <select id="getDataForReadyGroup" resultType="com.service.apiTest.dom.entity.DoGroupReadyData">
-        select a.api_case_mark as apiCaseMark,uri.api_path as apiPath from apicase a,uri where uri.id = a.api_id and a.id
+    <select id="getDataForReadyGroup" resultType="com.service.apiTest.service.domian.DataForReadyGroup">
+        select a.api_case_mark as apiCaseMark,uri.api_path as apiPath,a.id as apiCaseId
+        from apicase a,uri
+        where uri.id = a.api_id
+        and a.id
         in <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
         #{id}
-    </foreach>)
+    </foreach>
+     order by field
+        <foreach collection="testIdList" item="id" open="(apiCaseId," separator="," close=")">
+        #{id}
+    </foreach>
     </select>
 </mapper>

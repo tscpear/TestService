@@ -1,9 +1,12 @@
 package com.service.apiTest.controller.controller;
 
 import com.service.apiTest.controller.domin.ApiBaseRe;
+import com.service.apiTest.controller.domin.DoGroupRequest;
 import com.service.apiTest.controller.domin.RequestApiGroup;
 import com.service.apiTest.dom.domin.ApiGroupParamList;
 import com.service.apiTest.dom.entity.Api;
+import com.service.apiTest.dom.entity.DoGroupReadyData;
+import com.service.apiTest.service.domian.DoGroupOfRealyData;
 import com.service.apiTest.service.service.ApiGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,7 +35,7 @@ public class ApiGroupController {
 
     @PostMapping("/add")
     @ResponseBody
-    public ApiBaseRe addGroup(@RequestHeader(name = "projectId") Integer projectId, @RequestBody RequestApiGroup requestApiGroup){
+    public ApiBaseRe addGroup(@RequestHeader(name = "projectId") Integer projectId, @RequestBody RequestApiGroup requestApiGroup) {
         ApiBaseRe baseRe = new ApiBaseRe();
         requestApiGroup.setProjectId(projectId);
         apiGroupService.addGroup(requestApiGroup);
@@ -43,17 +46,17 @@ public class ApiGroupController {
 
     @GetMapping("/one")
     @ResponseBody
-    public ApiBaseRe updateData(@RequestHeader(name = "projectId")Integer projectId,@RequestParam Integer id){
+    public ApiBaseRe updateData(@RequestHeader(name = "projectId") Integer projectId, @RequestParam Integer id) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        RequestApiGroup requestApiGroup = apiGroupService.getRequestApiGroup(id,projectId);
-       baseRe.setCode(1);
+        RequestApiGroup requestApiGroup = apiGroupService.getRequestApiGroup(id, projectId);
+        baseRe.setCode(1);
         baseRe.setData(requestApiGroup);
         return baseRe;
     }
 
     @PostMapping("/update")
     @ResponseBody
-    public ApiBaseRe updateGroup(@RequestHeader(name = "projectId") Integer projectId, @RequestBody RequestApiGroup requestApiGroup){
+    public ApiBaseRe updateGroup(@RequestHeader(name = "projectId") Integer projectId, @RequestBody RequestApiGroup requestApiGroup) {
         ApiBaseRe baseRe = new ApiBaseRe();
         requestApiGroup.setProjectId(projectId);
         apiGroupService.updateGroup(requestApiGroup);
@@ -64,7 +67,7 @@ public class ApiGroupController {
 
     @GetMapping("/del")
     @ResponseBody
-    public ApiBaseRe delGroup(@RequestParam Integer id){
+    public ApiBaseRe delGroup(@RequestParam Integer id) {
         ApiBaseRe baseRe = new ApiBaseRe();
         apiGroupService.delGroup(id);
         baseRe.setCode(1);
@@ -74,13 +77,23 @@ public class ApiGroupController {
 
     @GetMapping("ready")
     @ResponseBody
-    public ApiBaseRe ready(@RequestParam Integer id){
-
-
-
-
-        return null;
+    public ApiBaseRe ready(@RequestParam Integer id, @RequestHeader(name = "projectId") Integer projectId) {
+        ApiBaseRe baseRe = new ApiBaseRe();
+        DoGroupOfRealyData doGroupReadyData = apiGroupService.getDoGroupReadyData(id, projectId);
+        baseRe.setCode(1);
+        baseRe.setData(doGroupReadyData);
+        return baseRe;
     }
 
 
+    @PostMapping("doOne")
+    @ResponseBody
+    public ApiBaseRe doOne(@RequestBody DoGroupRequest doGroupRequest,@RequestHeader(name = "projectId") Integer projectId) {
+        ApiBaseRe baseRe = new ApiBaseRe();
+        doGroupRequest.setProjectId(projectId);
+        DoGroupOfRealyData doGroupOfRealyData = apiGroupService.doOne(doGroupRequest);
+        baseRe.setCode(1);
+        baseRe.setData(doGroupOfRealyData);
+        return baseRe;
+    }
 }

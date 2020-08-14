@@ -120,26 +120,6 @@ public class DoApiImpl implements DoApiService {
 
     }
 
-//    public String getToken(MyHost host, String environment, String basic) {
-//        DoTestData data = new DoTestData();
-//        data.setApiMethod("2");
-//        if (environment.equals("uat")) {
-//            data.setHost("https://auth.t.zhilunkeji.com");
-//        }
-//        data.setApiPath("/sms/code");
-//        data.setBodyParam("{\"deviceId\":\"719910247738029\",\"mobile\":\"12900000001\"}");
-//
-//        httpClientService.getResponse(data).toString();
-//        data.setApiPath("/oauth/token");
-//        data.setAuthorization("Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy");
-//        data.setBodyParam(null);
-//        JSONArray objects = new JSONArray("[{\"name\":\"smsCode\",\"value\":\"cf79ae6addba60ad018347359bd144d2\"},{\"name\":\"deviceId\",\"value\":\"719910247738029\"},{\"name\":\"mobile\",\"value\":\"12900000001\"},{\"name\":\"version\",\"value\":\"2.7.7\"},{\"name\":\"grant_type\",\"value\":\"sms_code\"}]");
-//        data.setWebformParam(objects);
-//        return httpClientService.getResponse(data).toString();
-//
-//
-//    }
-
     public MyHost selectHost(String device) {
         switch (device) {
             case "1":
@@ -297,7 +277,7 @@ public class DoApiImpl implements DoApiService {
             }
             com.alibaba.fastjson.JSONArray array = b.StringToArray(relyTestListId.toString());
             if (array.size() > 0) {
-                apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId);
+                apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId,1);
 
             }
         }
@@ -322,7 +302,7 @@ public class DoApiImpl implements DoApiService {
                             newList.add(closeCase);
 
 
-                            apiReportService.doTest(b.StringToArray(newList.toString()), environment, reportId, accountValue, projectId);
+                            apiReportService.doTest(b.StringToArray(newList.toString()), environment, reportId, accountValue, projectId,1);
                         }
                         break;
                 }

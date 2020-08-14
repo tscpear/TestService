@@ -40,43 +40,42 @@
                                 device_type,
                                 response_base_expect_result,
                                 response_value_expect_result,
-                                result_main
-        )
-        value
-        (
-        #{reportId}
-        ,
-        #{testId}
-        ,
-        #{apiPath}
-        ,
-        #{headerParam}
-        ,
-        #{webformParam}
-        ,
-        #{bodyParam}
-        ,
-        #{relyValue}
-        ,
-        #{expectStatus}
-        ,
-        #{actStatus}
-        ,
-        #{response}
-        ,
-        #{resultStatus}
-        ,
-        #{apiMethod}
-        ,
-        #{device}
-        ,
-        #{deviceType}
-        ,
-        #{responseBaseExpectResult}
-        ,
-        #{responseValueExpectResult}
-        ,
-        #{resultMain}
+                                result_main)
+            value
+            (
+            #{reportId}
+            ,
+            #{testId}
+            ,
+            #{apiPath}
+            ,
+            #{headerParam}
+            ,
+            #{webformParam}
+            ,
+            #{bodyParam}
+            ,
+            #{relyValue}
+            ,
+            #{expectStatus}
+            ,
+            #{actStatus}
+            ,
+            #{response}
+            ,
+            #{resultStatus}
+            ,
+            #{apiMethod}
+            ,
+            #{device}
+            ,
+            #{deviceType}
+            ,
+            #{responseBaseExpectResult}
+            ,
+            #{responseValueExpectResult}
+            ,
+            #{resultMain}
         )
     </insert>
     <update id="updateByReportId">
@@ -161,5 +160,10 @@
         select test_id
         from api_report
         where id = (select Max(id) from api_report where report_id = #{reportId})
+    </select>
+    <select id="getApiGroupOfReportResult" resultMap="apiReportMap">
+        select id,result_main
+        from api_report
+        where report_id = #{reportId}
     </select>
 </mapper>

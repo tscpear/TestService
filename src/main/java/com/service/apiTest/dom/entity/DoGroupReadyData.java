@@ -12,4 +12,5 @@ public class DoGroupReadyData {
     private JSONArray caseList;
     private NewCaseList newCaseList;
     private String groupMark;
+
 }

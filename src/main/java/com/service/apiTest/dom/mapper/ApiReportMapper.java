@@ -1,6 +1,7 @@
 package com.service.apiTest.dom.mapper;
 
 import com.service.apiTest.dom.entity.ApiReport;
+import com.service.apiTest.service.domian.ApiGroupOfReportResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -67,5 +68,8 @@ public interface ApiReportMapper {
      * @return
      */
    Integer getLatestCase(long reportId);
+
+
+   List<ApiReport> getApiGroupOfReportResult(long reportId);
 
 }

@@ -218,10 +218,14 @@
 
     </select>
     <select id="getDeviceTypeList" resultType="com.service.apiTest.service.domian.DeviceAndType">
-        select distinct uri.device as device,b.device_type as deviceType from uri join (select api_id,device_type from
-        apicase where id in  <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
-        #{id}
-    </foreach>) b on uri.id = b.api_id order by uri.device;
+        select distinct uri.device as device,b.device_type as deviceType
+        from uri
+        join (select api_id,device_type from
+        apicase
+        where id in
+        <foreach collection="testIdList" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>) b on uri.id = b.api_id order by uri.device;
     </select>
     <select id="getApiIdByApiCaseId" resultType="java.lang.Integer">
         select api_id

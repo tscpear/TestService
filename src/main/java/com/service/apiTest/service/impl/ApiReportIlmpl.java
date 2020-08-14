@@ -74,7 +74,7 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public long doTest(JSONArray testId, Integer environment, long reportId, List<String> accountValue, Integer projectId) {
+    public long doTest(JSONArray testId, Integer environment, long reportId, List<String> accountValue, Integer projectId,Integer b) {
         Map<String, String> newTokenList = new HashMap<>();
         Map<String, String> newDataList = new HashMap<>();
         for (String accounts : accountValue) {
@@ -88,7 +88,6 @@ public class ApiReportIlmpl implements ApiReportService {
             newToken.setProjectId(projectId);
             newToken.setAccountId(acountId);
             String newName = deviceId + "." + deviceType;
-
             String tokenValue = newTokenMapper.getToken(newToken);
             if (StringUtils.isEmpty(tokenValue)) {
                 tokenValue = newTokenMapper.getCookie(newToken);
@@ -106,7 +105,7 @@ public class ApiReportIlmpl implements ApiReportService {
             Integer id = Integer.parseInt(ids.toString());
             DoTestData doTestData = doApiService.getTestData(environment, id, newTokenList, newDataList, reportId, accountValue, projectId);
             ResponseData responseData = httpClientService.getResponse(doTestData);
-            addReport(responseData, reportId, id);
+            addReport(responseData, reportId, id,b);
         }
         /**
          * 存入成功率
@@ -180,7 +179,7 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public void addReport(ResponseData data, long reportId, Integer testId) {
+    public void addReport(ResponseData data, long reportId, Integer testId,Integer a) {
         ApiReport report = new ApiReport();
         report.setReportId(reportId);
         report.setTestId(testId);
@@ -282,7 +281,7 @@ public class ApiReportIlmpl implements ApiReportService {
             }
         }
 
-        if (apiReportMapper.findReportIdAndTestId(report) > 0) {
+        if (apiReportMapper.findReportIdAndTestId(report) > 0 && a == 1) {
             apiReportMapper.updateByReportId(report);
         } else {
             apiReportMapper.putData(report);
@@ -323,13 +322,7 @@ public class ApiReportIlmpl implements ApiReportService {
         /**
          * 增加前置用例的账户体系
          */
-
-
-
-
         List<DeviceAndType> deviceAndTypeList = apiCaseMapper.getDeviceTypeList(testList);
-
-
         Project project = new Project();
         if (projectId == 1) {
             project = project1;

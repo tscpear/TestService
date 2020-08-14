@@ -49,14 +49,13 @@ public class ApiReportController {
         }else {
             reportId = token.getReportId();
         }
-        apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId,token.getAccountValue(),projectId);
+        apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId,token.getAccountValue(),projectId,1);
         JSONObject data = new JSONObject();
         data.put("list",apiReportService.getReportDataList(reportId));
         data.put("reportId",reportId);
         baseRe.setData(data);
         baseRe.setCode(1);
         baseRe.setMsg("执行成功");
-
 
 //
 
@@ -160,11 +159,13 @@ public class ApiReportController {
     @ResponseBody
     public ApiBaseRe getAccout(@RequestBody PutToken putToken,@RequestHeader(name = "projectId") Integer projectId){
         ApiBaseRe baseRe = new ApiBaseRe();
-        baseRe.setData(apiReportService.getDeviceTypeAndAccountList(this.getTestList(putToken),putToken.getEnvironment(),projectId));
+        baseRe.setData(apiReportService.getDeviceTypeAndAccountList(this.getTestList(putToken),projectId,putToken.getEnvironment()));
         baseRe.setCode(1);
         return baseRe;
 
     }
+
+
 
     /**
      * 获取testList
@@ -183,9 +184,6 @@ public class ApiReportController {
     }
 
 
-    /**
-     *
-     */
 
 
 

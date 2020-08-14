@@ -35,4 +35,11 @@ public interface ApiReportMainMapper {
      * @return
      */
     Integer getCount(Integer projectId);
+
+
+    /**
+     * 判断流程有没有保存到mian
+     */
+    Integer haveOldReport(Integer id);
+
 }

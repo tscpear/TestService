@@ -68,7 +68,6 @@ public class MyBaseChange {
      * 去重
      */
     public List removeSame(List a) {
-
         HashSet h = new HashSet(a);
         a.clear();
         a.addAll(h);
@@ -198,4 +197,6 @@ public class MyBaseChange {
         }
         return s;
     }
+
+
 }

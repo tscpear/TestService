@@ -63,7 +63,7 @@ class ServiceApplicationTests {
     void test1() {
         DoTestData doTestData = doApiService.getLoginData(2, "5", "1");
         ResponseData data = httpClientService.getResponse(doTestData);
-        apiReportService.addReport(data, 11, 11);
+        apiReportService.addReport(data, 11, 11,1);
     }
 
     //    @Test

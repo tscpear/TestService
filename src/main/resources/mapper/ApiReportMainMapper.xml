@@ -22,5 +22,8 @@
     <select id="getCount" resultType="java.lang.Integer">
         select count(*) from api_report_main where project_id = #{projectId};
     </select>
+    <select id="haveOldReport" resultType="java.lang.Integer">
+        select count(*) from api_report_main where id = #{id}
+    </select>
 
 </mapper>

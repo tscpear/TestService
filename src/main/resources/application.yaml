@@ -330,17 +330,13 @@ project:
             loginHeader: {}
             smsHeader: {}
             account:
-              - - 12900000205
-                - 12900000205
-              - - 12900000205
+              - - test
             host: http://wch.zhilun-qa-major.com
           - loginHost: http://wch.zhilun-qa-minor.com/1001
             loginHeader: {}
             smsHeader: {}
             account:
-              - - 13588096710
-                - 186571905346
-              - - 1358809666
+              - - test
             host: http://wch.zhilun-qa-minor.com
       - device6:
         id: 6
