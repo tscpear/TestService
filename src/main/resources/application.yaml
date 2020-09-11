@@ -177,12 +177,12 @@ project:
           - 取货方社会服务车账号
         environment:
 #          准生产
-          - loginHost: https://auth.t.zhilunkeji.com
+          - loginHost: https://auth-t.zhilunkeji.com
             loginHeader: {Authorization: Basic TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4}
             smsHeader: {}
             account:
               - - 13588096710
-                - 12900000205
+                - 18329133828
               - - 12900000205
             host: https://api-t.zhilunkeji.com
 #            测试主
@@ -507,12 +507,12 @@ project:
         deviceTypeList:
           - test
         environment:
-          - loginHost: https://auth-t.zhilunkeji.com
+          - loginHost: https://w-t.zhilunkeji.com
             loginHeader: {}
             smsHeader: {}
             account:
-              - - 12900000001
-            host: https://api-t.zhilunkeji.com
+              - - test
+            host: https://w-t.zhilunkeji.com
 
 
           - loginHost: http://wh.zhilun-qa-major.com
@@ -527,7 +527,7 @@ project:
             loginHeader: {}
             smsHeader: {}
             account:
-              - - 12900000001
+              - - test
             host: http://wh.zhilun-qa-minor.com
 user:
   ip:

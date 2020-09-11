@@ -168,7 +168,7 @@
     </update>
     <update id="delApiCase">
         update apicase
-        set is_del = 1 and del_user_id = #{userId} and id = #{id}
+        set is_del = 1 and del_user_id = #{userId} where id = #{id}
     </update>
     <select id="findApiCaseOfLv" resultType="java.lang.String">
         select api_case_lv
@@ -192,7 +192,7 @@
     <select id="getTestForRely" resultMap="apiCaseResultMap">
         select id,api_case_mark
         from apicase
-        where api_id = #{id}
+        where api_id = #{id} and is_del = 0
     </select>
     <select id="getApiIdFromApiCase" resultType="java.lang.Integer">
         select b.id

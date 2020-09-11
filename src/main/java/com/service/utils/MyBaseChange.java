@@ -2,8 +2,12 @@ package com.service.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.service.utils.MyObject.MyJsonPath;
+import com.service.utils.test.dom.DoTestData;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -121,6 +125,21 @@ public class MyBaseChange {
         return array;
     }
 
+    /**
+     * 替换json的路径值
+     *
+     * @param json
+     * @param path
+     * @param value
+     * @return
+     */
+    public String replaceJsonPath(String json, String path, Object value) {
+        DocumentContext ext = JsonPath.parse(json);
+        JsonPath p = JsonPath.compile(path);
+        ext.set(p, value);
+        return ext.jsonString();
+    }
+
 
     /**
      * 取“/”
@@ -137,7 +156,9 @@ public class MyBaseChange {
      * 获取路径值
      */
     public MyJsonPath getValueFormJsonByPath(String json, String path) {
+
         MyJsonPath myJsonPath = new MyJsonPath();
+
         try {
             List<Object> values = JsonPath.read(json, path);
             myJsonPath.setType(1);
@@ -161,11 +182,11 @@ public class MyBaseChange {
     /**
      * Map<String,String>转JSONArray[{name,value}]
      */
-    public org.json.JSONArray mapToArray(Map<String, String> map) {
+    public org.json.JSONArray mapToArray(Map<String, Object> map) {
         org.json.JSONArray array = new org.json.JSONArray();
         for (String key : map.keySet()) {
             org.json.JSONObject object = new org.json.JSONObject();
-            String value = map.get(key);
+            Object value = map.get(key);
             object.put("name", key);
             object.put("value", value);
             array.put(object.toString());
@@ -173,11 +194,27 @@ public class MyBaseChange {
         return array;
     }
 
+
+    /**
+     * 将array转化为map
+     *
+     * @param array
+     * @return
+     */
+    public Map<String, Object> arrayToMap(org.json.JSONArray array) {
+        Map<String, Object> map = new HashMap<>();
+        for (Object o : array) {
+            JSONObject object = StringToJson(o.toString());
+            map.put(object.get("name").toString(), object.get("value"));
+        }
+        return map;
+    }
+
     /**
      * 更换Map<String,String>替换固定值，专门给登入接口用的
      */
-    public Map<String, String> replaceValueOfMap(Map<String, String> map, String oldValue, String newValue) {
-        Map<String, String> target = new HashMap<>(map);
+    public Map<String, Object> replaceValueOfMap(Map<String, Object> map, String oldValue, String newValue) {
+        Map<String, Object> target = new HashMap<>(map);
         for (String key : target.keySet()) {
             if (oldValue.equals(target.get(key))) {
                 target.put(key, newValue);
@@ -196,6 +233,51 @@ public class MyBaseChange {
             return null;
         }
         return s;
+    }
+
+    /**
+     * 对DoTestData的对象的数据替换
+     */
+    public DoTestData doTestDataChange(DoTestData doTestData, Map<Integer, Map<String, Object>> key) {
+        for (Integer type : key.keySet()) {
+            Map<String, Object> value = key.get(type);
+            switch (type) {
+                //替换接口末尾参数
+                case 1:
+                    doTestData.setApiParam(value.get("apiParam").toString());
+                    break;
+                //替换header参数
+                case 2:
+                    org.json.JSONArray headerParam = doTestData.getHeaderParam();
+                    Map<String, Object> headerParamMap = arrayToMap(headerParam);
+                    for (String keyValue : value.keySet()) {
+                        headerParamMap.put(keyValue, value.get(keyValue).toString());
+                    }
+                    headerParam = mapToArray(headerParamMap);
+                    doTestData.setHeaderParam(headerParam);
+                    break;
+                //替换webformParam
+                case 3:
+                    org.json.JSONArray webformParam = doTestData.getWebformParam();
+                    Map<String, Object> webformParamMap = arrayToMap(webformParam);
+                    for (String keyValue : value.keySet()) {
+                        webformParamMap.put(keyValue, value.get(keyValue));
+                    }
+                    webformParam = mapToArray(webformParamMap);
+                    doTestData.setWebformParam(webformParam);
+                    break;
+                //替换json参数
+                case 4:
+                    String bodyParam = doTestData.getBodyParam();
+                    for (String keyValue : value.keySet()) {
+                        bodyParam = replaceJsonPath(bodyParam, keyValue, value.get(keyValue));
+                    }
+                    doTestData.setBodyParam(bodyParam);
+                    break;
+            }
+
+        }
+        return doTestData;
     }
 
 

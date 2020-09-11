@@ -364,7 +364,7 @@ public class ApiReportIlmpl implements ApiReportService {
             String loginHost = eData.getLoginHost();
             String loginUri = device.getLoginUri();
             String tokenPath = device.getTokenPath();
-            Map<String, String> loginHeader = eData.getLoginHeader();
+            Map<String, Object> loginHeader = eData.getLoginHeader();
             org.json.JSONArray newLoginHeader = new org.json.JSONArray();
             if (!StringUtils.isEmpty(loginHeader)) {
                 newLoginHeader = b.mapToArray(loginHeader);
@@ -374,10 +374,10 @@ public class ApiReportIlmpl implements ApiReportService {
                 /**
                  * 获取验证码的接口
                  */
-                Map<String, String> smsParam = device.getSmsParam();
+                Map<String, Object> smsParam = device.getSmsParam();
                 String deviceName = device.getName();
                 String smsUri = device.getSmsUri();
-                Map<String, String> smsHeader = eData.getSmsHeader();
+                Map<String, Object> smsHeader = eData.getSmsHeader();
                 org.json.JSONArray newSmsHeader = new org.json.JSONArray();
                 if (!StringUtils.isEmpty(smsHeader)) {
                     newSmsHeader = b.mapToArray(smsHeader);
@@ -400,7 +400,7 @@ public class ApiReportIlmpl implements ApiReportService {
                  * 使用验证码登入的接口
                  */
                 org.json.JSONArray newSmsLoginParam = new org.json.JSONArray();
-                Map<String, String> smsLoginParam = device.getSmsLoginParam();
+                Map<String, Object> smsLoginParam = device.getSmsLoginParam();
                 if (deviceName.contains("小程序")) {
                     try {
                         String wxCodeValue = wxCode.get(0);
@@ -432,7 +432,7 @@ public class ApiReportIlmpl implements ApiReportService {
                     String doorCookie = doApiService.getDoorCookie(loginHost, cookieUri);
                     authorization = doorCookie;
                 }
-                Map<String, String> loginParam = device.getLoginParam();
+                Map<String, Object> loginParam = device.getLoginParam();
                 loginParam = b.replaceValueOfMap(loginParam, "username", account);
                 org.json.JSONArray newLoginParam = new org.json.JSONArray();
                 if (!StringUtils.isEmpty(loginParam)) {

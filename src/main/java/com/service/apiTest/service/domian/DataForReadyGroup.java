@@ -10,4 +10,5 @@ public class DataForReadyGroup {
     private String apiPath;
     private Integer success = 0;
     private Integer id;
+    private Integer device;
 }

@@ -8,9 +8,9 @@ import java.util.Map;
 @Data
 public class EData {
     private String loginHost;
-    private Map<String,String> loginHeader;
+    private Map<String,Object> loginHeader;
     private List<List<String>> account;
     private String host;
-    private Map<String,String> smsHeader;
+    private Map<String,Object> smsHeader;
     private String smsHost;
 }

@@ -58,7 +58,7 @@
         where id = #{id};
     </update>
     <select id="getDataForReadyGroup" resultType="com.service.apiTest.service.domian.DataForReadyGroup">
-        select a.api_case_mark as apiCaseMark,uri.api_path as apiPath,a.id as apiCaseId
+        select a.api_case_mark as apiCaseMark,uri.api_path as apiPath,a.id as apiCaseId,uri.device as device
         from apicase a,uri
         where uri.id = a.api_id
         and a.id

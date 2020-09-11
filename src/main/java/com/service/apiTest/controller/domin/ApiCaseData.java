@@ -3,7 +3,9 @@ package com.service.apiTest.controller.domin;
 
 import com.alibaba.fastjson.JSONArray;
 import lombok.Data;
+import lombok.NonNull;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -11,7 +13,9 @@ public class ApiCaseData {
     private Integer id;
     private Integer apiId;
     private String apiCaseMark;
+    @NotNull(message = "用例等级不能为空")
     private Integer apiCaseLv;
+    @NotNull(message = "用例类型不能为空")
     private Integer apiCaseType;
     private String apiHandleParam;
     private Boolean isDepend;
@@ -22,6 +26,7 @@ public class ApiCaseData {
     private JSONArray otherAssertionType = JSONArray.parseArray("[]");
     private JSONArray responseValueExpect = JSONArray.parseArray("[]");
     private Integer userId;
+    @NotNull(message = "账户类型不能为空")
     private Integer deviceType;
     private String device;
     private List<String> deviceTypeList;

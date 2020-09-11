@@ -277,7 +277,7 @@ public class DoApiImpl implements DoApiService {
             }
             com.alibaba.fastjson.JSONArray array = b.StringToArray(relyTestListId.toString());
             if (array.size() > 0) {
-                apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId,1);
+                apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId, 1);
 
             }
         }
@@ -302,7 +302,7 @@ public class DoApiImpl implements DoApiService {
                             newList.add(closeCase);
 
 
-                            apiReportService.doTest(b.StringToArray(newList.toString()), environment, reportId, accountValue, projectId,1);
+                            apiReportService.doTest(b.StringToArray(newList.toString()), environment, reportId, accountValue, projectId, 1);
                         }
                         break;
                 }
@@ -376,10 +376,24 @@ public class DoApiImpl implements DoApiService {
         }
         //header
         data.setHeaderParam(this.OAddOs(api.getHeaderParamType(), api.getHeaderFiexdParam(), apiCase.getHeaderHandleParam(), api.getHeaderRelyParam(), newRely));
+        if (apiCase.getIsDepend() == 0) {
+            JSONArray headerRelyToHandle = new JSONArray(apiCase.getHeaderRelyToHandle());
+            Map<String, Object> headerRelyToHandleMap = b.arrayToMap(headerRelyToHandle);
+            Map<Integer, Map<String, Object>> headerKey = new HashMap<>();
+            headerKey.put(2, headerRelyToHandleMap);
+            data = b.doTestDataChange(data, headerKey);
+        }
         //webform
         data.setWebformParam(this.OAddOs(api.getWebformParamType(), api.getWebformFiexdParam(), apiCase.getWebformHandleParam(), api.getWebformRelyParam(), newRely));
-        //bodParam
+        if (apiCase.getIsDepend() == 0) {
+            JSONArray webformRelyToHandle = new JSONArray(apiCase.getWebformRelyToHandle());
+            Map<String, Object> webformRelyToHandleMap = b.arrayToMap(webformRelyToHandle);
+            Map<Integer, Map<String, Object>> webformKey = new HashMap<>();
+            webformKey.put(3, webformRelyToHandleMap);
+            data = b.doTestDataChange(data, webformKey);
+        }
         JSONArray bodyParamType = new JSONArray(api.getBodyParamType());
+        //bodParam
         if (bodyParamType.length() > 0) {
             JSONObject o = new JSONObject();
             o.put("name", "Content-Type");
@@ -387,6 +401,48 @@ public class DoApiImpl implements DoApiService {
             JSONArray headers = data.getHeaderParam();
             data.setHeaderParam(headers.put(o));
             String bodyString = b.getJSONString(api.getBodyFiexdParam());
+            for (Object bodyParamTypes : bodyParamType) {
+                Integer type = Integer.parseInt(bodyParamTypes.toString());
+                switch (type) {
+                    case 1:
+                        break;
+                    case 3:
+                        JSONArray bodyHandleParams = new JSONArray(apiCase.getBodyHandleParam());
+
+                        for (Object bodyHandleParam : bodyHandleParams) {
+                            JSONObject handleParam = new JSONObject(bodyHandleParam.toString());
+                            bodyString = b.replaceJsonPath(bodyString, handleParam.get("name").toString(), handleParam.get("value"));
+                        }
+
+                        break;
+                    case 2:
+                        JSONArray apiRelyParam = new JSONArray(api.getBodyRelyParam());
+                        for (Object relyParam : apiRelyParam) {
+                            JSONObject param = new JSONObject(relyParam.toString());
+                            Integer uriId = Integer.parseInt(param.get("apiPath").toString());
+                            JSONArray apiCaseRely = new JSONArray(apiCase.getRelyCaseId());
+                            Integer testIds = 0;
+                            for (Object rely : apiCaseRely) {
+                                JSONObject relys = new JSONObject(rely.toString());
+                                Integer uriIdOfApiCase = Integer.parseInt(relys.get("apiPath").toString());
+                                if (uriIdOfApiCase == uriId) {
+                                    testIds = Integer.parseInt(relys.get("apiCaseId").toString());
+                                    break;
+                                }
+                            }
+                            String relyValues = apiReportMapper.getRelyValue(reportId, testIds);
+                            if (StringUtils.isEmpty(relyValues)) {
+                                break;
+                            }
+                            JSONObject relyValue = new JSONObject(relyValues);
+                            String path = param.get("name").toString();
+                            String value = param.get("value").toString();
+                            Object values = relyValue.get(value);
+                            bodyString = b.replaceJsonPath(bodyString, path, values);
+                        }
+                        break;
+                }
+            }
             data.setBodyParam(bodyString);
         }
         data.setAuthorization(tokenValue);
@@ -502,12 +558,19 @@ public class DoApiImpl implements DoApiService {
                                 if (apiPath == 0) {
 
                                 }
-                                String newValue = newRely.get(apiPath).get(valueName);
-                                object.put("name", name);
-                                object.put("value", newValue);
-                                relyParams.put(object);
+                                try {
+                                    String newValue = newRely.get(apiPath).get(valueName);
+                                    object.put("name", name);
+                                    object.put("value", newValue);
+                                    relyParams.put(object);
+                                } catch (Exception e) {
+
+                                }
                             }
-                            param = this.OAddO(param, relyParams);
+                            if(relyParams.length() > 0){
+                                param = this.OAddO(param, relyParams);
+                            }
+
                             break;
                         case "3":
                             JSONArray handleParam = new JSONArray(handleParm);
@@ -559,8 +622,7 @@ public class DoApiImpl implements DoApiService {
             } else {
                 for (String key : paths.keySet()) {
                     String value = paths.get(key);
-                    String newValue = b.getValueFormJsonByPath(loginRely, value).toString();
-                    loginRelyParam.put(key, newValue);
+                    loginRelyParam.put(key, b.getValueFormJsonByPath(loginRely, value).getValue().toString());
                 }
                 newRely.put(0, loginRelyParam);
             }

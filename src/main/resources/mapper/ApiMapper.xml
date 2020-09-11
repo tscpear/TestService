@@ -164,7 +164,7 @@
             rely_value           = #{relyValue},
             response_base        = #{responseBase},
             update_user_id       = #{updateUserId}
-            where id = #{id};
+        where id = #{id};
     </update>
     <insert id="addApi">
         insert into uri (
@@ -193,6 +193,7 @@
         select id,api_path
         from uri
         where project_id = #{projectId}
+          and is_rely = 1
           and api_path like CONCAT(#{path}, '%')
     </select>
     <select id="getPathById" resultType="java.lang.String">
