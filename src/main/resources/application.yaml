@@ -1,4 +1,4 @@
-server:
+  server:
   port: 8080
 spring:
   thymeleaf:
@@ -331,13 +331,13 @@ project:
             smsHeader: {}
             account:
               - - test
-            host: http://wch.zhilun-qa-major.com
+            host: http://wch.zhilun-qa-major.com/1001
           - loginHost: http://wch.zhilun-qa-minor.com/1001
             loginHeader: {}
             smsHeader: {}
             account:
               - - test
-            host: http://wch.zhilun-qa-minor.com
+            host: http://wch.zhilun-qa-minor.com/1001
       - device6:
         id: 6
         name: 知轮车服
@@ -519,7 +519,7 @@ project:
             loginHeader: {}
             smsHeader: {}
             account:
-              - - test
+              - - test1
             host: http://wh.zhilun-qa-major.com
 
 
@@ -527,12 +527,13 @@ project:
             loginHeader: {}
             smsHeader: {}
             account:
-              - - test
+              - - test1
             host: http://wh.zhilun-qa-minor.com
 user:
   ip:
     - 192.168.20.135
     - 127.0.0.1
+    - 192.168.10.57
 
 
 

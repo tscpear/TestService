@@ -266,77 +266,83 @@ public class ProjectOneImpl implements ProjectOne {
         testData = doApiService.getTestData(environment, 72, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
-        //获取商品id
-        Integer goodNum = Integer.parseInt(b.getValueFormJsonByPath(response, "$.rows[0].goodsNum").getValue().toString());
-        //获取商品开单数量
-        Integer billNum = Integer.parseInt(b.getValueFormJsonByPath(response, "$.rows[0].billNum").getValue().toString());
-        //获取商品出库数量
-        Integer realNum = Integer.parseInt(b.getValueFormJsonByPath(response, "$.rows[0].realNum").getValue().toString());
-        //获取需要出库的数量
-        Integer num = billNum - realNum;
-        /**
-         * @2执行分仓入库同时获取可出库胎
-         */
-        this.RarehouseAddTire(goodNum, num, environment, projectId, true);
+        //获取规格总类
+        Integer kinds = Integer.parseInt(b.getValueFormJsonByPath(response, "$.total").getValue().toString());
+        String responses = response;
+        for (int k = 0; k < kinds; k++) {
+            //获取商品id
+            Integer goodNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].goodsNum").getValue().toString());
+            //获取商品开单数量
+            Integer billNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].billNum").getValue().toString());
+            //获取商品出库数量
+            Integer realNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].realNum").getValue().toString());
+            //获取需要出库的数量
+            Integer num = billNum - realNum;
+            /**
+             * @2执行分仓入库同时获取可出库胎
+             */
+            this.RarehouseAddTire(goodNum, num, environment, projectId, true);
 
-        /**
-         * @3获取分仓出库子订单的id
-         */
-        map.clear();
-        maps.clear();
-        maps.put("id", ckId);
-        maps.put("numbers", orderSn);
-        map.put(3, maps);
-        testData = doApiService.getTestData(environment, 73, newTokenList, newDataList, 0, accountValue, projectId);
-        testData = b.doTestDataChange(testData, map);
-        response = httpClientService.getResponse(testData).getResponse();
+            /**
+             * @3获取分仓出库子订单的id
+             */
+            map.clear();
+            maps.clear();
 
-        //获取子订单id
-        String ckOrderSon = b.getValueFormJsonByPath(response, "$.datas[0].id").getValue().toString();
-        /**
-         * @3.5固定货位
-         */
-        map.clear();
-        maps.clear();
-        maps.put("id", ckOrderSon);
-        map.put(3, maps);
-        testData = doApiService.getTestData(environment, 78, newTokenList, newDataList, 0, accountValue, projectId);
-        testData = b.doTestDataChange(testData, map);
-        System.out.println("--------------------------------------------------------");
-        response = httpClientService.getResponse(testData).getResponse();
-        System.out.println("--------------------------------------------------------");
-        /**
-         * @进行将胎号导入到子订单中
-         */
-        for (int i = 0; i < num; i++) {
-            if (nowTireList.size() < i) {
-                break;
-            }
-            String tireNo = nowTireList.get(i).toString();
+            maps.put("id", ckId);
+            maps.put("numbers", orderSn);
+            map.put(3, maps);
+            testData = doApiService.getTestData(environment, 73, newTokenList, newDataList, 0, accountValue, projectId);
+            testData = b.doTestDataChange(testData, map);
+            response = httpClientService.getResponse(testData).getResponse();
+
+            //获取子订单id
+            String ckOrderSon = b.getValueFormJsonByPath(response, "$.datas["+k+"].id").getValue().toString();
+            /**
+             * @3.5固定货位
+             */
             map.clear();
             maps.clear();
             maps.put("id", ckOrderSon);
-            maps.put("tyreNum", tireNo);
             map.put(3, maps);
-            testData = doApiService.getTestData(environment, 74, newTokenList, newDataList, 0, accountValue, projectId);
+            testData = doApiService.getTestData(environment, 78, newTokenList, newDataList, 0, accountValue, projectId);
+            testData = b.doTestDataChange(testData, map);
+            System.out.println("--------------------------------------------------------");
+            response = httpClientService.getResponse(testData).getResponse();
+            System.out.println("--------------------------------------------------------");
+            /**
+             * @进行将胎号导入到子订单中
+             */
+            for (int i = 0; i < num; i++) {
+                if (nowTireList.size() <= i) {
+                    break;
+                }
+                String tireNo = nowTireList.get(i).toString();
+                map.clear();
+                maps.clear();
+                maps.put("id", ckOrderSon);
+                maps.put("tyreNum", tireNo);
+                map.put(3, maps);
+                testData = doApiService.getTestData(environment, 74, newTokenList, newDataList, 0, accountValue, projectId);
+                testData = b.doTestDataChange(testData, map);
+                response = httpClientService.getResponse(testData).getResponse();
+                Integer status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").getValue().toString());
+                if (status != 1) {
+                    num++;
+                }
+            }
+
+            /**
+             * @4提交出库单
+             */
+            map.clear();
+            maps.clear();
+            maps.put("id", ckId);
+            map.put(3, maps);
+            testData = doApiService.getTestData(environment, 75, newTokenList, newDataList, 0, accountValue, projectId);
             testData = b.doTestDataChange(testData, map);
             response = httpClientService.getResponse(testData).getResponse();
-            Integer status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").getValue().toString());
-            if (status != 1) {
-                num++;
-            }
         }
-
-        /**
-         * @4提交出库单
-         */
-        map.clear();
-        maps.clear();
-        maps.put("id", ckId);
-        map.put(3, maps);
-        testData = doApiService.getTestData(environment, 75, newTokenList, newDataList, 0, accountValue, projectId);
-        testData = b.doTestDataChange(testData, map);
-        response = httpClientService.getResponse(testData).getResponse();
     }
 
     @Override
@@ -403,7 +409,7 @@ public class ProjectOneImpl implements ProjectOne {
         /**
          * @1获取司机订单信息，商品Id、门店手机号
          */
-        
+
 
         /**
          * @2查询到可出库的胎号
@@ -418,14 +424,6 @@ public class ProjectOneImpl implements ProjectOne {
          */
 
 
-
-
-
-
-
-
-
-
     }
 
 
@@ -434,7 +432,7 @@ public class ProjectOneImpl implements ProjectOne {
      */
     public void login(List<String> accountValue, Integer projectId, Integer environment) {
         PutToken putToken = new PutToken();
-        putToken.setEnvironment(1);
+        putToken.setEnvironment(environment);
         putToken.setAccountValue(accountValue);
         apiReportService.accountLogin(putToken, projectId);
         for (String accounts : accountValue) {

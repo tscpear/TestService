@@ -40,7 +40,6 @@ public class CreateDataController {
                               @RequestParam Integer environment,
                               @RequestParam Integer tireId,
                               @RequestParam Integer num) {
-
         projectOne.RarehouseAddTire(tireId,num,environment,projectId,false);
         return null;
     }
