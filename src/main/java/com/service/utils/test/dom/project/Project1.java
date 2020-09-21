@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Data
-
 public class Project1 extends Project {
 
 }

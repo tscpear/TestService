@@ -1,22 +1,23 @@
 package com.service;
 
 import com.service.apiTest.controller.domin.PutToken;
-import com.service.apiTest.dom.entity.Token;
 import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.dom.mapper.TokenMapper;
 import com.service.apiTest.service.impl.ApiReportIlmpl;
 import com.service.apiTest.service.impl.ApiServicelmpl;
 import com.service.apiTest.service.service.ApiReportService;
 import com.service.apiTest.service.service.CreateTireDataService;
+import com.service.guiTest.base.impl.DriverBaseImpl;
+import com.service.guiTest.dom.entity.GuiData;
 import com.service.utils.MyBaseChange;
 import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.ResponseData;
 import com.service.utils.test.dom.StoreHost;
-import com.service.utils.test.dom.project.Project;
 import com.service.utils.test.dom.project.Project1;
 import com.service.utils.test.method.DoApiService;
 import com.service.utils.test.method.HttpClientService;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -46,10 +47,13 @@ class ServiceApplicationTests {
     private TokenMapper tokenMapper;
     @Autowired
     private MyBaseChange m;
-    @Autowired
-    private Project1 project1;
+
+    private Project1 project1 = new Project1();
     @Autowired
     private ApiReportIlmpl apiReportIlmpl;
+
+    @Autowired
+    private DriverBaseImpl driverBaseService;
 
 
 
@@ -103,4 +107,44 @@ class ServiceApplicationTests {
         apiReportService.accountLogin(putToken,1);
     }
 
+    @Test
+    void test7(){
+        driverBaseService.getWebDriver();
+        System.out.println("你妈妈");
+    }
+    @Test
+    void test8() throws InterruptedException {
+        WebDriver driver =  driverBaseService.getWebDriver();
+        GuiData data = new GuiData();
+        data.setActive(3);
+        data.setElementType(1);
+        data.setElement("username");
+        data.setKeyValue("鸟妈妈");
+        driverBaseService.doGui(driver,data);
+    }
+
+    @Test
+    void test9() throws InterruptedException {
+        List<Integer> ids = new ArrayList<>();
+        ids.add(7);
+        ids.add(8);
+        ids.add(10);
+        driverBaseService.doGuis(ids);
+    }
+
+
+    @Test
+    void test10(){
+        driverBaseService.getAndroidDriver();
+    }
+
+    @Test
+    void test11(){
+        List<Integer> ids = new ArrayList<>();
+        ids.add(11);
+        ids.add(12);
+        ids.add(13);
+        ids.add(14);
+        driverBaseService.doAndroidGuis(ids);
+    }
 }

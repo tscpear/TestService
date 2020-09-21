@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.guiTest.dom.mapper.GuiMapper">
+
+    <resultMap id="gui" type="com.service.guiTest.dom.entity.GuiData">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="device" column="device"/>
+        <result property="element" column="element"/>
+        <result property="elementType" column="element_type"/>
+        <result property="active" column="active"/>
+        <result property="assertElement" column="assert_element"/>
+        <result property="assertElementType" column="assert_element_type"/>
+        <result property="projectId" column="project_id"/>
+        <result property="keyValue" column="key_value"/>
+        <result property="assertExpect" column="assert_expect"/>
+    </resultMap>
+    <insert id="add">
+        insert into gui (name, device, element, element_type, active, assert_element, assert_element_type, project_id,
+                         key_value,assert_expect
+        )
+        value
+        (
+        #{name}
+        ,
+        #{device}
+        ,
+        #{element}
+        ,
+        #{elementType}
+        ,
+        #{active}
+        ,
+        #{assertElement}
+        ,
+        #{assertElementType}
+        ,
+        #{projectId}
+        ,
+        #{keyValue},#{assertExpect}
+        );
+
+    </insert>
+    <select id="getData" resultMap="gui">
+        select *
+        from gui
+        where is_del = 1
+          and project_id = #{projectId};
+    </select>
+    <select id="getGuiData" resultMap="gui">
+        select * from gui where id in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getOneData" resultMap="gui">
+        select *
+        from gui
+        where id = #{id}
+    </select>
+    <update id="update">
+        update gui
+        set name               =
+                #{name},
+            device=
+                #{device},
+            element=
+                #{element},
+            element_type=
+                #{elementType},
+            active=
+                #{active},
+            assert_element=
+                #{assertElement},
+            assert_element_type=
+                #{assertElementType},
+            key_value=
+                #{keyValue},
+            assert_expect = #{assertExpect}
+        where id = #{id};
+    </update>
+
+</mapper>
