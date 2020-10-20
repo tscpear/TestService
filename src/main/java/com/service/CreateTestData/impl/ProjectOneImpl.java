@@ -89,11 +89,13 @@ public class ProjectOneImpl implements ProjectOne {
             case 4:
                 testId3 = 65;
                 break;
+            case 39:
+                testId3 = 80;
         }
         for (int j = 0; j < doTimes; j++) {
-            /**
-             * @1当前分仓有多少商品数量
-             */
+                /**
+                 * @1当前分仓有多少商品数量
+                 */
             //修改数据
             Map<Integer, Map<String, Object>> map1 = new HashMap<>();
             Map<String, Object> map11 = new HashMap<>();
