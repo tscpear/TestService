@@ -36,4 +36,5 @@ public class Api {
     private Integer createUserId;
     private String responseBase;
     private Integer projectId;
+    private  Integer more;
 }

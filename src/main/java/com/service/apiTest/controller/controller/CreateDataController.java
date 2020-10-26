@@ -58,6 +58,9 @@ public class CreateDataController {
             case 3:
                 projectOne.CompleteStoreOrder(orderSn,projectId,environment);
                 break;
+            case 4:
+                projectOne.CompleteDriverOrder(orderSn,projectId,environment);
+                break;
 
         }
        return null;

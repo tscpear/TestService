@@ -63,6 +63,11 @@ public class ApiServicelmpl implements ApiService {
         Api api = apiMapper.getApiData(id);
         ApiData apiData = new ApiData();
         BeanUtils.copyProperties(api, apiData);
+        if(api.getMore() == 1){
+            apiData.setMore(true);
+        }else {
+            apiData.setMore(false);
+        }
         apiData.setApiParamType(api.getApiParamType());
         /**
          * 存入apiParamType。。。
@@ -180,7 +185,6 @@ public class ApiServicelmpl implements ApiService {
             throw new Throwable("存在相同类型的接口");
         } else {
 
-
             this.au(apiData, api);
             api.setCreateUserId(apiData.getUserId());
             apiMapper.addApi(api);
@@ -256,7 +260,11 @@ public class ApiServicelmpl implements ApiService {
     public void au(ApiDataAU apiData, Api api) {
 
         BeanUtils.copyProperties(apiData, api);
-
+        if(apiData.getMore()){
+            api.setMore(1);
+        }else {
+            api.setMore(0);
+        }
         /**
          * 存入apiParam.....
          */

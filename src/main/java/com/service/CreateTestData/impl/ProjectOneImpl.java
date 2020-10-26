@@ -19,10 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ProjectOneImpl implements ProjectOne {
@@ -93,9 +90,9 @@ public class ProjectOneImpl implements ProjectOne {
                 testId3 = 80;
         }
         for (int j = 0; j < doTimes; j++) {
-                /**
-                 * @1当前分仓有多少商品数量
-                 */
+            /**
+             * @1当前分仓有多少商品数量
+             */
             //修改数据
             Map<Integer, Map<String, Object>> map1 = new HashMap<>();
             Map<String, Object> map11 = new HashMap<>();
@@ -119,7 +116,6 @@ public class ProjectOneImpl implements ProjectOne {
 
                 //获取参数 jcGoodsId
                 String jcGoodsId = b.getValueFormJsonByPath(response, "$.rows[0].jcGoodsId").getValue().toString();
-                System.err.println(jcGoodsId);
 
 
                 /**
@@ -299,7 +295,7 @@ public class ProjectOneImpl implements ProjectOne {
             response = httpClientService.getResponse(testData).getResponse();
 
             //获取子订单id
-            String ckOrderSon = b.getValueFormJsonByPath(response, "$.datas["+k+"].id").getValue().toString();
+            String ckOrderSon = b.getValueFormJsonByPath(response, "$.datas[" + k + "].id").getValue().toString();
             /**
              * @3.5固定货位
              */
@@ -309,9 +305,7 @@ public class ProjectOneImpl implements ProjectOne {
             map.put(3, maps);
             testData = doApiService.getTestData(environment, 78, newTokenList, newDataList, 0, accountValue, projectId);
             testData = b.doTestDataChange(testData, map);
-            System.out.println("--------------------------------------------------------");
             response = httpClientService.getResponse(testData).getResponse();
-            System.out.println("--------------------------------------------------------");
             /**
              * @进行将胎号导入到子订单中
              */
@@ -393,10 +387,8 @@ public class ProjectOneImpl implements ProjectOne {
         map.put(4, maps);
         testData = doApiService.getTestData(environment, 79, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
-
-        System.err.println("你妈妈吗");
         response = httpClientService.getResponse(testData).getResponse();
-        System.err.println(response);
+
     }
 
     @Override
@@ -407,23 +399,125 @@ public class ProjectOneImpl implements ProjectOne {
         accountValue.add("9.1.1");
         accountValue.add("1.1.1");
         accountValue.add("5.1.1");
+        accountValue.add("6.2.1");
         this.login(accountValue, projectId, environment);
         /**
-         * @1获取司机订单信息，商品Id、门店手机号
+         * @1获取司机订单信息，商品名称、门店手机号
          */
-
-
+        Map<Integer, Map<String, Object>> map = new HashMap<>();
+        Map<String, Object> maps = new HashMap<>();
+        maps.put("$.orderSn", orderSn);
+        map.put(4, maps);
+        DoTestData testData = doApiService.getTestData(environment, 82, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        String response = httpClientService.getResponse(testData).getResponse();
+        Integer storeUserId = Integer.parseInt(b.getValueFormJsonByPath(response, "$.data.list[0].storeUserId").getValue().toString());
+        Object titles = b.getValueFormJsonByPath(response, "$.data.list[0]..title").getValue().toString();
+        Object quantitys = b.getValueFormJsonByPath(response, "$.data.list[0]..quantity").getValue().toString();
+        JSONArray titlesArray = b.StringToArray(titles.toString());
+        JSONArray quantitysArray = b.StringToArray(quantitys.toString());
         /**
          * @2查询到可出库的胎号
          */
+        map.clear();
+        maps.clear();
+        maps.put("storeUserId", storeUserId);
+        map.put(3, maps);
+        testData = doApiService.getTestData(environment, 83, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        Object itemTitle = b.getValueFormJsonByPath(response, "$.data..itemTitle").getValue().toString();
+        Object serialNums = b.getValueFormJsonByPath(response, "$.data..serialNums").getValue().toString();
+        JSONArray itemTitleArray = b.StringToArray(itemTitle.toString());
+        JSONArray serialNumsArray = b.StringToArray(serialNums.toString());
+
+
+        /**
+         * @2.9获取barcodes值
+         */
+        List<List<String>> bbs  = new ArrayList<>();
+        List<String> barcodes = new ArrayList<>();
+        for (int i = 0; i < titlesArray.size(); i++) {
+            for (int j = 0; j < itemTitleArray.size(); j++) {
+                if (titlesArray.get(i).equals(itemTitleArray.get(j))) {
+                    List<String> bs = new ArrayList<>();
+                    Integer quantity = Integer.parseInt(quantitysArray.get(i).toString());
+                    List<String> serialNum = Arrays.asList(serialNumsArray.get(j).toString().split(","));
+                    for (int k = 0; k < quantity; k++) {
+                        barcodes.add(serialNum.get(k).split("\\(")[0]);
+                        bs.add(serialNum.get(k).split("\\(")[0]);
+
+                    }
+                    bbs.add(bs);
+                    break;
+                }
+            }
+        }
 
         /**
          * @3门店一键出库
          */
+        map.clear();
+        maps.clear();
+        maps.put("storeUserId", storeUserId);
+        maps.put("barcodes", barcodes);
+        map.put(4, maps);
+        testData = doApiService.getTestData(environment, 84, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        /**
+         * @4获取出库单号
+         */
+        map.clear();
+        maps.clear();
+        maps.put("storeUserId", storeUserId);
+        map.put(3, maps);
+        testData = doApiService.getTestData(environment, 85, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        String outSn = b.getValueFormJsonByPath(response, "$.data.list[0].sn").getValue().toString();
+
+
 
         /**
-         * @司机端领取质保卡
+         * @5获取出库单中的轮胎list信息
          */
+        map.clear();
+        maps.clear();
+        maps.put("sn", "https://zhilun.co/a/"+outSn);
+        map.put(3, maps);
+        testData = doApiService.getTestData(environment, 86, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        String tyreInfoList = b.getValueFormJsonByPath(response, "$.data.tyreInfoList").getValue().toString();
+        JSONArray tyreInfoListArray = b.StringToAO(tyreInfoList);
+        /**
+         * @6唯一司机端领取质保卡
+         */
+        map.clear();
+        maps.clear();
+        maps.put("$.tyreInfoList", tyreInfoListArray);
+        map.put(4, maps);
+        testData = doApiService.getTestData(environment, 87, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+
+        /**
+         * @7管理后台出库关联
+         */
+
+        for(int i = 0;i<bbs.size();i++){
+            List<String> bs = bbs.get(i);
+            map.clear();
+            maps.clear();
+            maps.put("$.serialNums", bs.toString().split("\\[")[1].split("]")[0].replaceAll(",",";").replaceAll(" ",""));
+            maps.put("$.orderSn", orderSn);
+            map.put(4, maps);
+            testData = doApiService.getTestData(environment, 89, newTokenList, newDataList, 0, accountValue, projectId);
+            testData = b.doTestDataChange(testData, map);
+            response = httpClientService.getResponse(testData).getResponse();
+        }
+
 
 
     }

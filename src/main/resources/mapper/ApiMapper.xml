@@ -34,6 +34,7 @@
         <result property="delUserId" column="del_user_id"/>
         <result property="responseBase" column="response_base"/>
         <result property="projectId" column="project_id"/>
+        <result property="more" column="more"/>
 
     </resultMap>
 
@@ -70,7 +71,8 @@
         is_rely,
         rely_value,
         response_base,
-        project_id
+        project_id,
+        more
 
     </sql>
     <sql id="apidataS">
@@ -98,7 +100,8 @@
         #{isRely},
         #{relyValue},
         #{responseBase},
-        #{projectId}
+        #{projectId},
+        #{more}
     </sql>
 
 
@@ -163,7 +166,8 @@
             is_rely              = #{isRely},
             rely_value           = #{relyValue},
             response_base        = #{responseBase},
-            update_user_id       = #{updateUserId}
+            update_user_id       = #{updateUserId},
+            more                 = #{more}
         where id = #{id};
     </update>
     <insert id="addApi">
@@ -229,6 +233,7 @@
                 device =
                 #{device}
           and project_id = #{projectId}
+          and more = 0;
     </select>
     <update id="del">
         update uri

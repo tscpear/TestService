@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class ApiData {
+    private Boolean more = false;
     private int id;
     private String apiPath;
     private int device;
@@ -31,4 +32,6 @@ public class ApiData {
     private JSONArray relyValue = JSONArray.parseArray("[]");
     private String responseBase;
     private Integer projectId;
+
+
 }

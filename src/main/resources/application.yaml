@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: tsc123tsc123
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://192.168.20.135:3306/test?useUnicode=true&characterEncoding=UTF8&useSSL=false&serverTimezone=UTC
     #\u90AE\u7BB1\u914D\u7F6E
   mail:
     host: smtp.qq.com
@@ -369,24 +369,28 @@ project:
           scope: $.scope
         deviceTypeList:
           - 普通司机账号
+          - 创建数据账号
         environment:
           - loginHost: https://auth-t.zhilunkeji.com
             loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
             smsHeader: {}
             account:
               - - 12900000001
+              - - 12900000448
             host: https://api-t.zhilunkeji.com
           - loginHost: http://auth.zhilun-qa-major.com
             loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
             smsHeader: {}
             account:
               - - 12900000001
+              - - 12900000448
             host: http://api.zhilun-qa-major.com
           - loginHost: http://auth.zhilun-qa-minor.com
             loginHeader: {Authorization: Basic VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==}
             smsHeader: {}
             account:
               - - 12900000001
+              - - 12900000448
             host: http://api.zhilun-qa-minor.com
       - device7:
         id: 7
