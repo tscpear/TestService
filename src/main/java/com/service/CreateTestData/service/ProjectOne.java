@@ -28,4 +28,5 @@ public interface ProjectOne {
 
     void CompleteDriverOrder(String orderSn,Integer projectId,Integer environment);
 
+    void getVoucher(String sn, Integer projectId, Integer environment,Integer type);
 }

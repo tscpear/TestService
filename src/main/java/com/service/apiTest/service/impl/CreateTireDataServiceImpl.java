@@ -70,7 +70,6 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
             for (int i = 0; i < goodsOfNum; i++) {
                 String intoOrderSn = this.test4(environment, token);
                 JSONObject barcodeData = this.test5(environment, token, intoOrderSn, barcodeList.get(i));
-                System.out.println(barcodeData);
                 if (barcodeData.get("status").toString().equals("1")) {
                     Boolean submit = this.test6(environment, token, barcodeData, intoOrderSn);
                     if (!submit) {
@@ -101,7 +100,6 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
     public JSONObject doTest(Integer environment, Integer testId, Token token) {
         DoTestData doTestData = doApiService.getTestData(environment, testId, null, null, 0, null, 1);
         ResponseData responseData = httpClientService.getResponse(doTestData);
-        System.out.println(responseData.getResponse());
         return new JSONObject(responseData.getResponse());
 
     }
@@ -110,7 +108,6 @@ public class CreateTireDataServiceImpl implements CreateTireDataService {
      * 进入出库单列表，获取id
      */
     public String test1(Integer environment, String orderSn, Token token) throws Throwable {
-        System.err.println("test1");
         JSONArray array = new JSONArray(this.doTest(environment, 29, null).get("datas").toString());
         String id;
         for (Object a : array) {

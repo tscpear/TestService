@@ -396,9 +396,7 @@ public class ProjectOneImpl implements ProjectOne {
         /**
          * @0登入账号
          */
-        accountValue.add("9.1.1");
         accountValue.add("1.1.1");
-        accountValue.add("5.1.1");
         accountValue.add("6.2.1");
         this.login(accountValue, projectId, environment);
         /**
@@ -435,7 +433,7 @@ public class ProjectOneImpl implements ProjectOne {
         /**
          * @2.9获取barcodes值
          */
-        List<List<String>> bbs  = new ArrayList<>();
+        List<List<String>> bbs = new ArrayList<>();
         List<String> barcodes = new ArrayList<>();
         for (int i = 0; i < titlesArray.size(); i++) {
             for (int j = 0; j < itemTitleArray.size(); j++) {
@@ -478,13 +476,12 @@ public class ProjectOneImpl implements ProjectOne {
         String outSn = b.getValueFormJsonByPath(response, "$.data.list[0].sn").getValue().toString();
 
 
-
         /**
          * @5获取出库单中的轮胎list信息
          */
         map.clear();
         maps.clear();
-        maps.put("sn", "https://zhilun.co/a/"+outSn);
+        maps.put("sn", "https://zhilun.co/a/" + outSn);
         map.put(3, maps);
         testData = doApiService.getTestData(environment, 86, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
@@ -506,11 +503,11 @@ public class ProjectOneImpl implements ProjectOne {
          * @7管理后台出库关联
          */
 
-        for(int i = 0;i<bbs.size();i++){
+        for (int i = 0; i < bbs.size(); i++) {
             List<String> bs = bbs.get(i);
             map.clear();
             maps.clear();
-            maps.put("$.serialNums", bs.toString().split("\\[")[1].split("]")[0].replaceAll(",",";").replaceAll(" ",""));
+            maps.put("$.serialNums", bs.toString().split("\\[")[1].split("]")[0].replaceAll(",", ";").replaceAll(" ", ""));
             maps.put("$.orderSn", orderSn);
             map.put(4, maps);
             testData = doApiService.getTestData(environment, 89, newTokenList, newDataList, 0, accountValue, projectId);
@@ -519,6 +516,113 @@ public class ProjectOneImpl implements ProjectOne {
         }
 
 
+    }
+
+
+    /**
+     * 完成理赔单，并获取理赔抵扣券
+     */
+    @Override
+    public void  getVoucher(String phone, Integer projectId, Integer environment,Integer type) {
+        /**
+         * @0登入账号
+         */
+        accountValue.add("3.1.1");
+        accountValue.add("1.1.1");
+        accountValue.add("2.1.1");
+        this.login(accountValue, projectId, environment);
+
+
+        /**
+         * @1获取司机账号对应存在的质保卡编号
+         */
+        Map<Integer, Map<String, Object>> map = new HashMap<>();
+        Map<String, Object> maps = new HashMap<>();
+        maps.put("driverPhone", phone);
+        map.put(3, maps);
+        DoTestData testData = doApiService.getTestData(environment, 91, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        String response = httpClientService.getResponse(testData).getResponse();
+        String zsn = "";
+        try {
+             zsn = b.getValueFormJsonByPath(response, "$.data.list[0].sn").getValue().toString();
+        }catch (Exception e){
+            new Throwable("该司机端没有线上质保卡");
+            return;
+        }
+        String carHeadPhoto = b.getValueFormJsonByPath(response, "$.data.list[0].carHeadPhoto").getValue().toString();
+        String carLicense = b.getValueFormJsonByPath(response, "$.data.list[0].carLicense").getValue().toString();
+        String driverName = b.getValueFormJsonByPath(response, "$.data.list[0].driverName").getValue().toString();
+
+        /**
+         * @2更新为全国理赔
+         */
+        map.clear();
+        maps.clear();
+        maps.put("$.carHeadPhoto", carHeadPhoto);
+        maps.put("$.driverName", driverName);
+        maps.put("$.driverPhone", phone);
+        maps.put("$.sn", zsn);
+        maps.put("$.nationalClaims", true);
+        maps.put("$.carLicense", carLicense);
+        map.put(4, maps);
+        testData = doApiService.getTestData(environment, 92, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+
+        /**
+         * @3门店发起理赔
+         */
+        map.clear();
+        maps.clear();
+        maps.put("$.sn", zsn);
+        map.put(4, maps);
+        testData = doApiService.getTestData(environment, 90, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        String lpsn = b.getValueFormJsonByPath(response, "$.data.sn").getValue().toString();
+
+        /**
+         * @4我来处理
+         */
+        map.clear();
+        maps.clear();
+        maps.put("apiParam", lpsn);
+        map.put(1, maps);
+        testData = doApiService.getTestData(environment, 94, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        System.err.println(response);
+
+        /**
+         * @5获取理赔单详情信息
+         */
+        map.clear();
+        maps.clear();
+        maps.put("apiParam", lpsn);
+        map.put(1, maps);
+        testData = doApiService.getTestData(environment, 95, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        Integer lpid = Integer.parseInt(b.getValueFormJsonByPath(response, "$.data.id").getValue().toString());
+
+
+        /**
+         * @6审核
+         */
+        boolean isThree = false;
+        if(type == 1){
+            isThree = true;
+        }
+        map.clear();
+        maps.clear();
+        maps.put("$.id", lpid);
+        maps.put("$.isThreeguranteesDefects", isThree);
+        map.put(4, maps);
+        testData = doApiService.getTestData(environment, 96, newTokenList, newDataList, 0, accountValue, projectId);
+        testData = b.doTestDataChange(testData, map);
+        response = httpClientService.getResponse(testData).getResponse();
+        System.err.println(response);
 
     }
 

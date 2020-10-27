@@ -233,7 +233,7 @@
                 device =
                 #{device}
           and project_id = #{projectId}
-          and more = 0;
+          and more = 0 and api_method = #{apiMethod};
     </select>
     <update id="del">
         update uri

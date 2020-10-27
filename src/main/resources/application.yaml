@@ -225,7 +225,7 @@ project:
             loginHeader: {Authorization: Basic VEhSRUVHVUFSQU5URUU6b052bEphN1VuSUF5Slk5Z2hZWkFRcVR5aTZldTRP}
             smsHeader: {}
             account:
-              - - 13588096710
+              - - 12900000012
             host: https://api-t.zhilunkeji.com
           - loginHost: http://auth.zhilun-qa-major.com
             loginHeader: {Authorization: Basic VEhSRUVHVUFSQU5URUU6b052bEphN1VuSUF5Slk5Z2hZWkFRcVR5aTZldTRP}
@@ -240,7 +240,7 @@ project:
             smsHeader: {}
             account:
               - - 13588096710
-                - 186571905346
+                - 18657190534
               - - 1358809666
             host: http://api.zhilun-qa-minor.com
 
@@ -537,9 +537,11 @@ user:
   ip:
     - 192.168.20.135
     - 127.0.0.1
-    - 192.168.20.237
-    - 192.168.40.35
+#    - 192.168.20.237
+#    - 192.168.40.35
 #    - 192.168.10.222
+#    - 192.168.10.70
+
 
 
 

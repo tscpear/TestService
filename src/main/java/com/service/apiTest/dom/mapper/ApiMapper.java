@@ -102,6 +102,6 @@ public interface ApiMapper {
      * @param apiPath
      * @return
      */
-    Integer getCountReData(Integer device,String apiPath,Integer projectId);
+    Integer getCountReData(Integer device,String apiPath,Integer projectId,Integer apiMethod);
 
 }

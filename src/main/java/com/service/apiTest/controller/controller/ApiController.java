@@ -71,7 +71,7 @@ public class ApiController {
     @ResponseBody
     public ApiBaseRe updateApiData(@RequestBody ApiDataAU apiData, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath(), projectId);
+        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath(), projectId,apiData.getApiMethod());
         if (count > 1) {
             baseRe.setCode(0);
             baseRe.setMsg("存在接口路径与设备相同的接口");
@@ -94,7 +94,7 @@ public class ApiController {
     @ResponseBody
     public ApiBaseRe addApiData(@RequestBody ApiDataAU apiData, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath(), projectId);
+        Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath(), projectId,apiData.getApiMethod());
         if (count < 0) {
             baseRe.setCode(0);
             baseRe.setMsg("存在接口路径与设备相同的接口");

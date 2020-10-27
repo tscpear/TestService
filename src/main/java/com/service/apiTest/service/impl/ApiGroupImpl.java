@@ -130,7 +130,6 @@ public class ApiGroupImpl implements ApiGroupService {
          */
         long reportId = doGroupRequest.getReportId();
         if (doGroupRequest.getTeamId() <= 1 && doGroupRequest.getReportId() < 100000) {
-            reportId = System.currentTimeMillis();
             apiReportService.addReportMain(reportId);
         }
 

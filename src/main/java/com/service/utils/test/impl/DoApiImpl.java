@@ -268,7 +268,6 @@ public class DoApiImpl implements DoApiService {
                 JSONObject os = new JSONObject(o.toString());
                 Integer relyTestId = Integer.parseInt(os.get("apiCaseId").toString());
                 if (relyTestId > 0) {
-                    System.out.println(!nowDoTestList.contains(relyTestId));
                     if (!nowDoTestList.contains(relyTestId)) {
                         relyTestListId.put(relyTestId);
                     }
@@ -478,7 +477,7 @@ public class DoApiImpl implements DoApiService {
         doTestData.setApiMethod(2);
         doTestData.setAuthorization("null");
         ResponseData responseData = httpClientService.getResponse(doTestData);
-        System.out.println(responseData.toString());
+
     }
 
     @Override
@@ -491,7 +490,6 @@ public class DoApiImpl implements DoApiService {
         doTestData.setApiMethod(2);
         doTestData.setAuthorization(authorization);
         ResponseData responseData = httpClientService.getResponse(doTestData);
-        System.out.println(responseData.toString());
         return responseData;
     }
 

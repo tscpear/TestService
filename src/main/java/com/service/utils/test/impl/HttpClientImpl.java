@@ -38,7 +38,6 @@ public class HttpClientImpl implements HttpClientService {
 
     @Override
     public ResponseData getResponse(DoTestData data) {
-        System.out.println(data);
         ResponseData responeData = new ResponseData();
         CloseableHttpClient httpclient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
@@ -148,7 +147,6 @@ public class HttpClientImpl implements HttpClientService {
             HttpEntity httpEntity = response.getEntity();
 
             String responseValue =EntityUtils.toString(httpEntity, "utf-8") ;
-            System.out.println(responseValue);
             responeData.setResponse(responseValue);
             responeData.setStatus(response.getStatusLine().getStatusCode() + "");
         } catch (ClientProtocolException e) {

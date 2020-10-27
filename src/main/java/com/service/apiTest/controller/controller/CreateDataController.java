@@ -40,7 +40,7 @@ public class CreateDataController {
                               @RequestParam Integer environment,
                               @RequestParam Integer tireId,
                               @RequestParam Integer num) {
-        projectOne.RarehouseAddTire(tireId,num,environment,projectId,false);
+        projectOne.RarehouseAddTire(tireId, num, environment, projectId, false);
         return null;
     }
 
@@ -51,19 +51,30 @@ public class CreateDataController {
                                            @RequestParam String orderSn,
                                            @RequestParam Integer type
     ) throws InterruptedException {
-        switch (type){
-            case 2:
-                projectOne.CompleteCKOrder(orderSn,projectId,environment,false);
-                break;
-            case 3:
-                projectOne.CompleteStoreOrder(orderSn,projectId,environment);
-                break;
-            case 4:
-                projectOne.CompleteDriverOrder(orderSn,projectId,environment);
-                break;
+        ApiBaseRe baseRe = new ApiBaseRe();
+        try {
+            switch (type) {
+                case 2:
+                    projectOne.CompleteCKOrder(orderSn, projectId, environment, false);
+                    break;
+                case 3:
+                    projectOne.CompleteStoreOrder(orderSn, projectId, environment);
+                    break;
+                case 4:
+                    projectOne.CompleteDriverOrder(orderSn, projectId, environment);
+                    break;
+                case 5:
+                    projectOne.getVoucher(orderSn, projectId, environment, 1);
+                    break;
 
+            }
+            baseRe.setCode(1);
+            baseRe.setMsg("运气不错，没有报错");
+        }catch (Exception e){
+            baseRe.setCode(0);
+            baseRe.setMsg(e.toString());
         }
-       return null;
+        return baseRe;
     }
 
 
