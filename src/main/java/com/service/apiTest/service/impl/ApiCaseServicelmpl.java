@@ -54,7 +54,7 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     @Autowired
     private DriverAppHost driverAppHost;
     @Autowired
-    private Project project1;
+    private Project1 project1;
 
 
     @Override

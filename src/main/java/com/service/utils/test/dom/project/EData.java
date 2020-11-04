@@ -13,4 +13,5 @@ public class EData {
     private String host;
     private Map<String,Object> smsHeader;
     private String smsHost;
+
 }

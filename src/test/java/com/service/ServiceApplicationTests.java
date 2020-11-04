@@ -106,45 +106,45 @@ class ServiceApplicationTests {
         System.out.println("你妈妈");
         apiReportService.accountLogin(putToken,1);
     }
-
-    @Test
-    void test7(){
-        driverBaseService.getWebDriver();
-        System.out.println("你妈妈");
-    }
-    @Test
-    void test8() throws InterruptedException {
-        WebDriver driver =  driverBaseService.getWebDriver();
-        GuiData data = new GuiData();
-        data.setActive(3);
-        data.setElementType(1);
-        data.setElement("username");
-        data.setKeyValue("鸟妈妈");
-        driverBaseService.doGui(driver,data);
-    }
-
-    @Test
-    void test9() throws InterruptedException {
-        List<Integer> ids = new ArrayList<>();
-        ids.add(7);
-        ids.add(8);
-        ids.add(10);
-        driverBaseService.doGuis(ids);
-    }
-
-
-    @Test
-    void test10(){
-        driverBaseService.getAndroidDriver();
-    }
-
-    @Test
-    void test11(){
-        List<Integer> ids = new ArrayList<>();
-        ids.add(11);
-        ids.add(12);
-        ids.add(13);
-        ids.add(14);
-        driverBaseService.doAndroidGuis(ids);
-    }
+//
+//    @Test
+//    void test7(){
+//        driverBaseService.getWebDriver(1,1);
+//        System.out.println("你妈妈");
+//    }
+//    @Test
+//    void test8() throws InterruptedException {
+//        WebDriver driver =  driverBaseService.getWebDriver(1,1);
+//        GuiData data = new GuiData();
+//        data.setActive(3);
+//        data.setElementType(1);
+//        data.setElement("username");
+//        data.setKeyValue("鸟妈妈");
+//        driverBaseService.doGui(driver,data);
+//    }
+//
+//    @Test
+//    void test9() throws InterruptedException {
+//        List<Integer> ids = new ArrayList<>();
+//        ids.add(7);
+//        ids.add(8);
+//        ids.add(10);
+//        driverBaseService.doGuis(ids);
+//    }
+//
+//
+//    @Test
+//    void test10(){
+//        driverBaseService.getAndroidDriver(1,1);
+//    }
+//
+//    @Test
+//    void test11(){
+//        List<Integer> ids = new ArrayList<>();
+//        ids.add(11);
+//        ids.add(12);
+//        ids.add(13);
+//        ids.add(14);
+//        driverBaseService.doAndroidGuis(ids);
+//    }
 }

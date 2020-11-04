@@ -35,7 +35,7 @@ public class ApiServicelmpl implements ApiService {
     @Autowired
     private ApiCaseMapper apiCaseMapper;
     @Autowired
-    private Project project1;
+    private Project1 project1;
 
     @Override
     public Map<String, Object> getApiList(ApiListParam params) {

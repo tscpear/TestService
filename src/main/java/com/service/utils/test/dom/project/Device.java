@@ -19,4 +19,5 @@ public class Device {
     private Map<String,Object> smsLoginParam;
     private String tokenPath;
     private Map<String,String> loginRely;
+    private String loginPage;
 }

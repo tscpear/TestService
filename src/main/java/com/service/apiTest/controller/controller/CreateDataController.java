@@ -66,6 +66,19 @@ public class CreateDataController {
                 case 5:
                     projectOne.getVoucher(orderSn, projectId, environment, 1);
                     break;
+                case 6:
+                    String lpsn = projectOne.getVoucher(orderSn, projectId, environment, -1);
+                    baseRe.setData(lpsn);
+                    break;
+                case 7:
+                    projectOne.lpsh(orderSn, environment, type, projectId);
+                    break;
+                case 8:
+                    projectOne.lpsh(orderSn, environment, type, projectId);
+                    break;
+                case 9:
+                    projectOne.lpsh(orderSn, environment, type, projectId);
+                    break;
 
             }
             baseRe.setCode(1);

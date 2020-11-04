@@ -28,5 +28,11 @@ public interface ProjectOne {
 
     void CompleteDriverOrder(String orderSn,Integer projectId,Integer environment);
 
-    void getVoucher(String sn, Integer projectId, Integer environment,Integer type);
+    String getVoucher(String sn, Integer projectId, Integer environment,Integer type);
+
+
+    /**
+     * 理赔审核
+     */
+    void lpsh(String lpsn,Integer environment,Integer type,Integer projectId);
 }

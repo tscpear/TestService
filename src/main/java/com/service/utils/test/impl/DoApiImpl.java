@@ -58,7 +58,7 @@ public class DoApiImpl implements DoApiService {
     @Autowired
     private ApiReportService apiReportService;
     @Autowired
-    private Project project1;
+    private Project1 project1;
 
     public String getAccount(String device, Integer environment, String deviceType) {
         MyHost myHost = this.selectHost(device);

@@ -58,7 +58,7 @@ public class ApiReportIlmpl implements ApiReportService {
     @Autowired
     private MyVerification v;
     @Autowired
-    private Project project1;
+    private Project1 project1;
     @Autowired
     private NewTokenMapper newTokenMapper;
 

@@ -9,7 +9,6 @@ import java.util.Map;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "project.project1")
 public class Project {
     private List<String> environment;
     private List<Device> device;
