@@ -12,5 +12,6 @@ public class ApiCaseList {
     private String apiCaseMark;
     private Integer apiCaseLv;
     private Integer apiCaseType;
+    private Integer createUserId;
 
 }

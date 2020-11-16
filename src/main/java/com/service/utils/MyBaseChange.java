@@ -22,7 +22,7 @@ public class MyBaseChange {
     @Autowired
     private MyVerification v;
 
-    public JSONObject StringToJson(String s) {
+    public JSONObject   StringToJson(String s) {
         if (StringUtils.isEmpty(s)) {
             return JSONObject.parseObject("{}");
         }
@@ -280,5 +280,17 @@ public class MyBaseChange {
         return doTestData;
     }
 
+
+    /**
+     * String转list
+     */
+    public List<Integer> StringToListOfInt(String s){
+        List<Integer> list = new ArrayList<>();
+        JSONArray array  = this.StringToArray(s);
+        for(Object a : array){
+            list.add(Integer.parseInt(a.toString()));
+        }
+        return list;
+    }
 
 }

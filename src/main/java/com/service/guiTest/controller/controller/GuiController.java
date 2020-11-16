@@ -43,7 +43,7 @@ public class GuiController {
     @ResponseBody
     public ApiBaseRe getOneData(@RequestParam Integer id) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        GuiData data = guiService.getOneData(id);
+        ElementData data = guiService.getOneData(id);
         baseRe.setCode(1);
         baseRe.setData(data);
         return baseRe;
@@ -51,11 +51,15 @@ public class GuiController {
 
     @PostMapping("update")
     @ResponseBody
-    public ApiBaseRe update(@RequestBody GuiData data) {
+    public ApiBaseRe update(@RequestBody ElementData data) {
         ApiBaseRe baseRe = new ApiBaseRe();
         guiService.update(data);
         baseRe.setCode(1);
         baseRe.setMsg("编辑成功");
         return baseRe;
     }
+
+
+
+
 }

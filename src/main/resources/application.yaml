@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   thymeleaf:
     cache: false
@@ -150,7 +150,7 @@ project:
       - device2:
         id: 2
         name: 知轮商家
-        loginPage: com.kakebang.movingrescue/com.kakebang.movingrescue.activity.LoginActivity
+        loginPage: com.kakebang.movingrescue/com.kakebang.movingrescue.activity.GuideActivity
         loginType: 1
         smsParam: {deviceId: "719910247738029",mobile: "username"}
         loginParam:
@@ -251,7 +251,7 @@ project:
       - device4:
         id: 4
         name: 知轮通
-        loginPage: 2
+        loginPage: com.zhilun.message_control/.MainActivity
         loginType: 1
         smsParam: {}
         loginParam:
@@ -546,10 +546,10 @@ user:
   ip:
     - 192.168.20.135
     - 127.0.0.1
-    - 192.168.20.237
-    - 192.168.40.35
-    - 192.168.10.222
-    - 192.168.10.70
+#    - 192.168.20.237
+#    - 192.168.40.35
+#    - 192.168.10.222
+#    - 192.168.10.70
 
 
 

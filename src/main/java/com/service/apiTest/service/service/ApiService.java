@@ -35,7 +35,7 @@ public interface ApiService{
     /**
      * 更新api的数据集
      */
-    void updateApi(ApiDataAU apiData) throws Throwable;
+    void updateApi(ApiDataAU apiData,Integer userId) throws Throwable;
 
     /**
      * 新增api

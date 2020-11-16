@@ -1,17 +1,17 @@
 package com.service.guiTest.controller.domin;
 
+import com.alibaba.fastjson.JSONArray;
 import lombok.Data;
 
 @Data
 public class ElementData {
+    private Integer id;
     private String name;
     private String element;
     private Integer device;
     private Integer elementType;
     private Integer active;
-    private String assertElement;
-    private Integer assertElementType;
     private Integer projectId;
     private String keyValue;
-    private String assertExpect;
+    private JSONArray assertExpectValue = JSONArray.parseArray("[]");
 }

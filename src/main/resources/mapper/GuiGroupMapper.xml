@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.guiTest.dom.mapper.GuiGroupMapper">
+    <resultMap id="guiGroup" type="com.service.guiTest.dom.entity.GuiGroupDatas">
+        <result property="id" column="id"/>
+        <result property="groupMark" column="group_mark"/>
+        <result property="deviceList" column="device_list"/>
+        <result property="isDel" column="is_del"/>
+        <result property="projectId" column="project_id"/>
+    </resultMap>
+    <insert id="insertData">
+        insert into gui_group (group_mark, device_list, project_id
+        )
+        value
+        (
+        #{groupMark}
+        ,
+        #{deviceList}
+        ,
+        #{projectId}
+        );
+    </insert>
+    <select id="list" resultMap="guiGroup">
+        select id,group_mark
+        from gui_group
+        where project_id = #{projectId}
+          and is_del = 1;
+    </select>
+    <select id="one" resultMap="guiGroup">
+        select *
+        from gui_group
+        where id = #{id};
+    </select>
+    <update id="update">
+        update gui_group
+        set group_mark  = #{groupMark},
+            device_list = #{deviceList}
+        where id = #{id}
+    </update>
+</mapper>

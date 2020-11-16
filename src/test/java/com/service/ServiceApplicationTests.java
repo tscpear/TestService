@@ -9,6 +9,7 @@ import com.service.apiTest.service.service.ApiReportService;
 import com.service.apiTest.service.service.CreateTireDataService;
 import com.service.guiTest.base.impl.DriverBaseImpl;
 import com.service.guiTest.dom.entity.GuiData;
+import com.service.guiTest.service.service.GuiGroupService;
 import com.service.utils.MyBaseChange;
 import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.ResponseData;
@@ -54,6 +55,8 @@ class ServiceApplicationTests {
 
     @Autowired
     private DriverBaseImpl driverBaseService;
+    @Autowired
+    private GuiGroupService guiGroupService;
 
 
 
@@ -147,4 +150,9 @@ class ServiceApplicationTests {
 //        ids.add(14);
 //        driverBaseService.doAndroidGuis(ids);
 //    }
+
+    @Test
+    void test12() throws InterruptedException {
+        guiGroupService.doTest(2,1);
+    }
 }

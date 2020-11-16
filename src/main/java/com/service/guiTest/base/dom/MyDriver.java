@@ -10,4 +10,6 @@ public class MyDriver {
     private WebDriver webDriver;
     private AndroidDriver<WebElement> appDriver;
     private Integer type;
+    private String packageName;
+    private String activity;
 }

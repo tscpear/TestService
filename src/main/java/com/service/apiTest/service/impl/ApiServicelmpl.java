@@ -164,14 +164,14 @@ public class ApiServicelmpl implements ApiService {
     }
 
     @Override
-    public void updateApi(ApiDataAU apiData) throws Throwable {
+    public void updateApi(ApiDataAU apiData,Integer userId) throws Throwable {
         Integer count = apiMapper.countApi(apiData.getDevice(), apiData.getApiPath(), apiData.getProjectId());
         if (count > 1) {
             throw new Throwable("接口存在重复类型");
         } else {
             Api api = new Api();
             this.au(apiData, api);
-            api.setUpdateUserId(apiData.getUserId());
+            api.setUpdateUserId(userId);
             apiMapper.updateApi(api);
         }
 

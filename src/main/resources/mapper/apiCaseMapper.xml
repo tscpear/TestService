@@ -132,7 +132,7 @@
 
 
     <select id="getApiCaseList" resultMap="apiCaseResultMap">
-        select id,api_id,api_case_mark,api_case_lv,api_case_type
+        select id,api_id,api_case_mark,api_case_lv,api_case_type,create_user_id
         from apicase
         where is_del = 0 and project_id = #{projectId}
         <include refid="list_count"/>

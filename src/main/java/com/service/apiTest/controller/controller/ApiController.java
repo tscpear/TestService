@@ -69,7 +69,7 @@ public class ApiController {
 
     @PostMapping("/update")
     @ResponseBody
-    public ApiBaseRe updateApiData(@RequestBody ApiDataAU apiData, @RequestHeader(name = "projectId") Integer projectId) {
+    public ApiBaseRe updateApiData(@RequestBody ApiDataAU apiData, @RequestHeader(name = "projectId") Integer projectId,@RequestHeader(name = "userId") Integer userId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         Integer count = apiMapper.getCountReData(apiData.getDevice(), apiData.getApiPath(), projectId,apiData.getApiMethod());
         if (count > 1) {
@@ -78,7 +78,7 @@ public class ApiController {
         } else {
 
             try {
-                apiService.updateApi(apiData);
+                apiService.updateApi(apiData,userId);
                 baseRe.setCode(1);
                 baseRe.setMsg("编辑成功");
             } catch (Throwable throwable) {

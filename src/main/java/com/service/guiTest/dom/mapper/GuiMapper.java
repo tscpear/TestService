@@ -1,5 +1,6 @@
 package com.service.guiTest.dom.mapper;
 
+import com.service.guiTest.controller.domin.ElementData;
 import com.service.guiTest.dom.entity.GuiData;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

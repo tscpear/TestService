@@ -10,5 +10,6 @@ public class ApiListData {
     private Integer testNum;
     private Integer apiMethod;
     private  Integer device;
+    private  Integer createUserId;
 }
 

@@ -24,7 +24,7 @@ public interface ApiCaseService {
      * 新增测试用例
      * @param apiCaseData
      */
-    void  addApiCaseData(ApiCaseData apiCaseData,Integer projectId);
+    void  addApiCaseData(ApiCaseData apiCaseData,Integer projectId,Integer userId);
 
     /**
      * 获取对应的API的测试数量
@@ -58,7 +58,7 @@ public interface ApiCaseService {
      * @param apiCaseData
      */
 
-    void updateApiCaseData(ApiCaseData apiCaseData,Integer projectId);
+    void updateApiCaseData(ApiCaseData apiCaseData,Integer projectId,Integer userId);
 
     /**
      * 删除接口用例；的淑君

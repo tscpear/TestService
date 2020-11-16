@@ -1,5 +1,6 @@
 package com.service.user.dao.mapper;
 
+import com.service.user.controller.domian.UserList;
 import com.service.user.dao.entity.DUser;
 import com.service.user.dao.entity.ProjectData;
 import org.apache.ibatis.annotations.Mapper;
@@ -25,4 +26,10 @@ public interface UserMapper {
 
 
     DUser getUserBy(String token);
+
+    /**
+     * 获取用户列表
+     * @return
+     */
+    List<UserList> getUserList();
 }

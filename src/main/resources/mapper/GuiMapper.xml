@@ -11,15 +11,13 @@
         <result property="element" column="element"/>
         <result property="elementType" column="element_type"/>
         <result property="active" column="active"/>
-        <result property="assertElement" column="assert_element"/>
-        <result property="assertElementType" column="assert_element_type"/>
         <result property="projectId" column="project_id"/>
         <result property="keyValue" column="key_value"/>
-        <result property="assertExpect" column="assert_expect"/>
+        <result property="assertExpectValue" column="assert_expect_value"/>
     </resultMap>
     <insert id="add">
-        insert into gui (name, device, element, element_type, active, assert_element, assert_element_type, project_id,
-                         key_value,assert_expect
+        insert into gui (name, device, element, element_type, active, project_id,
+                         key_value,assert_expect_value
         )
         value
         (
@@ -33,13 +31,9 @@
         ,
         #{active}
         ,
-        #{assertElement}
-        ,
-        #{assertElementType}
-        ,
         #{projectId}
         ,
-        #{keyValue},#{assertExpect}
+        #{keyValue},#{assertExpectValue}
         );
 
     </insert>
@@ -72,13 +66,9 @@
                 #{elementType},
             active=
                 #{active},
-            assert_element=
-                #{assertElement},
-            assert_element_type=
-                #{assertElementType},
             key_value=
                 #{keyValue},
-            assert_expect = #{assertExpect}
+            assert_expect_value = #{assertExpectValue}
         where id = #{id};
     </update>
 

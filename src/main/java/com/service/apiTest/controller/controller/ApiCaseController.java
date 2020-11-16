@@ -41,10 +41,10 @@ public class ApiCaseController {
 
     @PostMapping("/add")
     @ResponseBody
-    public ApiBaseRe addApiCase(@RequestBody ApiCaseData apiCaseData, @RequestHeader(name = "projectId") Integer projectId) {
+    public ApiBaseRe addApiCase(@RequestBody ApiCaseData apiCaseData, @RequestHeader(name = "projectId") Integer projectId,@RequestHeader(name = "userId") Integer userId) {
         ApiBaseRe baseRe = new ApiBaseRe();
 //        try {
-            apiCaseService.addApiCaseData(apiCaseData, projectId);
+            apiCaseService.addApiCaseData(apiCaseData, projectId,userId);
             baseRe.setCode(1);
             baseRe.setMsg("新增成功");
 //        } catch (Exception e) {
@@ -106,10 +106,10 @@ public class ApiCaseController {
 
     @PostMapping("/update")
     @ResponseBody
-    public ApiBaseRe updateApiCase(@RequestBody ApiCaseData apiCaseData, @RequestHeader(name = "projectId") Integer projectId) {
+    public ApiBaseRe updateApiCase(@RequestBody ApiCaseData apiCaseData, @RequestHeader(name = "projectId") Integer projectId,@RequestHeader(name = "userId") Integer userId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         try {
-            apiCaseService.updateApiCaseData(apiCaseData, projectId);
+            apiCaseService.updateApiCaseData(apiCaseData, projectId, userId);
             baseRe.setCode(1);
             baseRe.setMsg("更新成功");
         } catch (Exception e) {

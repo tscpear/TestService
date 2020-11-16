@@ -1,5 +1,6 @@
 package com.service.user.service.domain;
 
+import com.service.user.controller.domian.UserList;
 import com.service.user.dao.entity.DUser;
 import com.service.utils.test.dom.project.Project;
 import lombok.Data;
@@ -18,4 +19,5 @@ public class UserBaseRe {
     private List<String> environment;
     private List<String> device;
     private String token;
+    private List<UserList> userList;
 }

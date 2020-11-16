@@ -116,8 +116,10 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
     @Override
-    public void addApiCaseData(ApiCaseData apiCaseData, Integer projectId) {
-        apiCaseMapper.addApiCaseData(this.updateAndAdd(apiCaseData, projectId));
+    public void addApiCaseData(ApiCaseData apiCaseData, Integer projectId,Integer userId) {
+        ApiCase apiCase = this.updateAndAdd(apiCaseData, projectId);
+        apiCase.setCreateUserId(userId);
+        apiCaseMapper.addApiCaseData(apiCase);
     }
 
     @Override
@@ -242,8 +244,10 @@ public class ApiCaseServicelmpl implements ApiCaseService {
     }
 
     @Override
-    public void updateApiCaseData(ApiCaseData apiCaseData, Integer projectId) {
-        apiCaseMapper.updateApiCaseData(this.updateAndAdd(apiCaseData, projectId));
+    public void updateApiCaseData(ApiCaseData apiCaseData, Integer projectId,Integer userId) {
+        ApiCase apiCase = this.updateAndAdd(apiCaseData, projectId);
+        apiCase.setUpdateUserId(userId);
+        apiCaseMapper.updateApiCaseData(apiCase);
     }
 
     @Override

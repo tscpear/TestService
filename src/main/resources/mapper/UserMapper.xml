@@ -9,6 +9,7 @@
         <result property="password" column="password"/>
         <result property="token" column="token"/>
         <result property="tokenTime" column="token_time"/>
+        <result property="name" column="name"/>
     </resultMap>
     <select id="getUserByName" resultType="com.service.user.dao.entity.DUser">
         select *
@@ -31,6 +32,10 @@
         select *
         from user
         where token = #{token};
+    </select>
+    <select id="getUserList" resultType="com.service.user.controller.domian.UserList">
+        select id,name
+        from user;
     </select>
 
 </mapper>

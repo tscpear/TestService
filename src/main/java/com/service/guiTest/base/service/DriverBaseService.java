@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface DriverBaseService {
@@ -40,6 +41,8 @@ public interface DriverBaseService {
 
     MyDriver getDriver(Integer projectId,Integer device,Integer environment,String ip,String id);
 
+
+    void quitDriver(Map<String,MyDriver> drviers);
 
 
 

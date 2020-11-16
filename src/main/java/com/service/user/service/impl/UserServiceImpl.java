@@ -12,10 +12,7 @@ import com.service.utils.test.dom.project.Project1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -59,6 +56,11 @@ public class UserServiceImpl implements UserService {
                 long tokenTime = System.currentTimeMillis();
                 userMapper.updateToken(token,cUser.getUsername(),tokenTime);
                 baseRe.setToken(token);
+
+                /**
+                 * 存入玩家列表
+                 */
+                baseRe.setUserList(userMapper.getUserList());
 
             } else {
                 baseRe.setCode(0);

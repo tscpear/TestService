@@ -26,8 +26,8 @@ public interface GuiService {
      * @param id
      * @return
      */
-    GuiData getOneData(Integer id);
+    ElementData getOneData(Integer id);
 
 
-    void update(GuiData data);
+    void update(ElementData data);
 }

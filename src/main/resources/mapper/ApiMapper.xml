@@ -44,7 +44,8 @@
         api_path,
         device,
         api_method,
-        api_mark
+        api_mark,
+        create_user_id
     </sql>
     <sql id="apidata">
         id
