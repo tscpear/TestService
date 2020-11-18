@@ -155,28 +155,29 @@ public class MyBaseChange {
     /**
      * 获取路径值
      */
-    public MyJsonPath getValueFormJsonByPath(String json, String path) {
+    public Object getValueFormJsonByPath(String json, String path) {
 
         MyJsonPath myJsonPath = new MyJsonPath();
 
-        try {
-            List<Object> values = JsonPath.read(json, path);
-            myJsonPath.setType(1);
-            myJsonPath.setValue(values);
-            return myJsonPath;
-        } catch (Exception e) {
-            try {
-                Boolean values = JsonPath.read(json, path);
-                myJsonPath.setType(2);
-                myJsonPath.setValue(values.toString());
-                return myJsonPath;
-            } catch (Exception e1) {
-                String values = JsonPath.read(json, path).toString();
-                myJsonPath.setType(2);
-                myJsonPath.setValue(values);
-                return myJsonPath;
-            }
-        }
+//        try {
+//            List<Object> values = JsonPath.read(json, path);
+//            myJsonPath.setType(1);
+//            myJsonPath.setValue(values);
+//            return myJsonPath;
+//        } catch (Exception e) {
+//            try {
+//                Boolean values = JsonPath.read(json, path);
+//                myJsonPath.setType(2);
+//                myJsonPath.setValue(values.toString());
+//                return myJsonPath;
+//            } catch (Exception e1) {
+//                String values = JsonPath.read(json, path).toString();
+//                myJsonPath.setType(2);
+//                myJsonPath.setValue(values);
+//                return myJsonPath;
+//            }
+//        }
+        return JsonPath.read(json, path);
     }
 
     /**

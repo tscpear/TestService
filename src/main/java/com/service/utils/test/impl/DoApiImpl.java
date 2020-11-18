@@ -60,181 +60,172 @@ public class DoApiImpl implements DoApiService {
     @Autowired
     private Project1 project1;
 
-    public String getAccount(String device, Integer environment, String deviceType) {
-        MyHost myHost = this.selectHost(device);
-        Integer i = Integer.parseInt(deviceType);
-        if (environment.equals("uat") || environment.equals("prod")) {
-            return myHost.getAccount().get(i);
-        } else {
-            return myHost.getAccounts().get(i);
-        }
-    }
+
+//
+//    public String getHost(MyHost myHost, Integer environment, boolean isLogin, String device) {
+//        String host = null;
+//        switch (environment) {
+//            case 1:
+//                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
+//                    host = myHost.getUatl();
+//                } else {
+//                    host = myHost.getUat();
+//                }
+//                break;
+//            case 2:
+//                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
+//
+//                } else {
+//                    host = myHost.getProd();
+//                }
+//                break;
+//            case 3:
+//                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
+//                    host = myHost.getTestl();
+//                } else {
+//                    host = myHost.getTest();
+//                }
+//                break;
+//            case 4:
+//                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
+//                    host = myHost.getTestsl();
+//                } else {
+//                    host = myHost.getTests();
+//                }
+//
+//                break;
+//        }
+//        return host;
+//
+//
+//    }
 
 
-    public String getHost(MyHost myHost, Integer environment, boolean isLogin, String device) {
-        String host = null;
-        switch (environment) {
-            case 1:
-                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
-                    host = myHost.getUatl();
-                } else {
-                    host = myHost.getUat();
-                }
-                break;
-            case 2:
-                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
-
-                } else {
-                    host = myHost.getProd();
-                }
-                break;
-            case 3:
-                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
-                    host = myHost.getTestl();
-                } else {
-                    host = myHost.getTest();
-                }
-                break;
-            case 4:
-                if (isLogin && (device.equals("2") || device.equals("4") || device.equals("3"))) {
-                    host = myHost.getTestsl();
-                } else {
-                    host = myHost.getTests();
-                }
-
-                break;
-        }
-        return host;
-
-
-    }
-
-
-    public String getBasic(String device, Integer environment) {
-        MyHost myHost = this.selectHost(device);
-        if (environment.equals("uat") || environment.equals("prod")) {
-            return myHost.getBasic();
-        } else {
-            return myHost.getBasics();
-        }
-
-    }
-
-    public MyHost selectHost(String device) {
-        switch (device) {
-            case "1":
-                return tWebHost;
-            case "2":
-                return storeHost;
-            case "3":
-                return driverAppHost;
-            case "4":
-                return driverAppHost;
-            case "5":
-                return pdaHost;
-            default:
-                return null;
-
-        }
-
-
-    }
-
-    /**
-     * 获取一个登入的dotestdata
-     *
-     * @param environment
-     * @param device
-     * @param userType
-     * @return
-     */
-    @Override
-    public DoTestData getLoginData(Integer environment, String device, String deviceType) {
-        DoTestData data = new DoTestData();
-        MyHost myHostData = selectHost(device);
-        data.setHost(getHost(myHostData, environment, true, device));
-//        data.setApiMethod("2");
-        JSONObject webformParam = new JSONObject();
-        if (device.equals("5")) {
-            data.setApiPath("/scan/login.do");
-            webformParam.put("username", myHostData.getName());
-            webformParam.put("password", myHostData.getPassword());
-            webformParam.put("scanVersion", "20200303");
-            webformParam.put("x", "113.236565");
-            webformParam.put("y", "35.250118");
-            webformParam.put("deviceNum", "ZX1G42CPJD");
-        } else if (device.equals("2") || device.equals("4") || device.equals("3")) {
-            data.setApiPath("/oauth/token");
-            List<String> mobileList = new ArrayList<>();
-            if (environment.equals("uat")) {
-                mobileList = myHostData.getAccount();
-            } else {
-                mobileList = myHostData.getAccounts();
-            }
-            String mobileValue = mobileList.get(Integer.parseInt(deviceType.split("\\.")[1]) - 1);
-            String grantValue;
-            if (mobileValue.equals("13588096710")) {
-                grantValue = "store_password";
-                webformParam.put("password", "21218cca77804d2ba1922c33e0151105");
-                webformParam.put("application", "app_zhilun");
-
-            } else {
-                ResponseData data1 = httpClientService.getResponse(this.getSmCodeData(environment, device, deviceType));
-                webformParam.put("smsCode", "cf79ae6addba60ad018347359bd144d2");
-                grantValue = "sms_code";
-            }
-            webformParam.put("mobile", mobileValue);
-            webformParam.put("deviceId", "719910247738029");
-            webformParam.put("grant_type", grantValue);
-            if (device.equals("4") || device.equals("3")) {
-                webformParam.put("application", "app_driver");
-                webformParam.put("appVersionCode", "132");
-            } else {
-                webformParam.put("version", "2.7.7");
-            }
-
-        } else {
-            data.setApiPath("/oauth/token");
-            webformParam.put("username", myHostData.getName());
-            webformParam.put("password", myHostData.getPassword());
-            webformParam.put("grant_type", "password");
-        }
-        data.setWebformParam(b.oToA(webformParam, "name", "value"));
-        data.setAuthorization("Basic " + getBasic(device, environment));
-        return data;
-    }
+//    public String getBasic(String device, Integer environment) {
+//        MyHost myHost = this.selectHost(device);
+//        if (environment.equals("uat") || environment.equals("prod")) {
+//            return myHost.getBasic();
+//        } else {
+//            return myHost.getBasics();
+//        }
+//
+//    }
+//
+//    public MyHost selectHost(String device) {
+//        switch (device) {
+//            case "1":
+//                return tWebHost;
+//            case "2":
+//                return storeHost;
+//            case "3":
+//                return driverAppHost;
+//            case "4":
+//                return driverAppHost;
+//            case "5":
+//                return pdaHost;
+//            default:
+//                return null;
+//
+//        }
+//
+//
+//    }
+//
+//    /**
+//     * 获取一个登入的dotestdata
+//     *
+//     * @param environment
+//     * @param device
+//     * @param userType
+//     * @return
+//     */
+//    @Override
+//    public DoTestData getLoginData(Integer environment, String device, String deviceType) {
+//        DoTestData data = new DoTestData();
+//        MyHost myHostData = selectHost(device);
+//        data.setHost(getHost(myHostData, environment, true, device));
+////        data.setApiMethod("2");
+//        JSONObject webformParam = new JSONObject();
+//        if (device.equals("5")) {
+//            data.setApiPath("/scan/login.do");
+//            webformParam.put("username", myHostData.getName());
+//            webformParam.put("password", myHostData.getPassword());
+//            webformParam.put("scanVersion", "20200303");
+//            webformParam.put("x", "113.236565");
+//            webformParam.put("y", "35.250118");
+//            webformParam.put("deviceNum", "ZX1G42CPJD");
+//        } else if (device.equals("2") || device.equals("4") || device.equals("3")) {
+//            data.setApiPath("/oauth/token");
+//            List<String> mobileList = new ArrayList<>();
+//            if (environment.equals("uat")) {
+//                mobileList = myHostData.getAccount();
+//            } else {
+//                mobileList = myHostData.getAccounts();
+//            }
+//            String mobileValue = mobileList.get(Integer.parseInt(deviceType.split("\\.")[1]) - 1);
+//            String grantValue;
+//            if (mobileValue.equals("13588096710")) {
+//                grantValue = "store_password";
+//                webformParam.put("password", "21218cca77804d2ba1922c33e0151105");
+//                webformParam.put("application", "app_zhilun");
+//
+//            } else {
+//                ResponseData data1 = httpClientService.getResponse(this.getSmCodeData(environment, device, deviceType));
+//                webformParam.put("smsCode", "cf79ae6addba60ad018347359bd144d2");
+//                grantValue = "sms_code";
+//            }
+//            webformParam.put("mobile", mobileValue);
+//            webformParam.put("deviceId", "719910247738029");
+//            webformParam.put("grant_type", grantValue);
+//            if (device.equals("4") || device.equals("3")) {
+//                webformParam.put("application", "app_driver");
+//                webformParam.put("appVersionCode", "132");
+//            } else {
+//                webformParam.put("version", "2.7.7");
+//            }
+//
+//        } else {
+//            data.setApiPath("/oauth/token");
+//            webformParam.put("username", myHostData.getName());
+//            webformParam.put("password", myHostData.getPassword());
+//            webformParam.put("grant_type", "password");
+//        }
+//        data.setWebformParam(b.oToA(webformParam, "name", "value"));
+//        data.setAuthorization("Basic " + getBasic(device, environment));
+//        return data;
+//    }
 
 
-    public DoTestData getSmCodeData(Integer environment, String device, String deviceType) {
-
-        DoTestData data = new DoTestData();
-//        data.setApiMethod("2");
-        MyHost myHostData = selectHost(device);
-        data.setHost(getHost(myHostData, environment, true, device));
-        data.setApiPath("/sms/code");
-        data.setAuthorization("Basic " + getBasic(device, environment));
-        List<String> mobileList = new ArrayList<>();
-        if (environment.equals("uat")) {
-            mobileList = myHostData.getAccount();
-        } else {
-            mobileList = myHostData.getAccounts();
-        }
-        JSONObject json = new JSONObject();
-        json.put("deviceId", "719910247738029");
-        json.put("mobile", mobileList.get(Integer.parseInt(deviceType.split("\\.")[1]) - 1));
-        if (device.equals("4")) {
-            json.put("application", "app_driver");
-            json.put("appVersionCode", "132");
-        }
-        JSONArray header = new JSONArray();
-        JSONObject o = new JSONObject();
-        o.put("name", "Content-Type");
-        o.put("value", "application/json");
-        header.put(o);
-        data.setHeaderParam(header);
-        data.setBodyParam(json.toString());
-        return data;
-    }
+//    public DoTestData getSmCodeData(Integer environment, String device, String deviceType) {
+//
+//        DoTestData data = new DoTestData();
+////        data.setApiMethod("2");
+//        MyHost myHostData = selectHost(device);
+//        data.setHost(getHost(myHostData, environment, true, device));
+//        data.setApiPath("/sms/code");
+//        data.setAuthorization("Basic " + getBasic(device, environment));
+//        List<String> mobileList = new ArrayList<>();
+//        if (environment.equals("uat")) {
+//            mobileList = myHostData.getAccount();
+//        } else {
+//            mobileList = myHostData.getAccounts();
+//        }
+//        JSONObject json = new JSONObject();
+//        json.put("deviceId", "719910247738029");
+//        json.put("mobile", mobileList.get(Integer.parseInt(deviceType.split("\\.")[1]) - 1));
+//        if (device.equals("4")) {
+//            json.put("application", "app_driver");
+//            json.put("appVersionCode", "132");
+//        }
+//        JSONArray header = new JSONArray();
+//        JSONObject o = new JSONObject();
+//        o.put("name", "Content-Type");
+//        o.put("value", "application/json");
+//        header.put(o);
+//        data.setHeaderParam(header);
+//        data.setBodyParam(json.toString());
+//        return data;
+//    }
 
     @Override
     public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList, Map<String, String> newDataList, long reportId, List<String> accountValue, Integer projectId) {
@@ -620,7 +611,7 @@ public class DoApiImpl implements DoApiService {
             } else {
                 for (String key : paths.keySet()) {
                     String value = paths.get(key);
-                    loginRelyParam.put(key, b.getValueFormJsonByPath(loginRely, value).getValue().toString());
+                    loginRelyParam.put(key, b.getValueFormJsonByPath(loginRely, value).toString());
                 }
                 newRely.put(0, loginRelyParam);
             }

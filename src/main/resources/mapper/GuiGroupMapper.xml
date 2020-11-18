@@ -9,9 +9,11 @@
         <result property="deviceList" column="device_list"/>
         <result property="isDel" column="is_del"/>
         <result property="projectId" column="project_id"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="updateUserId" column="update_user_id"/>
     </resultMap>
     <insert id="insertData">
-        insert into gui_group (group_mark, device_list, project_id
+        insert into gui_group (group_mark, device_list, project_id,create_user_id
         )
         value
         (
@@ -20,10 +22,12 @@
         #{deviceList}
         ,
         #{projectId}
+        ,
+        #{createUserId}
         );
     </insert>
     <select id="list" resultMap="guiGroup">
-        select id,group_mark
+        select id,group_mark,create_user_id
         from gui_group
         where project_id = #{projectId}
           and is_del = 1;
@@ -36,7 +40,8 @@
     <update id="update">
         update gui_group
         set group_mark  = #{groupMark},
-            device_list = #{deviceList}
+            device_list = #{deviceList},
+            update_user_id = #{updateUserId}
         where id = #{id}
     </update>
 </mapper>

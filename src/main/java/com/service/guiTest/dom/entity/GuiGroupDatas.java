@@ -9,4 +9,6 @@ public class GuiGroupDatas {
     private String groupMark;
     private Integer isDel;
     private Integer projectId;
+    private Integer createUserId;
+    private Integer updateUserId;
 }

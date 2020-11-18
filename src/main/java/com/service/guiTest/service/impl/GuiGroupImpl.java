@@ -36,7 +36,7 @@ public class GuiGroupImpl implements GuiGroupService {
 
 
     @Override
-    public String add(GuiGroupData data) {
+    public String add(GuiGroupData data,Integer userId) {
         String result = this.checkData(data.getDeviceList());
         if (!"success".equals(result)) {
             return result;
@@ -44,6 +44,7 @@ public class GuiGroupImpl implements GuiGroupService {
         GuiGroupDatas datas = new GuiGroupDatas();
         BeanUtils.copyProperties(data, datas);
         datas.setDeviceList(data.getDeviceList().toString());
+        datas.setCreateUserId(userId);
         guiGroupMapper.insertData(datas);
         return result;
 
@@ -64,7 +65,7 @@ public class GuiGroupImpl implements GuiGroupService {
     }
 
     @Override
-    public String update(GuiGroupData data) {
+    public String update(GuiGroupData data,Integer userId) {
         String result = this.checkData(data.getDeviceList());
         if (!"success".equals(result)) {
             return result;
@@ -72,16 +73,18 @@ public class GuiGroupImpl implements GuiGroupService {
         GuiGroupDatas datas = new GuiGroupDatas();
         BeanUtils.copyProperties(data, datas);
         datas.setDeviceList(data.getDeviceList().toString());
+        datas.setUpdateUserId(userId);
         guiGroupMapper.update(datas);
         return result;
     }
 
     @Override
-    public void doTest(Integer id, Integer projectId) throws InterruptedException {
+    public void doTest(Integer id, Integer projectId,List<String> deviceIds) throws InterruptedException {
 
 
         Integer ip = 4722;
         MyDriver driver;
+        Integer index = -1;
         //获取GUI组的所有数据
         GuiGroupDatas datas = guiGroupMapper.one(id);
         //获取单个项目的list
@@ -91,22 +94,22 @@ public class GuiGroupImpl implements GuiGroupService {
         List<String> driverNames = new ArrayList<>();
         JSONObject value;
         Map<String, MyDriver> drivers = new HashMap<>();
-        Map<String, Activity> driverActivity = new HashMap<>();
         for (Object deviceList : deviceLists) {
             ip++;
+            index++;
             System.out.println(ip);
             value = b.StringToJson(deviceList.toString());
             driverName = value.get("driverName").toString();
             if (!driverNames.contains(driverName)) {
                 driverNames.add(driverName);
                 deviceId = Integer.parseInt(value.get("deviceId").toString());
-                driver = driverBaseService.getDriver(projectId, deviceId, 1, ip.toString(), "79UNW19307001406");
+                driver = driverBaseService.getDriver(projectId, deviceId, 1, ip.toString(), deviceIds.get(index));
+                Thread.sleep(5000);
             } else {
                     driver = drivers.get(driverName);
-                    driver.getAppDriver().startActivity(driverActivity.get(driverName));
+
             }
-            Boolean success = driverBaseService.doGuis(b.StringToListOfInt(value.get("list").toString()), driver);
-            driverActivity.put(driverName,new Activity(driver.getPackageName(),driver.getAppDriver().currentActivity()));
+            driverBaseService.doGuis(b.StringToListOfInt(value.get("list").toString()), driver);
             drivers.put(driverName,driver);
         }
         driverBaseService.quitDriver(drivers);

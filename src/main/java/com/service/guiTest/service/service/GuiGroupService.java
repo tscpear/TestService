@@ -12,7 +12,7 @@ public interface GuiGroupService  {
      * 新增GUI测试用例组
      * @param data
      */
-    String add(GuiGroupData data);
+    String add(GuiGroupData data,Integer userId);
 
     /**
      * 查询GUI用例组列表信息
@@ -33,8 +33,8 @@ public interface GuiGroupService  {
      * 编辑数据
      * @param data
      */
-    String update(GuiGroupData data);
+    String update(GuiGroupData data,Integer userId);
 
 
-    void doTest(Integer id,Integer projectId) throws InterruptedException;
+    void doTest(Integer id,Integer projectId,List<String> deviceId) throws InterruptedException;
 }

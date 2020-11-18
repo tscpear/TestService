@@ -22,6 +22,7 @@
         <result property="deviceType" column="device_type"/>
         <result property="resultMain" column="result_main"/>
         <result property="responseValueExpectResult" column="response_value_expect_result"/>
+        <result property="relyValueLook" column="rely_value_look"/>
     </resultMap>
     <insert id="putData">
         insert into api_report (report_id,
@@ -40,42 +41,46 @@
                                 device_type,
                                 response_base_expect_result,
                                 response_value_expect_result,
-                                result_main)
-            value
-            (
-            #{reportId}
-            ,
-            #{testId}
-            ,
-            #{apiPath}
-            ,
-            #{headerParam}
-            ,
-            #{webformParam}
-            ,
-            #{bodyParam}
-            ,
-            #{relyValue}
-            ,
-            #{expectStatus}
-            ,
-            #{actStatus}
-            ,
-            #{response}
-            ,
-            #{resultStatus}
-            ,
-            #{apiMethod}
-            ,
-            #{device}
-            ,
-            #{deviceType}
-            ,
-            #{responseBaseExpectResult}
-            ,
-            #{responseValueExpectResult}
-            ,
-            #{resultMain}
+                                result_main,
+                                rely_value_look
+        )
+        value
+        (
+        #{reportId}
+        ,
+        #{testId}
+        ,
+        #{apiPath}
+        ,
+        #{headerParam}
+        ,
+        #{webformParam}
+        ,
+        #{bodyParam}
+        ,
+        #{relyValue}
+        ,
+        #{expectStatus}
+        ,
+        #{actStatus}
+        ,
+        #{response}
+        ,
+        #{resultStatus}
+        ,
+        #{apiMethod}
+        ,
+        #{device}
+        ,
+        #{deviceType}
+        ,
+        #{responseBaseExpectResult}
+        ,
+        #{responseValueExpectResult}
+        ,
+        #{resultMain}
+        ,
+        #{relyValueLook}
         )
     </insert>
     <update id="updateByReportId">
@@ -94,7 +99,8 @@
             device_type                  = #{deviceType},
             response_base_expect_result  = #{responseBaseExpectResult},
             response_value_expect_result = #{responseValueExpectResult},
-            result_main                  = #{resultMain}
+            result_main                  = #{resultMain},
+            rely_value_look = #{relyValueLook}
         where report_id = #{reportId}
           and test_id = #{testId}
 

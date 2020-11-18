@@ -110,13 +110,13 @@ public class ApiReportController {
     @ResponseBody
     public ApiBaseRe getOneReport(@RequestParam Integer id) {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
+//        try {
             baseRe.setData(apiReportService.getOneReport(id));
             baseRe.setCode(1);
-        } catch (Exception e) {
-            baseRe.setCode(0);
-            baseRe.setMsg(e.toString());
-        }
+//        } catch (Exception e) {
+//            baseRe.setCode(0);
+//            baseRe.setMsg(e.toString());
+//        }
         return baseRe;
     }
 

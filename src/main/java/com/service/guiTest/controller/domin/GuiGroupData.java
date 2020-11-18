@@ -9,4 +9,5 @@ public class GuiGroupData {
     private JSONArray deviceList = JSONArray.parseArray("[]");
     private String groupMark;
     private Integer projectId;
+
 }

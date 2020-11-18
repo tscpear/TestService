@@ -44,7 +44,7 @@ public interface DoApiService {
 //
 //    String getToken(MyHost host, String environment, String basic);
 
-    DoTestData getLoginData(Integer environment, String device, String userType);
+//    DoTestData getLoginData(Integer environment, String device, String userType);
 
     /**
      * 拼接测试用例

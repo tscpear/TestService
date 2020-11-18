@@ -29,7 +29,7 @@ public interface ApiReportService {
     long doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b);
 
 
-    void putToken(JSONArray s,Integer environment) throws Throwable;
+//    void putToken(JSONArray s,Integer environment) throws Throwable;
 
     /**
      * 创建主报告

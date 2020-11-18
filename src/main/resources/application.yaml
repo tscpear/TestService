@@ -34,63 +34,63 @@ mybatis:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
-myhost:
-  store:
-    uat: https://api.t.zhilunkeji.com
-    test: http://api.zhilun-qa-major.com
-    tests: http://api.zhilun-qa-minor.com
-    prod: https://api.zhilunkeji.com
-    basic: TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy
-    basics: TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4
-    account: [12900000200,2,3,4,5,6,13588096710]
-    accounts: [12900000200,2,3,4,5,6,13588096710]
-    uatl: https://auth.t.zhilunkeji.com
-    testl: http://auth.zhilun-qa-major.com
-    testsl: http://auth.zhilun-qa-minor.com
-    deviceType: [1,2,3,4,5,6,7]
-  pda:
-    uat: http://wch.zhilun.com/1001
-    test: http://wch.zhilun-qa-minor.com/1001
-    tests: http://wch.zhilun-qa-major.com/1001
-    name: tsc
-    password: 123456
-  tweb:
-    uat: https://ra.t.zhilunkeji.com
-    test: http://manager.zhilun-qa-major.com
-    basic: TUFOQUdFTUVOVDo2NTRjMzRkMGFkZTc0N2VlYTBmZDgzZmI5N2JlNzI4MA==
-    basics: TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==
-    name: tsc
-    password: e10adc3949ba59abbe56e057f20f883e
-    tests: http://manager.zhilun-qa-minor.com
-  pweb:
-    uat: https://w-t.zhilunkeji.com
-    test: http://wh.zhilun-qa-major.com/1001
-    tests: http://wh.zhilun-qa-minor.com/1001
-    name: test
-    password: e10adc3949ba59abbe56e057f20f883e
-  driverapp:
-    uat: https://api.t.zhilunkeji.com
-    test: http://api.zhilun-qa-major.com
-    tests: http://api.zhilun-qa-minor.com
-    account: [13200000001,2,3,4,5,6]
-    accounts: [12900000000,2,3,4,5,6]
-    uatl: 25d55ad283aa400af464c76d713c07ad
-    testl: http://auth.zhilun-qa-major.com
-    testsl: http://auth.zhilun-qa-minor.com
-    basic: VFJVQ0tFUjo2NDVjOGE5MjllNmM0MTJjOWZlYmY5MGIyYWQwNzM3NA==
-    basics: VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==
-    deviceType: [1,2,3,4,5,6,7]
-  driversapp:
-    uat: https://api.t.zhilunkeji.com
-    test: http://api.zhilun-qa-major.com
-    tests: http://api.zhilun-qa-minor.com
-    account: [13200000001,2,3,4,5,6]
-    accounts: [12900000000,2,3,4,5,6]
-    uatl: 25d55ad283aa400af464c76d713c07ad
-    testl: http://auth.zhilun-qa-major.com
-    testsl: http://auth.zhilun-qa-minor.com
-    basic: RU5URVJQUklTRV9VU0VSOjlIR291Wk1UQ0VGNllMVzA0SVF0QWhkS3FreWJsejc1T05yMw==
-    basics: VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==
+#myhost:
+#  store:
+#    uat: https://api.t.zhilunkeji.com
+#    test: http://api.zhilun-qa-major.com
+#    tests: http://api.zhilun-qa-minor.com
+#    prod: https://api.zhilunkeji.com
+#    basic: TU9CSUxFX1NFUlZJQ0VfQ0FSOjU4NjgzZmU4ZWU2MDRmN2I5MTlhYzM0YTFmMjVkOGUy
+#    basics: TU9CSUxFX1NFUlZJQ0VfQ0FSOjEzNDgwNWRiZWIyODZhZjk3NTRjNTM5ODIzZGJmMTI4
+#    account: [12900000200,2,3,4,5,6,13588096710]
+#    accounts: [12900000200,2,3,4,5,6,13588096710]
+#    uatl: https://auth.t.zhilunkeji.com
+#    testl: http://auth.zhilun-qa-major.com
+#    testsl: http://auth.zhilun-qa-minor.com
+#    deviceType: [1,2,3,4,5,6,7]
+#  pda:
+#    uat: http://wch.zhilun.com/1001
+#    test: http://wch.zhilun-qa-minor.com/1001
+#    tests: http://wch.zhilun-qa-major.com/1001
+#    name: tsc
+#    password: 123456
+#  tweb:
+#    uat: https://ra.t.zhilunkeji.com
+#    test: http://manager.zhilun-qa-major.com
+#    basic: TUFOQUdFTUVOVDo2NTRjMzRkMGFkZTc0N2VlYTBmZDgzZmI5N2JlNzI4MA==
+#    basics: TUFOQUdFTUVOVDpjZGU1ZDQ5OGRmNWNkMGJmMTdlY2ZiYmJkZGY5M2E0Nw==
+#    name: tsc
+#    password: e10adc3949ba59abbe56e057f20f883e
+#    tests: http://manager.zhilun-qa-minor.com
+#  pweb:
+#    uat: https://w-t.zhilunkeji.com
+#    test: http://wh.zhilun-qa-major.com/1001
+#    tests: http://wh.zhilun-qa-minor.com/1001
+#    name: test
+#    password: e10adc3949ba59abbe56e057f20f883e
+#  driverapp:
+#    uat: https://api.t.zhilunkeji.com
+#    test: http://api.zhilun-qa-major.com
+#    tests: http://api.zhilun-qa-minor.com
+#    account: [13200000001,2,3,4,5,6]
+#    accounts: [12900000000,2,3,4,5,6]
+#    uatl: 25d55ad283aa400af464c76d713c07ad
+#    testl: http://auth.zhilun-qa-major.com
+#    testsl: http://auth.zhilun-qa-minor.com
+#    basic: VFJVQ0tFUjo2NDVjOGE5MjllNmM0MTJjOWZlYmY5MGIyYWQwNzM3NA==
+#    basics: VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==
+#    deviceType: [1,2,3,4,5,6,7]
+#  driversapp:
+#    uat: https://api.t.zhilunkeji.com
+#    test: http://api.zhilun-qa-major.com
+#    tests: http://api.zhilun-qa-minor.com
+#    account: [13200000001,2,3,4,5,6]
+#    accounts: [12900000000,2,3,4,5,6]
+#    uatl: 25d55ad283aa400af464c76d713c07ad
+#    testl: http://auth.zhilun-qa-major.com
+#    testsl: http://auth.zhilun-qa-minor.com
+#    basic: RU5URVJQUklTRV9VU0VSOjlIR291Wk1UQ0VGNllMVzA0SVF0QWhkS3FreWJsejc1T05yMw==
+#    basics: VFJVQ0tFUjpiOGE1ZDc5ZmRmZmM3NzY2YzY0NzM1Mjg4YmViMDY0Yg==
 project:
   project1:
     environment:
@@ -186,6 +186,8 @@ project:
               - - 13588096710
                 - 18329133828
               - - 12900000205
+              - - 14400000005
+              - - 13200000002
             host: https://api-t.zhilunkeji.com
 #            测试主
           - loginHost: http://auth.zhilun-qa-major.com
@@ -195,6 +197,8 @@ project:
               - - 12900000205
                 - 12900000205
               - - 12900000205
+              - - 13200000000
+              - - 13200000004
             host: http://api.zhilun-qa-major.com
 #            测试次
           - loginHost: http://auth.zhilun-qa-minor.com
@@ -204,6 +208,8 @@ project:
               - - 13588096710
                 - 186571905346
               - - 1358809666
+              - - 13200000000
+              - - 13200000004
             host: http://api.zhilun-qa-minor.com
       - device3:
         id: 3
@@ -546,10 +552,10 @@ user:
   ip:
     - 192.168.20.135
     - 127.0.0.1
-#    - 192.168.20.237
-#    - 192.168.40.35
-#    - 192.168.10.222
-#    - 192.168.10.70
+    - 192.168.20.237
+    - 192.168.40.35
+    - 192.168.10.222
+    - 192.168.10.70
 
 
 

@@ -17,10 +17,10 @@ public class GuiGroupController {
 
     @PostMapping("add")
     @ResponseBody
-    public ApiBaseRe add(@RequestBody GuiGroupData data, @RequestHeader(name = "projectId") Integer projectId) {
+    public ApiBaseRe add(@RequestBody GuiGroupData data,@RequestHeader(name = "userId") Integer userId, @RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         data.setProjectId(projectId);
-        String msg =  guiGroupService.add(data);
+        String msg =  guiGroupService.add(data,userId);
         if("success".equals(msg)){
             baseRe.setCode(1);
             baseRe.setMsg("新增成功");
@@ -53,9 +53,9 @@ public class GuiGroupController {
 
     @PostMapping("update")
     @ResponseBody
-    public ApiBaseRe update(@RequestBody GuiGroupData data){
+    public ApiBaseRe update(@RequestBody GuiGroupData data,@RequestHeader(name = "userId") Integer userId){
         ApiBaseRe baseRe = new ApiBaseRe();
-        String msg = guiGroupService.update(data);
+        String msg = guiGroupService.update(data,userId);
         if("success".equals(msg)){
             baseRe.setCode(1);
             baseRe.setMsg("新增成功");

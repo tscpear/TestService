@@ -103,6 +103,7 @@ public class DriverBaseImpl implements DriverBaseService {
                 this.slideDown(driver.getAppDriver());
                 break;
             case 6:
+
                 this.slideUp(driver.getAppDriver());
                 break;
 

@@ -109,14 +109,14 @@ public class ProjectOneImpl implements ProjectOne {
             testData = b.doTestDataChange(testData, map1);
             String response = httpClientService.getResponse(testData).getResponse();
             //当前商品的分仓可用数量
-            JSONArray nowTireNums = b.StringToArray(b.getValueFormJsonByPath(response, "$..canUseNum_v").getValue().toString());
+            JSONArray nowTireNums = b.StringToArray(b.getValueFormJsonByPath(response, "$.canUseNum_v").toString());
             if (!StringUtils.isEmpty(nowTireNums) && nowTireNums.size() > 0) {
                 nowTireNum = Integer.parseInt(nowTireNums.get(0).toString());
                 //获取参数jcWarehouseId
-                String jcWarehouseId = b.getValueFormJsonByPath(response, "$.rows[0].jcWarehouseId").getValue().toString();
+                String jcWarehouseId = b.getValueFormJsonByPath(response, "$.rows[0].jcWarehouseId").toString();
 
                 //获取参数 jcGoodsId
-                String jcGoodsId = b.getValueFormJsonByPath(response, "$.rows[0].jcGoodsId").getValue().toString();
+                String jcGoodsId = b.getValueFormJsonByPath(response, "$.rows[0].jcGoodsId").toString();
 
 
                 /**
@@ -130,7 +130,7 @@ public class ProjectOneImpl implements ProjectOne {
                 testData = doApiService.getTestData(environment, 60, newTokenList, newDataList, 0, accountValue, projectId);
                 testData = b.doTestDataChange(testData, map1);
                 response = httpClientService.getResponse(testData).getResponse();
-                String nowTireLists = b.getValueFormJsonByPath(response, "$..tyreNum").getValue().toString();
+                String nowTireLists = b.getValueFormJsonByPath(response, "$.tyreNum").toString();
                 //获取当前商品分仓已入库的商品
                 nowTireList = b.StringToArray(nowTireLists);
             }
@@ -141,7 +141,7 @@ public class ProjectOneImpl implements ProjectOne {
                  */
                 testData = doApiService.getTestData(environment, testId3, newTokenList, newDataList, 0, accountValue, projectId);
                 response = httpClientService.getResponse(testData).getResponse();
-                allTireList = b.StringToArray(b.getValueFormJsonByPath(response, "$..barcode").getValue().toString());
+                allTireList = b.StringToArray(b.getValueFormJsonByPath(response, "$.barcode").toString());
 
 
                 /**
@@ -150,7 +150,7 @@ public class ProjectOneImpl implements ProjectOne {
 
                 testData = doApiService.getTestData(environment, 66, newTokenList, newDataList, 0, accountValue, projectId);
                 response = httpClientService.getResponse(testData).getResponse();
-                rkId = b.getValueFormJsonByPath(response, "$.id").getValue().toString();
+                rkId = b.getValueFormJsonByPath(response, "$.id").toString();
                 /**
                  * 进入循环阶段
                  */
@@ -171,14 +171,14 @@ public class ProjectOneImpl implements ProjectOne {
                         testData = doApiService.getTestData(environment, 67, newTokenList, newDataList, 0, accountValue, projectId);
                         testData = b.doTestDataChange(testData, map1);
                         response = httpClientService.getResponse(testData).getResponse();
-                        status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").getValue().toString());
+                        status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").toString());
                         if (status == 1) {
                             //获取分仓处的商品Id
-                            String goodsId = b.getValueFormJsonByPath(response, "$.goodsId").getValue().toString();
+                            String goodsId = b.getValueFormJsonByPath(response, "$.goodsId").toString();
                             //获取货位id
-                            String storageId = b.getValueFormJsonByPath(response, "$.storageId").getValue().toString();
+                            String storageId = b.getValueFormJsonByPath(response, "$.storageId").toString();
                             //获取detailTyreNumId
-                            String detailTyreNumId = b.getValueFormJsonByPath(response, "$.id").getValue().toString();
+                            String detailTyreNumId = b.getValueFormJsonByPath(response, "$.id").toString();
                             /**
                              * @在入库单中将可用胎号固定到相应货位
                              */
@@ -194,7 +194,7 @@ public class ProjectOneImpl implements ProjectOne {
                             testData = doApiService.getTestData(environment, 68, newTokenList, newDataList, 0, accountValue, projectId);
                             testData = b.doTestDataChange(testData, map1);
                             response = httpClientService.getResponse(testData).getResponse();
-                            status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").getValue().toString());
+                            status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").toString());
                             if (status == 0) {
                                 goodTireNum++;
                             }
@@ -248,12 +248,12 @@ public class ProjectOneImpl implements ProjectOne {
         testData = b.doTestDataChange(testData, map);
         String response = httpClientService.getResponse(testData).getResponse();
         //查看订单是否同步
-        Integer total = Integer.parseInt(b.getValueFormJsonByPath(response, "$.total").getValue().toString());
+        Integer total = Integer.parseInt(b.getValueFormJsonByPath(response, "$.total").toString());
         if (total <= 0) {
             return;
         }
         //获取出库单id
-        String ckId = b.getValueFormJsonByPath(response, "$.rows[0].id").getValue().toString();
+        String ckId = b.getValueFormJsonByPath(response, "$.rows[0].id").toString();
         /**
          * @1判断订单已经同步到分仓，同时获取订单出库单ID
          */
@@ -266,15 +266,15 @@ public class ProjectOneImpl implements ProjectOne {
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
         //获取规格总类
-        Integer kinds = Integer.parseInt(b.getValueFormJsonByPath(response, "$.total").getValue().toString());
+        Integer kinds = Integer.parseInt(b.getValueFormJsonByPath(response, "$.total").toString());
         String responses = response;
         for (int k = 0; k < kinds; k++) {
             //获取商品id
-            Integer goodNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].goodsNum").getValue().toString());
+            Integer goodNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].goodsNum").toString());
             //获取商品开单数量
-            Integer billNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].billNum").getValue().toString());
+            Integer billNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].billNum").toString());
             //获取商品出库数量
-            Integer realNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].realNum").getValue().toString());
+            Integer realNum = Integer.parseInt(b.getValueFormJsonByPath(responses, "$.rows[" + k + "].realNum").toString());
             //获取需要出库的数量
             Integer num = billNum - realNum;
             /**
@@ -296,7 +296,7 @@ public class ProjectOneImpl implements ProjectOne {
             response = httpClientService.getResponse(testData).getResponse();
 
             //获取子订单id
-            String ckOrderSon = b.getValueFormJsonByPath(response, "$.datas[" + k + "].id").getValue().toString();
+            String ckOrderSon = b.getValueFormJsonByPath(response, "$.datas[" + k + "].id").toString();
             /**
              * @3.5固定货位
              */
@@ -323,7 +323,7 @@ public class ProjectOneImpl implements ProjectOne {
                 testData = doApiService.getTestData(environment, 74, newTokenList, newDataList, 0, accountValue, projectId);
                 testData = b.doTestDataChange(testData, map);
                 response = httpClientService.getResponse(testData).getResponse();
-                Integer status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").getValue().toString());
+                Integer status = Integer.parseInt(b.getValueFormJsonByPath(response, "$.status").toString());
                 if (status != 1) {
                     num++;
                 }
@@ -369,12 +369,12 @@ public class ProjectOneImpl implements ProjectOne {
         testData = b.doTestDataChange(testData, map);
         String response = httpClientService.getResponse(testData).getResponse();
         //获取门店名称数据
-        String storeName = b.getValueFormJsonByPath(response, "$.data.list[0].storeName").getValue().toString();
+        String storeName = b.getValueFormJsonByPath(response, "$.data.list[0].storeName").toString();
         //获取门店手机号数据
-        String storePhone = b.getValueFormJsonByPath(response, "$.data.list[0].storePhone").getValue().toString();
+        String storePhone = b.getValueFormJsonByPath(response, "$.data.list[0].storePhone").toString();
         //获取所有胎号数据
-        Object barcode = b.getValueFormJsonByPath(response, "$..barcode").getValue();
-        String storeUserId = b.getValueFormJsonByPath(response, "$.data.list[0].storeUserId").getValue().toString();
+        Object barcode = b.getValueFormJsonByPath(response, "$..barcode");
+        String storeUserId = b.getValueFormJsonByPath(response, "$.data.list[0].storeUserId").toString();
         /**
          * @门店一键入库
          */
@@ -410,9 +410,9 @@ public class ProjectOneImpl implements ProjectOne {
         DoTestData testData = doApiService.getTestData(environment, 82, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
         String response = httpClientService.getResponse(testData).getResponse();
-        Integer storeUserId = Integer.parseInt(b.getValueFormJsonByPath(response, "$.data.list[0].storeUserId").getValue().toString());
-        Object titles = b.getValueFormJsonByPath(response, "$.data.list[0]..title").getValue().toString();
-        Object quantitys = b.getValueFormJsonByPath(response, "$.data.list[0]..quantity").getValue().toString();
+        Integer storeUserId = Integer.parseInt(b.getValueFormJsonByPath(response, "$.data.list[0].storeUserId").toString());
+        Object titles = b.getValueFormJsonByPath(response, "$.data.list[0].title").toString();
+        Object quantitys = b.getValueFormJsonByPath(response, "$.data.list[0].quantity").toString();
         JSONArray titlesArray = b.StringToArray(titles.toString());
         JSONArray quantitysArray = b.StringToArray(quantitys.toString());
         /**
@@ -425,8 +425,8 @@ public class ProjectOneImpl implements ProjectOne {
         testData = doApiService.getTestData(environment, 83, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
-        Object itemTitle = b.getValueFormJsonByPath(response, "$.data..itemTitle").getValue().toString();
-        Object serialNums = b.getValueFormJsonByPath(response, "$.data..serialNums").getValue().toString();
+        Object itemTitle = b.getValueFormJsonByPath(response, "$.data.itemTitle").toString();
+        Object serialNums = b.getValueFormJsonByPath(response, "$.data.serialNums").toString();
         JSONArray itemTitleArray = b.StringToArray(itemTitle.toString());
         JSONArray serialNumsArray = b.StringToArray(serialNums.toString());
 
@@ -474,7 +474,7 @@ public class ProjectOneImpl implements ProjectOne {
         testData = doApiService.getTestData(environment, 85, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
-        String outSn = b.getValueFormJsonByPath(response, "$.data.list[0].sn").getValue().toString();
+        String outSn = b.getValueFormJsonByPath(response, "$.data.list[0].sn").toString();
 
 
         /**
@@ -487,7 +487,7 @@ public class ProjectOneImpl implements ProjectOne {
         testData = doApiService.getTestData(environment, 86, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
-        String tyreInfoList = b.getValueFormJsonByPath(response, "$.data.tyreInfoList").getValue().toString();
+        String tyreInfoList = b.getValueFormJsonByPath(response, "$.data.tyreInfoList").toString();
         JSONArray tyreInfoListArray = b.StringToAO(tyreInfoList);
         /**
          * @6唯一司机端领取质保卡
@@ -546,14 +546,14 @@ public class ProjectOneImpl implements ProjectOne {
         String response = httpClientService.getResponse(testData).getResponse();
         String zsn = "";
         try {
-            zsn = b.getValueFormJsonByPath(response, "$.data.list[0].sn").getValue().toString();
+            zsn = b.getValueFormJsonByPath(response, "$.data.list[0].sn").toString();
         } catch (Exception e) {
             new Throwable("该司机端没有线上质保卡");
             return null;
         }
-        String carHeadPhoto = b.getValueFormJsonByPath(response, "$.data.list[0].carHeadPhoto").getValue().toString();
-        String carLicense = b.getValueFormJsonByPath(response, "$.data.list[0].carLicense").getValue().toString();
-        String driverName = b.getValueFormJsonByPath(response, "$.data.list[0].driverName").getValue().toString();
+        String carHeadPhoto = b.getValueFormJsonByPath(response, "$.data.list[0].carHeadPhoto").toString();
+        String carLicense = b.getValueFormJsonByPath(response, "$.data.list[0].carLicense").toString();
+        String driverName = b.getValueFormJsonByPath(response, "$.data.list[0].driverName").toString();
 
         /**
          * @2更新为全国理赔
@@ -581,7 +581,7 @@ public class ProjectOneImpl implements ProjectOne {
         testData = doApiService.getTestData(environment, 90, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
-        String lpsn = b.getValueFormJsonByPath(response, "$.data.sn").getValue().toString();
+        String lpsn = b.getValueFormJsonByPath(response, "$.data.sn").toString();
 
         if (type == -1 || type == -2) {
             return lpsn;
@@ -617,7 +617,7 @@ public class ProjectOneImpl implements ProjectOne {
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
         try {
-            Integer lpid = Integer.parseInt(b.getValueFormJsonByPath(response, "$.data.id").getValue().toString());
+            Integer lpid = Integer.parseInt(b.getValueFormJsonByPath(response, "$.data.id").toString());
             /**
              * @6审核
              */

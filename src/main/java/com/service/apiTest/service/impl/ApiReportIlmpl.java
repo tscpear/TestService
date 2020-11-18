@@ -117,61 +117,61 @@ public class ApiReportIlmpl implements ApiReportService {
         return reportId;
     }
 
-    @Override
-    public void putToken(JSONArray testList, Integer environment) throws Throwable {
-        Token tokens = tokenMapper.getData();
-        List<String> deviceTypeList = apiCaseMapper.getDeviceType(testList);
-        deviceTypeList = b.removeSame(deviceTypeList);
-
-        for (String deviceType : deviceTypeList) {
-            String device = "";
-            if (deviceType.contains(".")) {
-                device = deviceType.split("\\.")[0];
-            } else {
-                device = deviceType;
-            }
-            DoTestData doTestData = doApiService.getLoginData(environment, device, deviceType);
-            ResponseData responseData = httpClientService.getResponse(doTestData);
-            String token = doApiService.getToken(responseData);
-            switch (deviceType) {
-                case "1":
-                    tokens.setTireWebToken(token);
-                    break;
-                case "2.1":
-                    tokens.setStore1(token);
-                    break;
-                case "2.2":
-                    tokens.setStore2(token);
-                    break;
-                case "2.3":
-                    tokens.setStore3(token);
-                    break;
-                case "2.4":
-                    tokens.setStore4(token);
-                    break;
-                case "2.5":
-                    tokens.setStore5(token);
-                    break;
-                case "2.6":
-                    tokens.setStore6(token);
-                    break;
-                case "2.7":
-                    tokens.setStore7(token);
-                    break;
-                case "3.1":
-                    tokens.setDriver1(token);
-                    break;
-                case "3.2":
-                    tokens.setDriver2(token);
-                    break;
-                case "5":
-                    tokens.setPdaCookie(token);
-                    break;
-
-            }
-        }
-        tokenMapper.updateToken(tokens);
-    }
+//    @Override
+//    public void putToken(JSONArray testList, Integer environment) throws Throwable {
+//        Token tokens = tokenMapper.getData();
+//        List<String> deviceTypeList = apiCaseMapper.getDeviceType(testList);
+//        deviceTypeList = b.removeSame(deviceTypeList);
+//
+//        for (String deviceType : deviceTypeList) {
+//            String device = "";
+//            if (deviceType.contains(".")) {
+//                device = deviceType.split("\\.")[0];
+//            } else {
+//                device = deviceType;
+//            }
+//            DoTestData doTestData = doApiService.getLoginData(environment, device, deviceType);
+//            ResponseData responseData = httpClientService.getResponse(doTestData);
+//            String token = doApiService.getToken(responseData);
+//            switch (deviceType) {
+//                case "1":
+//                    tokens.setTireWebToken(token);
+//                    break;
+//                case "2.1":
+//                    tokens.setStore1(token);
+//                    break;
+//                case "2.2":
+//                    tokens.setStore2(token);
+//                    break;
+//                case "2.3":
+//                    tokens.setStore3(token);
+//                    break;
+//                case "2.4":
+//                    tokens.setStore4(token);
+//                    break;
+//                case "2.5":
+//                    tokens.setStore5(token);
+//                    break;
+//                case "2.6":
+//                    tokens.setStore6(token);
+//                    break;
+//                case "2.7":
+//                    tokens.setStore7(token);
+//                    break;
+//                case "3.1":
+//                    tokens.setDriver1(token);
+//                    break;
+//                case "3.2":
+//                    tokens.setDriver2(token);
+//                    break;
+//                case "5":
+//                    tokens.setPdaCookie(token);
+//                    break;
+//
+//            }
+//        }
+//        tokenMapper.updateToken(tokens);
+//    }
 
     @Override
     public void addReportMain(long reportId) {
@@ -231,22 +231,34 @@ public class ApiReportIlmpl implements ApiReportService {
                             JSONObject expectValueNew = new JSONObject();
                             String path = expectValueOld.get("name").toString();
                             String expectValue = expectValueOld.get("value").toString();
-                            MyJsonPath actValue = b.getValueFormJsonByPath(report.getResponse(), path);
+                            Object actValue = b.getValueFormJsonByPath(report.getResponse(), path);
                             expectValueNew.put("path", path);
                             expectValueNew.put("expectValue", expectValue);
-                            expectValueNew.put("actValue", actValue.getValue().toString());
+                            expectValueNew.put("actValue", actValue);
                             responseValueExpectRelust.add(expectValueNew);
-                            if(actValue.getType() ==1){
-                                JSONArray newExpectValue = b.StringToArray(expectValue);
-                                JSONArray newActValue = b.StringToArray(actValue.getValue().toString());
+//                            if(actValue.getType() ==1){
+//                                JSONArray newExpectValue = b.StringToArray(expectValue);
+//                                JSONArray newActValue = b.StringToArray(actValue.getValue().toString());
+//                                if(newExpectValue == newActValue){
+//                                    report.setResultMain(3);
+//                                }
+//                            }else {
+//                                if (!actValue.getValue().equals(expectValue)) {
+//                                    report.setResultMain(3);
+//                                }
+//                            }
+
+                           if(v.isJSONArray(actValue.toString())){
+                               JSONArray newExpectValue = b.StringToArray(expectValue);
+                                JSONArray newActValue = b.StringToArray(actValue.toString());
                                 if(newExpectValue == newActValue){
                                     report.setResultMain(3);
                                 }
-                            }else {
-                                if (!actValue.getValue().equals(expectValue)) {
+                           }else {
+                               if (!actValue.equals(expectValue)) {
                                     report.setResultMain(3);
                                 }
-                            }
+                           }
                         }
                         report.setResponseValueExpectResult(responseValueExpectRelust.toString());
                         break;
@@ -265,19 +277,29 @@ public class ApiReportIlmpl implements ApiReportService {
         if (report.getResultMain() == 0) {
             Integer isRely = api.getIsRely();
             if (isRely == 1) {
+                JSONArray relyValueLook = new JSONArray();
                 JSONObject value = new JSONObject();
                 JSONArray relyParams = b.StringToAO(api.getRelyValue());
+                JSONObject map = new JSONObject();
+                Object values = null;
                 for (Object relyParam : relyParams) {
+                    map.clear();
                     JSONObject param = b.StringToJson(relyParam.toString());
                     String path = param.get("value").toString();
                     try {
-                        List<Object> values = JsonPath.read(data.getResponse(), path);
-                        value.put(param.get("name").toString(), values.get(0));
+                        values = JsonPath.read(data.getResponse(), path);
+                        value.put(param.get("name").toString(), values);
                     } catch (Exception e) {
 
                     }
+                    map.put("name",param.get("name").toString());
+                    map.put("path",path);
+                    map.put("value",values);
+                    relyValueLook.add(map);
                 }
                 report.setRelyValue(value.toString());
+                report.setRelyValueLook(relyValueLook.toString());
+
             }
         }
 
@@ -301,6 +323,7 @@ public class ApiReportIlmpl implements ApiReportService {
         oneReportData.setHeaderParam(b.StringToAO(apiReport.getHeaderParam()));
         oneReportData.setWebformParam(b.StringToAO(apiReport.getWebformParam()));
         oneReportData.setResponseValueExpectResult(b.StringToAO(apiReport.getResponseValueExpectResult()));
+        oneReportData.setRelyValueLook(b.StringToAO(apiReport.getRelyValueLook()));
         try {
             oneReportData.setBodyParam(b.StringToAO(apiReport.getBodyParam()));
         } catch (Exception e) {
@@ -468,7 +491,7 @@ public class ApiReportIlmpl implements ApiReportService {
         if (data.getStatus().equals("200")) {
             newToken.setData(data.getResponse());
             try {
-                String token = b.getValueFormJsonByPath(data.getResponse(), tokenPath).getValue().toString();
+                String token = b.getValueFormJsonByPath(data.getResponse(), tokenPath).toString();
                 token = "bearer " + token;
                 newToken.setToken(token);
             } catch (Exception e) {

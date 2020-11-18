@@ -14,10 +14,12 @@
         <result property="projectId" column="project_id"/>
         <result property="keyValue" column="key_value"/>
         <result property="assertExpectValue" column="assert_expect_value"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="updateUserId" column="update_user_id"/>
     </resultMap>
     <insert id="add">
         insert into gui (name, device, element, element_type, active, project_id,
-                         key_value,assert_expect_value
+                         key_value,assert_expect_value,create_user_id
         )
         value
         (
@@ -33,7 +35,7 @@
         ,
         #{projectId}
         ,
-        #{keyValue},#{assertExpectValue}
+        #{keyValue},#{assertExpectValue},#{createUserId}
         );
 
     </insert>
@@ -68,7 +70,8 @@
                 #{active},
             key_value=
                 #{keyValue},
-            assert_expect_value = #{assertExpectValue}
+            assert_expect_value = #{assertExpectValue},
+            create_user_id = #{createUserId}
         where id = #{id};
     </update>
 

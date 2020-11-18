@@ -6,7 +6,6 @@ import com.service.apiTest.dom.mapper.TokenMapper;
 import com.service.apiTest.service.impl.ApiReportIlmpl;
 import com.service.apiTest.service.impl.ApiServicelmpl;
 import com.service.apiTest.service.service.ApiReportService;
-import com.service.apiTest.service.service.CreateTireDataService;
 import com.service.guiTest.base.impl.DriverBaseImpl;
 import com.service.guiTest.dom.entity.GuiData;
 import com.service.guiTest.service.service.GuiGroupService;
@@ -43,8 +42,6 @@ class ServiceApplicationTests {
     @Autowired
     private ApiReportService apiReportService;
     @Autowired
-    private CreateTireDataService createTireDataService;
-    @Autowired
     private TokenMapper tokenMapper;
     @Autowired
     private MyBaseChange m;
@@ -60,18 +57,18 @@ class ServiceApplicationTests {
 
 
 
-    @Test
-    void contextLoads() throws Throwable {
-        DoTestData doTestData = doApiService.getLoginData(1, "1", "1");
-        System.out.println(httpClientService.getResponse(doTestData));
-    }
-
-    @Test
-    void test1() {
-        DoTestData doTestData = doApiService.getLoginData(2, "5", "1");
-        ResponseData data = httpClientService.getResponse(doTestData);
-        apiReportService.addReport(data, 11, 11,1);
-    }
+//    @Test
+//    void contextLoads() throws Throwable {
+//        DoTestData doTestData = doApiService.getLoginData(1, "1", "1");
+//        System.out.println(httpClientService.getResponse(doTestData));
+//    }
+//
+//    @Test
+//    void test1() {
+//        DoTestData doTestData = doApiService.getLoginData(2, "5", "1");
+//        ResponseData data = httpClientService.getResponse(doTestData);
+//        apiReportService.addReport(data, 11, 11,1);
+//    }
 
     //    @Test
 //    void test2(){
@@ -153,6 +150,11 @@ class ServiceApplicationTests {
 
     @Test
     void test12() throws InterruptedException {
-        guiGroupService.doTest(2,1);
+
+        List<String> list = new ArrayList<>();
+
+        list.add("79UNW19307001406");
+        list.add("fcfdc47e");
+        guiGroupService.doTest(2,1,list);
     }
 }

@@ -14,4 +14,6 @@ public class GuiData {
     private Integer projectId;
     private String keyValue;
     private String assertExpectValue = "[]";
+    private Integer createUserId;
+    private Integer updateUserId;
 }

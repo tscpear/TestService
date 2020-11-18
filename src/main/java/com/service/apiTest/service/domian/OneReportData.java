@@ -21,4 +21,5 @@ public class OneReportData {
     private  Integer resultStatus;
     private Integer resultMain;
     private JSONArray responseValueExpectResult = JSONArray.parseArray("[]");
+    private  JSONArray relyValueLook = JSONArray.parseArray("[]");
 }

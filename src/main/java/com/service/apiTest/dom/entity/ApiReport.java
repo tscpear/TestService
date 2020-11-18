@@ -26,6 +26,7 @@ public class ApiReport {
     private Integer resultMain;
     private Integer device;
     private Integer deviceType;
-
     private String apiCaseMark;
+    private  String relyValueLook;
+
 }
