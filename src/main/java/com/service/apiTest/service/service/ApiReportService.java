@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.service.apiTest.controller.domin.PutToken;
 import com.service.apiTest.dom.domin.ApiCaseForReport;
 import com.service.apiTest.dom.entity.ApiReport;
+import com.service.apiTest.service.domian.ApiReportCache;
 import com.service.apiTest.service.domian.ApiReportList;
 import com.service.apiTest.service.domian.DeviceAndType;
 import com.service.apiTest.service.domian.OneReportData;
@@ -25,8 +26,31 @@ public interface ApiReportService {
      */
     List<ApiReportList> getReportList(JSONArray testIdList);
 
+    /**
+     * 第一版
+     * @param testId
+     * @param environment
+     * @param reportId
+     * @param accountValue
+     * @param projectId
+     * @param b
+     * @return
+     */
+    ApiReportCache doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b);
 
-    long doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b);
+    /**
+     * 第二版
+     * @param testId
+     * @param environment
+     * @param reportId
+     * @param accountValue
+     * @param projectId
+     * @param b
+     * @return
+     */
+    ApiReportCache doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b, ApiReportCache apiReportCache);
+
+
 
 
 //    void putToken(JSONArray s,Integer environment) throws Throwable;
@@ -39,7 +63,7 @@ public interface ApiReportService {
     /**
      * 存入详情
      */
-    void addReport(ResponseData data,long reportId,Integer testId,Integer b);
+    ApiReportCache addReport(ResponseData data, long reportId, Integer testId, Integer b,ApiReportCache  apiReportCache);
 
     /**
      * 查询报告结果

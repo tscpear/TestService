@@ -109,7 +109,7 @@ public class ProjectOneImpl implements ProjectOne {
             testData = b.doTestDataChange(testData, map1);
             String response = httpClientService.getResponse(testData).getResponse();
             //当前商品的分仓可用数量
-            JSONArray nowTireNums = b.StringToArray(b.getValueFormJsonByPath(response, "$.canUseNum_v").toString());
+            JSONArray nowTireNums = b.StringToArray(b.getValueFormJsonByPath(response, "$..canUseNum_v").toString());
             if (!StringUtils.isEmpty(nowTireNums) && nowTireNums.size() > 0) {
                 nowTireNum = Integer.parseInt(nowTireNums.get(0).toString());
                 //获取参数jcWarehouseId
@@ -130,7 +130,7 @@ public class ProjectOneImpl implements ProjectOne {
                 testData = doApiService.getTestData(environment, 60, newTokenList, newDataList, 0, accountValue, projectId);
                 testData = b.doTestDataChange(testData, map1);
                 response = httpClientService.getResponse(testData).getResponse();
-                String nowTireLists = b.getValueFormJsonByPath(response, "$.tyreNum").toString();
+                String nowTireLists = b.getValueFormJsonByPath(response, "$..tyreNum").toString();
                 //获取当前商品分仓已入库的商品
                 nowTireList = b.StringToArray(nowTireLists);
             }
@@ -141,7 +141,7 @@ public class ProjectOneImpl implements ProjectOne {
                  */
                 testData = doApiService.getTestData(environment, testId3, newTokenList, newDataList, 0, accountValue, projectId);
                 response = httpClientService.getResponse(testData).getResponse();
-                allTireList = b.StringToArray(b.getValueFormJsonByPath(response, "$.barcode").toString());
+                allTireList = b.StringToArray(b.getValueFormJsonByPath(response, "$..barcode").toString());
 
 
                 /**
@@ -223,6 +223,7 @@ public class ProjectOneImpl implements ProjectOne {
             }
 
         }
+
 
     }
 

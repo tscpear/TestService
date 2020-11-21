@@ -3,13 +3,11 @@ package com.service.utils.test.impl;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.mysql.cj.xdevapi.JsonArray;
-import com.service.apiTest.dom.entity.Api;
-import com.service.apiTest.dom.entity.ApiCase;
-import com.service.apiTest.dom.entity.ApiReportMain;
-import com.service.apiTest.dom.entity.Token;
+import com.service.apiTest.dom.entity.*;
 import com.service.apiTest.dom.mapper.ApiCaseMapper;
 import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.apiTest.dom.mapper.ApiReportMapper;
+import com.service.apiTest.service.domian.ApiReportCache;
 import com.service.apiTest.service.service.ApiReportService;
 import com.service.utils.MyBaseChange;
 import com.service.utils.test.dom.*;
@@ -228,7 +226,13 @@ public class DoApiImpl implements DoApiService {
 //    }
 
     @Override
-    public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList, Map<String, String> newDataList, long reportId, List<String> accountValue, Integer projectId) {
+    public DoTestData getTestData(Integer environment,
+                                  Integer testId,
+                                  Map<String, String> tokenList,
+                                  Map<String, String> newDataList,
+                                  long reportId, List<String> accountValue,
+                                  Integer projectId,
+                                  ApiReportCache apiReportCache) {
         Project project = new Project();
         switch (projectId) {
             case 1:
@@ -254,6 +258,7 @@ public class DoApiImpl implements DoApiService {
         if (apiCase.getIsDepend() == 1) {
             JSONArray testList = new JSONArray(apiCase.getRelyCaseId());
             List<Integer> nowDoTestList = apiReportMapper.getNowDoTestId(reportId);
+//            List<Integer> nowDoTestList = apiReportCache.getTestIdDoneList();
             JSONArray relyTestListId = new JSONArray();
             for (Object o : testList) {
                 JSONObject os = new JSONObject(o.toString());
@@ -267,7 +272,7 @@ public class DoApiImpl implements DoApiService {
             }
             com.alibaba.fastjson.JSONArray array = b.StringToArray(relyTestListId.toString());
             if (array.size() > 0) {
-                apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId, 1);
+                apiReportService.doTest(b.StringToArray(relyTestListId.toString()), environment, reportId, accountValue, projectId, 1,apiReportCache);
 
             }
         }
@@ -305,7 +310,7 @@ public class DoApiImpl implements DoApiService {
          */
         Map<Integer, Map<String, String>> newRely = new HashMap<>();
         if (apiCase.getIsDepend() == 1) {
-            newRely = this.getRelyValue(paths, apiCase, loginRely, reportId);
+            newRely = this.getRelyValue(paths, apiCase, loginRely, reportId,apiReportCache);
         }
 
 
@@ -352,7 +357,13 @@ public class DoApiImpl implements DoApiService {
                             }
                         }
                         try {
-                            JSONObject relyValue = new JSONObject(apiReportMapper.getRelyValue(reportId, relyTestId));
+                          JSONObject relyValue = new JSONObject(apiReportMapper.getRelyValue(reportId, relyTestId));
+//                            List<ApiReport> apiReportList = apiReportCache.getApiReportList().get(relyTestId);
+//                            String relyValues = null;
+//                            if(!StringUtils.isEmpty(apiReportList)){
+//                                relyValues = apiReportList.get(apiReportList.size() - 1).getRelyValue();
+//                            }
+//                            JSONObject relyValue = new JSONObject(relyValues);
                             data.setApiParam(relyValue.get(apiRelyParam.get("value").toString()).toString());
                         } catch (Exception e) {
 
@@ -421,6 +432,15 @@ public class DoApiImpl implements DoApiService {
                                 }
                             }
                             String relyValues = apiReportMapper.getRelyValue(reportId, testIds);
+//                            List<ApiReport> apiReportList = apiReportCache.getApiReportList().get(testIds);
+//
+//                            String relyValues = null;
+//                            if(!StringUtils.isEmpty(apiReportList)){
+//                                relyValues = apiReportList.get(apiReportList.size() - 1).getRelyValue();
+//                            }
+
+
+
                             if (StringUtils.isEmpty(relyValues)) {
                                 break;
                             }
@@ -443,6 +463,11 @@ public class DoApiImpl implements DoApiService {
 
 
         return data;
+    }
+
+    @Override
+    public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList, Map<String, String> newDataList, long reportId, List<String> accountValue, Integer projectId) {
+        return this.getTestData(environment, testId, tokenList, newDataList, reportId, accountValue, projectId, null);
     }
 
     @Override
@@ -556,7 +581,7 @@ public class DoApiImpl implements DoApiService {
 
                                 }
                             }
-                            if(relyParams.length() > 0){
+                            if (relyParams.length() > 0) {
                                 param = this.OAddO(param, relyParams);
                             }
 
@@ -594,7 +619,11 @@ public class DoApiImpl implements DoApiService {
     /**
      * 合成apiId 对应的 Map<name,value>
      */
-    public Map<Integer, Map<String, String>> getRelyValue(Map<String, String> paths, ApiCase apiCase, String loginRely, long reportId) {
+    public Map<Integer, Map<String, String>> getRelyValue(Map<String, String> paths,
+                                                          ApiCase apiCase,
+                                                          String loginRely,
+                                                          long reportId,
+                                                          ApiReportCache apiReportCache) {
         JSONArray relyCaseList = new JSONArray(apiCase.getRelyCaseId());
         Map<String, String> loginRelyParam = new HashMap<>();
         Map<Integer, Map<String, String>> newRely = new HashMap<>();
@@ -603,6 +632,12 @@ public class DoApiImpl implements DoApiService {
             Integer relyTestId = Integer.parseInt(relyCaseValue.get("apiCaseId").toString());
             if (relyTestId > 0) {
                 String relyValues = apiReportMapper.getRelyValue(reportId, relyTestId);
+//                List<ApiReport> apiReportList = apiReportCache.getApiReportList().get(relyTestId);
+//                String relyValues = null;
+//                if(!StringUtils.isEmpty(apiReportList)){
+//                     relyValues = apiReportList.get(apiReportList.size() - 1).getRelyValue();
+//                }
+
                 Gson gson = new Gson();
                 Map<String, String> rely = new HashMap<>();
                 rely = gson.fromJson(relyValues, rely.getClass());

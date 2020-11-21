@@ -31,8 +31,6 @@ public class ApiGroupImpl implements ApiGroupService {
     @Autowired
     private ApiReportService apiReportService;
     @Autowired
-    private ApiReportMainMapper apiReportMainMapper;
-    @Autowired
     private ApiReportMapper apiReportMapper;
 
 
@@ -133,7 +131,6 @@ public class ApiGroupImpl implements ApiGroupService {
             reportId = System.currentTimeMillis();
             apiReportService.addReportMain(reportId);
         }
-
         /**
          * 获取数据结构
          */
@@ -144,17 +141,14 @@ public class ApiGroupImpl implements ApiGroupService {
         List<DoGroupOfRealyDataToCaseList> doGroupOfRealyDataToCaseLists = doGroupOfRealyData.getDoGroupOfRealyDataToCaseLists();
         ApiGroup apiGroup = apiGroupMapper.getGroup(doGroupRequest.getProjectId(), doGroupRequest.getGroupId());
         JSONArray a = b.StringToAO(apiGroup.getCaseList());
-//        Integer old = apiReportMainMapper.haveOldReport(doGroupRequest.getGroupId());
-//
-//        if (old < 1) {
-//            apiReportService.addReportMain(doGroupRequest.getGroupId());
-//        }
         /**
          * 执行用例
          */
+        ApiReportCache apiReportCache = new ApiReportCache();
         JSONObject o = b.StringToJson(a.get(doGroupRequest.getTeamId() - 1).toString());
         JSONArray list = b.StringToArray(o.get("caseList").toString());
-        apiReportService.doTest(list, doGroupRequest.getEnvironment(), reportId, doGroupRequest.getAccountValue(), doGroupRequest.getProjectId(),2);
+
+        apiReportService.doTest(list, doGroupRequest.getEnvironment(), reportId, doGroupRequest.getAccountValue(), doGroupRequest.getProjectId(),2,apiReportCache);
 
         /**
          * 获取报告

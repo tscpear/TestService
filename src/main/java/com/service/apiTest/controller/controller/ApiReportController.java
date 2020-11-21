@@ -12,6 +12,7 @@ import com.service.apiTest.dom.entity.ApiReportMain;
 import com.service.apiTest.dom.mapper.ApiGroupMapper;
 import com.service.apiTest.dom.mapper.ApiReportMainMapper;
 import com.service.apiTest.dom.mapper.ApiReportMapper;
+import com.service.apiTest.service.domian.ApiReportCache;
 import com.service.apiTest.service.domian.ApiReportList;
 import com.service.apiTest.service.service.ApiReportService;
 import com.service.utils.MyBaseChange;
@@ -49,16 +50,14 @@ public class ApiReportController {
         }else {
             reportId = token.getReportId();
         }
-        apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId,token.getAccountValue(),projectId,1);
+        ApiReportCache apiReportCache =  apiReportService.doTest(this.getTestList(token), token.getEnvironment(), reportId,token.getAccountValue(),projectId,1);
         JSONObject data = new JSONObject();
+//        data.put("list",apiReportService.getReportDataList(reportId));
         data.put("list",apiReportService.getReportDataList(reportId));
         data.put("reportId",reportId);
         baseRe.setData(data);
         baseRe.setCode(1);
         baseRe.setMsg("执行成功");
-
-//
-
         return baseRe;
     }
 

@@ -2,6 +2,7 @@ package com.service.utils.test.method;
 
 import com.service.apiTest.dom.entity.ApiCase;
 import com.service.apiTest.dom.entity.Token;
+import com.service.apiTest.service.domian.ApiReportCache;
 import com.service.utils.test.dom.DoTestData;
 import com.service.utils.test.dom.GetToken;
 import com.service.utils.test.dom.MyHost;
@@ -52,7 +53,10 @@ public interface DoApiService {
      * @param testId
      * @return
      */
-    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList,Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId);
+    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList, Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId, ApiReportCache apiReportCache);
+
+
+    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList, Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId);
 
 
     /**
