@@ -1,6 +1,7 @@
 package com.service.utils;
 
 import com.alibaba.fastjson.JSONArray;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.service.utils.MyObject.MyJsonPath;
 import org.json.JSONObject;
@@ -124,6 +125,33 @@ public class MyVerification {
 
 
         return false;
+    }
+
+    /**
+     * 替换json的路径值(性能版---检测版)
+     *
+     * @param json
+     * @param path
+     * @param value
+     * @return
+     */
+    public void havePathInJson(String json,JSONArray pathValues) throws Throwable {
+        JSONArray newPathValues = b.StringToAO(pathValues.toJSONString());
+        DocumentContext ext = JsonPath.parse(b.getJSONString(json));
+        for(Object pathValue : newPathValues){
+
+            com.alibaba.fastjson.JSONObject value = b.StringToJson(pathValue.toString());
+                String path  = value.get("name").toString();
+            try {
+                JsonPath.compile(path);
+                ext.set(path, "");
+            }catch (Exception e){
+                throw new Throwable(path+"路径在传参中不存在");
+            }
+        }
+
+
+
     }
 
 }

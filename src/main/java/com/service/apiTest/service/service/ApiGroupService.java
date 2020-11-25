@@ -26,5 +26,5 @@ public interface ApiGroupService {
     DoGroupOfRealyData getDoGroupReadyData(Integer id, Integer projectId);
 
 
-    DoGroupOfRealyData doOne(DoGroupRequest doGroupRequest);
+    DoGroupOfRealyData doOne(DoGroupRequest doGroupRequest) throws Throwable;
 }

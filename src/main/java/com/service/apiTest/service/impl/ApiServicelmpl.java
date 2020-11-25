@@ -3,6 +3,7 @@ package com.service.apiTest.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mysql.cj.xdevapi.JsonArray;
 import com.service.apiTest.controller.domin.ApiBaseRe;
 import com.service.apiTest.dom.domin.ApiListParam;
 import com.service.apiTest.dom.entity.Api;
@@ -11,6 +12,7 @@ import com.service.apiTest.dom.mapper.ApiMapper;
 import com.service.apiTest.service.domian.*;
 import com.service.apiTest.service.service.ApiService;
 import com.service.utils.MyBaseChange;
+import com.service.utils.MyVerification;
 import com.service.utils.test.dom.project.Project;
 import com.service.utils.test.dom.project.Project1;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +33,9 @@ public class ApiServicelmpl implements ApiService {
 
     @Autowired
     private MyBaseChange b;
+
+    @Autowired
+    private MyVerification v;
 
     @Autowired
     private ApiCaseMapper apiCaseMapper;
@@ -257,7 +262,7 @@ public class ApiServicelmpl implements ApiService {
      * @param api
      */
 
-    public void au(ApiDataAU apiData, Api api) {
+    public void au(ApiDataAU apiData, Api api) throws Throwable {
 
         BeanUtils.copyProperties(apiData, api);
         if(apiData.getMore()){
@@ -338,6 +343,12 @@ public class ApiServicelmpl implements ApiService {
                     api.setBodyFiexdParam(apiData.getBodyFiexdParam());
                     break;
                 case "2":
+
+                    /**
+                     * 验证路径值是否存在
+                     */
+
+                        v.havePathInJson(apiData.getBodyFiexdParam(),apiData.getBodyRelyParam());
                     api.setBodyRelyParam(this.pathToId(apiData.getBodyRelyParam().toString()));
                     break;
                 case "3":
@@ -355,6 +366,8 @@ public class ApiServicelmpl implements ApiService {
             api.setIsRely(1);
             api.setRelyValue(apiData.getRelyValue().toString());
         }
+
+
 
     }
 

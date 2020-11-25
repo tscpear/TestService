@@ -36,7 +36,7 @@ public interface ApiReportService {
      * @param b
      * @return
      */
-    ApiReportCache doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b);
+    ApiReportCache doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b) throws Throwable;
 
     /**
      * 第二版
@@ -48,7 +48,7 @@ public interface ApiReportService {
      * @param b
      * @return
      */
-    ApiReportCache doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b, ApiReportCache apiReportCache);
+    ApiReportCache doTest(JSONArray testId,Integer environment,long reportId,List<String> accountValue,Integer projectId,Integer b, ApiReportCache apiReportCache) throws Throwable;
 
 
 
@@ -63,7 +63,7 @@ public interface ApiReportService {
     /**
      * 存入详情
      */
-    ApiReportCache addReport(ResponseData data, long reportId, Integer testId, Integer b,ApiReportCache  apiReportCache);
+    ApiReportCache addReport(ResponseData data, long reportId, Integer testId, Integer b,ApiReportCache  apiReportCache) throws Throwable;
 
     /**
      * 查询报告结果

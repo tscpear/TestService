@@ -41,7 +41,7 @@ public class ApiReportController {
 
     @PostMapping("/do")
     @ResponseBody
-    public ApiBaseRe doReport(@RequestBody PutToken token,@RequestHeader(name = "projectId")Integer projectId) {
+    public ApiBaseRe doReport(@RequestBody PutToken token,@RequestHeader(name = "projectId")Integer projectId) throws Throwable {
         ApiBaseRe baseRe = new ApiBaseRe();
         long reportId;
         if(token.getReportId()<10000){

@@ -91,9 +91,14 @@ public class ApiGroupController {
     public ApiBaseRe doOne(@RequestBody DoGroupRequest doGroupRequest,@RequestHeader(name = "projectId") Integer projectId) {
         ApiBaseRe baseRe = new ApiBaseRe();
         doGroupRequest.setProjectId(projectId);
-        DoGroupOfRealyData doGroupOfRealyData = apiGroupService.doOne(doGroupRequest);
-        baseRe.setCode(1);
-        baseRe.setData(doGroupOfRealyData);
+        DoGroupOfRealyData doGroupOfRealyData = null;
+        try {
+            doGroupOfRealyData = apiGroupService.doOne(doGroupRequest); baseRe.setCode(1);
+            baseRe.setData(doGroupOfRealyData);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
         return baseRe;
     }
 }

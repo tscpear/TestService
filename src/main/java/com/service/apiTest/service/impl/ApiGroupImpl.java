@@ -117,7 +117,7 @@ public class ApiGroupImpl implements ApiGroupService {
     }
 
     @Override
-    public DoGroupOfRealyData doOne(DoGroupRequest doGroupRequest) {
+    public DoGroupOfRealyData doOne(DoGroupRequest doGroupRequest) throws Throwable {
         /**
          * 本层结果
          */

@@ -27,7 +27,7 @@ public class MyBaseChange {
             return JSONObject.parseObject("{}");
         }
         if (v.isJsonObject(s)) {
-            return JSONObject.parseObject(s);
+                return JSONObject.parseObject(s);
         } else {
             return null;
         }
@@ -136,10 +136,13 @@ public class MyBaseChange {
     public String replaceJsonPath(String json, String path, Object value) {
         DocumentContext ext = JsonPath.parse(json);
         JsonPath p = JsonPath.compile(path);
-
         ext.set(p, value);
         return ext.jsonString();
     }
+
+
+
+
 
 
     /**

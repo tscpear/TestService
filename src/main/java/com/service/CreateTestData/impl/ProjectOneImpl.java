@@ -44,7 +44,7 @@ public class ProjectOneImpl implements ProjectOne {
     private JSONArray nowTireList = new JSONArray();
 
     @Override
-    public void RarehouseAddTire(Integer tireId, Integer num, Integer environment, Integer projectId, boolean doTwo) {
+    public void RarehouseAddTire(Integer tireId, Integer num, Integer environment, Integer projectId, boolean doTwo) throws Throwable {
         /**
          * @0登入账号
          */
@@ -228,7 +228,7 @@ public class ProjectOneImpl implements ProjectOne {
     }
 
     @Override
-    public void CompleteCKOrder(String orderSn, Integer projectId, Integer environment, boolean doTwo) {
+    public void CompleteCKOrder(String orderSn, Integer projectId, Integer environment, boolean doTwo) throws Throwable {
         /**
          * @0登入账号
          */
@@ -344,7 +344,7 @@ public class ProjectOneImpl implements ProjectOne {
     }
 
     @Override
-    public void CompleteStoreOrder(String orderSn, Integer projectId, Integer environment) throws InterruptedException {
+    public void CompleteStoreOrder(String orderSn, Integer projectId, Integer environment) throws Throwable {
 
         /**
          * @0登入账号
@@ -394,7 +394,7 @@ public class ProjectOneImpl implements ProjectOne {
     }
 
     @Override
-    public void CompleteDriverOrder(String orderSn, Integer projectId, Integer environment) {
+    public void CompleteDriverOrder(String orderSn, Integer projectId, Integer environment) throws Throwable {
         /**
          * @0登入账号
          */
@@ -412,8 +412,8 @@ public class ProjectOneImpl implements ProjectOne {
         testData = b.doTestDataChange(testData, map);
         String response = httpClientService.getResponse(testData).getResponse();
         Integer storeUserId = Integer.parseInt(b.getValueFormJsonByPath(response, "$.data.list[0].storeUserId").toString());
-        Object titles = b.getValueFormJsonByPath(response, "$.data.list[0].title").toString();
-        Object quantitys = b.getValueFormJsonByPath(response, "$.data.list[0].quantity").toString();
+        Object titles = b.getValueFormJsonByPath(response, "$.data.list[0]..title").toString();
+        Object quantitys = b.getValueFormJsonByPath(response, "$.data.list[0]..quantity").toString();
         JSONArray titlesArray = b.StringToArray(titles.toString());
         JSONArray quantitysArray = b.StringToArray(quantitys.toString());
         /**
@@ -426,8 +426,8 @@ public class ProjectOneImpl implements ProjectOne {
         testData = doApiService.getTestData(environment, 83, newTokenList, newDataList, 0, accountValue, projectId);
         testData = b.doTestDataChange(testData, map);
         response = httpClientService.getResponse(testData).getResponse();
-        Object itemTitle = b.getValueFormJsonByPath(response, "$.data.itemTitle").toString();
-        Object serialNums = b.getValueFormJsonByPath(response, "$.data.serialNums").toString();
+        Object itemTitle = b.getValueFormJsonByPath(response, "$.data.list..itemTitle").toString();
+        Object serialNums = b.getValueFormJsonByPath(response, "$.data.list..serialNums").toString();
         JSONArray itemTitleArray = b.StringToArray(itemTitle.toString());
         JSONArray serialNumsArray = b.StringToArray(serialNums.toString());
 
@@ -525,7 +525,7 @@ public class ProjectOneImpl implements ProjectOne {
      * 完成理赔单，并获取理赔抵扣券
      */
     @Override
-    public String getVoucher(String phone, Integer projectId, Integer environment, Integer type) {
+    public String getVoucher(String phone, Integer projectId, Integer environment, Integer type) throws Throwable {
         /**
          * @0登入账号
          */
@@ -552,7 +552,13 @@ public class ProjectOneImpl implements ProjectOne {
             new Throwable("该司机端没有线上质保卡");
             return null;
         }
-        String carHeadPhoto = b.getValueFormJsonByPath(response, "$.data.list[0].carHeadPhoto").toString();
+        String carHeadPhoto = "";
+        try{
+            carHeadPhoto = b.getValueFormJsonByPath(response, "$.data.list[0].carHeadPhoto").toString();
+        }catch (Exception e){
+
+        }
+
         String carLicense = b.getValueFormJsonByPath(response, "$.data.list[0].carLicense").toString();
         String driverName = b.getValueFormJsonByPath(response, "$.data.list[0].driverName").toString();
 
@@ -561,7 +567,12 @@ public class ProjectOneImpl implements ProjectOne {
          */
         map.clear();
         maps.clear();
-        maps.put("$.carHeadPhoto", carHeadPhoto);
+        if(carHeadPhoto.equals("")){
+
+        }else {
+            maps.put("$.carHeadPhoto", carHeadPhoto);
+        }
+
         maps.put("$.driverName", driverName);
         maps.put("$.driverPhone", phone);
         maps.put("$.sn", zsn);
@@ -593,7 +604,7 @@ public class ProjectOneImpl implements ProjectOne {
     }
 
     @Override
-    public void lpsh(String lpsn, Integer environment, Integer type, Integer projectId) {
+    public void lpsh(String lpsn, Integer environment, Integer type, Integer projectId) throws Throwable {
 
         /**
          * @4我来处理

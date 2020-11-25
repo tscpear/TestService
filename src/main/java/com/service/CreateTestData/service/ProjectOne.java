@@ -8,7 +8,7 @@ public interface ProjectOne {
     /**
      * 分仓收入胎号
      */
-    void RarehouseAddTire(Integer tireId, Integer num, Integer environment,  Integer projectId,boolean doTwo);
+    void RarehouseAddTire(Integer tireId, Integer num, Integer environment,  Integer projectId,boolean doTwo) throws Throwable;
 
     /**
      * 完成出库单
@@ -16,7 +16,7 @@ public interface ProjectOne {
      * @param projectId
      * @param environment
      */
-    void CompleteCKOrder(String orderSn,Integer projectId,Integer environment,boolean doTwo);
+    void CompleteCKOrder(String orderSn,Integer projectId,Integer environment,boolean doTwo) throws Throwable;
 
     /**
      * 完成门店订单
@@ -24,15 +24,15 @@ public interface ProjectOne {
      * @param projectId
      * @param environment
      */
-    void CompleteStoreOrder(String orderSn,Integer projectId,Integer environment) throws InterruptedException;
+    void CompleteStoreOrder(String orderSn,Integer projectId,Integer environment) throws Throwable;
 
-    void CompleteDriverOrder(String orderSn,Integer projectId,Integer environment);
+    void CompleteDriverOrder(String orderSn,Integer projectId,Integer environment) throws Throwable;
 
-    String getVoucher(String sn, Integer projectId, Integer environment,Integer type);
+    String getVoucher(String sn, Integer projectId, Integer environment,Integer type) throws Throwable;
 
 
     /**
      * 理赔审核
      */
-    void lpsh(String lpsn,Integer environment,Integer type,Integer projectId);
+    void lpsh(String lpsn,Integer environment,Integer type,Integer projectId) throws Throwable;
 }

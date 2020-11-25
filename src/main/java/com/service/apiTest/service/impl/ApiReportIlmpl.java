@@ -79,7 +79,7 @@ public class ApiReportIlmpl implements ApiReportService {
                        List<String> accountValue,
                        Integer projectId,
                        Integer b,
-                       ApiReportCache apiReportCache) {
+                       ApiReportCache apiReportCache) throws Throwable {
         /**
          * 已执行的数据缓存
          */
@@ -110,10 +110,22 @@ public class ApiReportIlmpl implements ApiReportService {
          *
          */
         for (Object ids : testId) {
+
             Integer id = Integer.parseInt(ids.toString());
-            DoTestData doTestData = doApiService.getTestData(environment, id, newTokenList, newDataList, reportId, accountValue, projectId, apiReportCache);
-            ResponseData responseData = httpClientService.getResponse(doTestData);
-            apiReportCache = addReport(responseData, reportId, id, b, apiReportCache);
+
+            if(id < 0){
+                try {
+                    Thread.sleep(-1*id*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }else {
+                DoTestData doTestData = doApiService.getTestData(environment, id, newTokenList, newDataList, reportId, accountValue, projectId, apiReportCache);
+                ResponseData responseData = httpClientService.getResponse(doTestData);
+                apiReportCache = addReport(responseData, reportId, id, b, apiReportCache);
+            }
+
         }
         /**
          * 存入成功率
@@ -129,7 +141,7 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public ApiReportCache doTest(JSONArray testId, Integer environment, long reportId, List<String> accountValue, Integer projectId, Integer b) {
+    public ApiReportCache doTest(JSONArray testId, Integer environment, long reportId, List<String> accountValue, Integer projectId, Integer b) throws Throwable {
         ApiReportCache apiReportCache = new ApiReportCache();
         apiReportCache.setReportId(reportId);
         return this.doTest(testId, environment, reportId, accountValue, projectId, b, apiReportCache);
@@ -145,7 +157,7 @@ public class ApiReportIlmpl implements ApiReportService {
     }
 
     @Override
-    public ApiReportCache addReport(ResponseData data, long reportId, Integer testId, Integer a, ApiReportCache apiReportCache) {
+    public ApiReportCache addReport(ResponseData data, long reportId, Integer testId, Integer a, ApiReportCache apiReportCache) throws Throwable {
         List<Integer> testIdDoneList = apiReportCache.getTestIdDoneList();
         testIdDoneList.add(testId);
         apiReportCache.setTestIdDoneList(testIdDoneList);
@@ -262,7 +274,12 @@ public class ApiReportIlmpl implements ApiReportService {
                     }
                     map.put("name", param.get("name").toString());
                     map.put("path", path);
-                    map.put("value", values);
+                    try {
+                        map.put("value", values);
+                    }catch (Exception e){
+                        throw new Throwable("没有获取到依赖值"+param.get("name").toString());
+                    }
+
                     relyValueLook.add(map);
                 }
                 report.setRelyValue(value.toString());

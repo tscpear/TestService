@@ -53,10 +53,10 @@ public interface DoApiService {
      * @param testId
      * @return
      */
-    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList, Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId, ApiReportCache apiReportCache);
+    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList, Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId, ApiReportCache apiReportCache) throws Throwable;
 
 
-    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList, Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId);
+    DoTestData getTestData(Integer environment, Integer testId, Map<String,String> tokenList, Map<String,String> newDataList, long reportId, List<String> accountValue, Integer projectId) throws Throwable;
 
 
     /**

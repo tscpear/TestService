@@ -232,7 +232,7 @@ public class DoApiImpl implements DoApiService {
                                   Map<String, String> newDataList,
                                   long reportId, List<String> accountValue,
                                   Integer projectId,
-                                  ApiReportCache apiReportCache) {
+                                  ApiReportCache apiReportCache) throws Throwable {
         Project project = new Project();
         switch (projectId) {
             case 1:
@@ -466,7 +466,7 @@ public class DoApiImpl implements DoApiService {
     }
 
     @Override
-    public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList, Map<String, String> newDataList, long reportId, List<String> accountValue, Integer projectId) {
+    public DoTestData getTestData(Integer environment, Integer testId, Map<String, String> tokenList, Map<String, String> newDataList, long reportId, List<String> accountValue, Integer projectId) throws Throwable {
         return this.getTestData(environment, testId, tokenList, newDataList, reportId, accountValue, projectId, null);
     }
 

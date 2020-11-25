@@ -83,7 +83,7 @@ public class ApiController {
                 baseRe.setMsg("编辑成功");
             } catch (Throwable throwable) {
                 baseRe.setCode(0);
-                baseRe.setMsg(throwable.toString());
+                baseRe.setMsg(throwable.toString().split("\\:")[1]);
             }
         }
 
@@ -106,7 +106,7 @@ public class ApiController {
                 baseRe.setMsg("新增成功");
             } catch (Throwable throwable) {
                 baseRe.setCode(0);
-                baseRe.setMsg(throwable.toString());
+                baseRe.setMsg(throwable.toString().split("\\:")[1]);
             }
         }
         return baseRe;

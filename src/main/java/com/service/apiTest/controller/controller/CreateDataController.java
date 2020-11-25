@@ -22,7 +22,7 @@ public class CreateDataController {
     public ApiBaseRe getHouse(@RequestHeader(name = "projectId") Integer projectId,
                               @RequestParam Integer environment,
                               @RequestParam Integer tireId,
-                              @RequestParam Integer num) {
+                              @RequestParam Integer num) throws Throwable {
         projectOne.RarehouseAddTire(tireId, num, environment, projectId, false);
         return null;
     }
@@ -33,9 +33,9 @@ public class CreateDataController {
                                            @RequestParam Integer environment,
                                            @RequestParam String orderSn,
                                            @RequestParam Integer type
-    ) throws InterruptedException {
+    ) throws Throwable {
         ApiBaseRe baseRe = new ApiBaseRe();
-        try {
+//        try {
             switch (type) {
                 case 2:
                     projectOne.CompleteCKOrder(orderSn, projectId, environment, false);
@@ -66,10 +66,10 @@ public class CreateDataController {
             }
             baseRe.setCode(1);
             baseRe.setMsg("运气不错，没有报错");
-        }catch (Exception e){
-            baseRe.setCode(0);
-            baseRe.setMsg(e.toString());
-        }
+//        }catch (Exception e){
+//            baseRe.setCode(0);
+//            baseRe.setMsg(e.toString());
+//        }
         return baseRe;
     }
 
